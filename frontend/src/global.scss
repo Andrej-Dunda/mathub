@@ -1,0 +1,379 @@
+body {
+  margin: 0;
+}
+
+/* Disabled */
+.disabled {
+    cursor: not-allowed;
+}
+
+/* FONTS */
+/* Jakarta12 */
+.font-12 {
+    font-family: "Plus Jakarta Sans";
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+}
+
+/* Jakarta14 */
+.font-14 {
+    font-family: "Plus Jakarta Sans";
+    font-size: 14px;
+    line-height: 18.9px;
+    font-weight: 400;
+}
+
+.font-14-b {
+    font-family: "Plus Jakarta Sans";
+    font-size: 14px;
+    line-height: 18.9px;
+    font-weight: 600;
+}
+
+/* Jakarta16 */
+.font-16 {
+    font-family: "Plus Jakarta Sans";
+    font-size: 16px;
+    line-height: 21.6px;
+    font-weight: 400;
+}
+
+.font-16-b {
+    font-family: "Plus Jakarta Sans";
+    font-size: 16px;
+    line-height: 21.6px;
+    font-weight: 600;
+}
+
+/* Jakarta20 */
+.font-20 {
+    font-family: "Plus Jakarta Sans";
+    font-size: 20px;
+    line-height: 27px;
+    font-weight: 400;
+}
+
+.font-20-b {
+    font-family: "Plus Jakarta Sans";
+    font-size: 20px;
+    line-height: 27px;
+    font-weight: 600;
+}
+
+/* Jakarta24 */
+.font-24 {
+    font-family: "Plus Jakarta Sans";
+    font-size: 24px;
+    line-height: 32.4px;
+    font-weight: 400;
+}
+
+.font-24-b {
+    font-family: "Plus Jakarta Sans";
+    font-size: 24px;
+    line-height: 32.4px;
+    font-weight: 600;
+}
+
+/* Jakarta32 */
+.font-32 {
+    font-family: "Plus Jakarta Sans";
+    font-size: 32px;
+    line-height: 37.5px;
+    font-weight: 400;
+}
+
+.font-32-b {
+    font-family: "Plus Jakarta Sans";
+    font-size: 32px;
+    line-height: 37.5px;
+    font-weight: 600;
+}
+
+/* Jakarta36 */
+.font-36 {
+    font-family: "Plus Jakarta Sans";
+    font-size: 36px;
+    line-height: 48.6px;
+    font-weight: 400;
+}
+
+.font-36-b {
+    font-family: "Plus Jakarta Sans";
+    font-size: 36px;
+    line-height: 48.6px;
+    font-weight: 600;
+}
+
+/* COLORS */
+/* Primary blue */
+.p-blue {
+    color: #002975 !important;
+}
+
+/* Hoverable color */
+.p-blue-h {
+    color: #002975 !important;
+
+    &:hover {
+      color: #112A5A !important;
+    }
+}
+
+/* Background color */
+.p-blue-bg {
+    background-color: #002975 !important;
+}
+
+/* Hoverable background-color */
+.p-blue-bg-h {
+    background-color: #002975 !important;
+
+    &:hover {
+        background-color: #112A5A !important;
+    }
+}
+
+/* Secondary blue */
+.s-blue {
+    color: #2F8EED !important;
+}
+
+.s-blue-h {
+    color: #2F8EED !important;
+
+    &:hover {
+        color: #1D6BB9 !important;
+    }
+}
+
+.s-blue-bg {
+    background-color: #2F8EED !important;
+}
+
+.s-blue-bg-h {
+    background-color: #2F8EED !important;
+
+    &:hover {
+        background-color: #1D6BB9 !important;
+    }
+}
+
+/* Light blue */
+.l-blue {
+    color: #D7EBFF !important;
+}
+
+.l-blue-bg {
+    background-color: #D7EBFF !important;
+}
+
+.l-blue-bg-h {
+    background-color: #D7EBFF !important;
+
+    &:hover {
+        color: #D7EBFF!important;
+        background-color: #1D6BB9 !important;
+
+    }
+}
+
+/* Primary green */
+.p-green {
+    color: #388883 !important;
+}
+
+.p-green-h {
+    color: #388883 !important;
+
+    &:hover {
+      color: #2B5F5C !important;
+    }
+}
+
+.p-green-bg {
+    background-color: #388883 !important;
+}
+
+.p-green-bg-h {
+    background-color: #388883 !important;
+
+    &:hover {
+        background-color: #2B5F5C !important; 
+    }
+}
+
+/* Secondary green */
+.s-green {
+    color: #E6F4F1 !important;
+}
+
+.s-green-h {
+    color: #E6F4F1 !important;
+
+    &:hover {
+        color: #D4E2DF !important;
+    }
+}
+
+.s-green-bg {
+    background-color: #E6F4F1 !important;
+}
+
+.s-green-bg-h {
+    background-color: #E6F4F1 !important;
+
+    &:hover {
+        background-color: #D4E2DF !important;
+    }
+}
+
+/* Light green */
+.l-green {
+    color: #F2F9F8 !important;
+}
+
+.l-green-h {
+    color: #F2F9F8 !important;
+
+    &:hover {
+        color: #D4E2DF !important;
+    }
+}
+
+.l-green-bg {
+    background-color: #F2F9F8 !important;
+}
+
+.l-green-bg-h {
+    background-color: #F2F9F8 !important;
+
+    &:hover {
+        background-color: #D4E2DF !important;
+    }
+}
+
+/* Primary purple */
+.p-purple {
+    color: #8007AA !important;
+}
+
+.p-purple-h {
+    color: #8007AA !important;
+
+    &:hover {
+      color: #510283 !important;
+    }
+}
+
+.p-purple-bg {
+    background-color: #8007AA !important;
+}
+
+.p-purple-bg-h {
+    background-color: #8007AA !important;
+
+    &:hover {
+        background-color: #510283 !important;
+    }
+}
+
+/* Secondary purple */
+.s-purple {
+    color: #C68FD9 !important;
+}
+
+.s-purple-h {
+    color: #C68FD9 !important;
+
+    &:hover {
+        color: #DDC8E4 !important;
+    }
+}
+
+.s-purple-bg {
+    background-color: #C68FD9 !important;
+}
+
+.s-purple-bg-h {
+    background-color: #C68FD9 !important;
+
+    &:hover {
+        background-color: #DDC8E4 !important;
+    }
+}
+
+/* Light purple */
+.l-purple {
+    color: #ECDAF2 !important;
+}
+
+.l-purple-bg {
+    background-color: #ECDAF2 !important;
+}
+
+.l-purple-bg-h {
+    background-color: #ECDAF2 !important;
+    
+    &:hover {
+        background-color: #DDC8E4 !important;
+    }
+}
+
+/* Primary gray */
+.p-gray {
+    color: #9A9A9A !important;
+}
+
+.p-gray-bg {
+    background-color: #9A9A9A !important;
+}
+
+/* Secondary gray */
+.s-gray {
+    color: #E5E5E5 !important;
+}
+
+.s-gray-bg {
+    background-color: #E5E5E5 !important;
+}
+
+/* Light Red */
+.l-red-bg {
+    background-color: #FCE8E8!important;
+}
+
+.l-red-bg-h {
+    background-color: #FCE8E8!important;
+
+    &:hover {
+        background-color: #F8C9C9!important;
+    }
+}
+
+body {
+    /* Scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: #AFAFAF #EFEFEF;
+    &::-webkit-scrollbar {
+        width: 8px;
+        background-color: #EFEFEF;
+        height: 8px;
+        border-radius: 5px;
+    }
+    &::-webkit-scrollbar-track {
+        border-radius: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #AFAFAF;
+        border-radius: 3px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background: #909090;
+    }
+}
+
+button:focus {
+    outline: none !important;
+}
