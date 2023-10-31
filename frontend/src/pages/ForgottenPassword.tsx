@@ -1,5 +1,5 @@
 import './ForgottenPassword.scss'
-const ForgottenPassword = () => {
+const ForgottenPassword = (props: any) => {
   return (
     <div className="forgotten-password">
       forgotten password

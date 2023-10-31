@@ -1,5 +1,5 @@
 import './Registration.scss'
-const Registration = () => {
+const Registration = (props: any) => {
   return (
     <div className="registration">
       registrace

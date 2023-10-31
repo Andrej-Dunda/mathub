@@ -1,5 +1,4 @@
-from datetime import timedelta, timezone
-import datetime
+from datetime import datetime, timedelta, timezone
 import json
 from flask import Flask, request, jsonify
 import sqlite3
@@ -30,7 +29,7 @@ def refresh_expiring_jwts(response):
         # Case where there is not a valid JWT. Just return the original respone
         return response
     
-@app.route('/token', methods=["POST"])
+@app.route('/login', methods=["POST"])
 def create_token():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
