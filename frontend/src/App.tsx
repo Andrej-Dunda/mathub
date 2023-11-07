@@ -12,41 +12,65 @@ import Registration from './pages/Registration';
 import ForgottenPassword from './pages/ForgottenPassword';
 import useToken from './utils/useToken'
 import NoPage from './pages/NoPage';
-import { useState, createContext } from "react";
-import ReactDOM from "react-dom/client";
+import { useState, createContext, useEffect } from "react";
+
+interface iUser {
+  id: number,
+  email: string,
+  password: string
+}
+
+export const UserContext = createContext<iUser>({
+  id: 0,
+  email: 'NaN',
+  password: 'NaN'
+})
 
 const App = () => {
   const { token, removeToken, setToken } = useToken();
-  const [user, setUser] = useState({
+  const userLocalData = localStorage.getItem('userData')
+  const [user, setUser] = useState(userLocalData ? JSON.parse(userLocalData) : {
+    id: 0,
     email: 'NaN',
-    desc: 'NaN',
-    registration_date: 'NaN'
+    password: 'NaN'
   });
 
-  // const UserContext = createContext()
-  
+  useEffect(() => {
+    // Load user data from local storage when the component mounts
+    const storedUser = localStorage.getItem('userData');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('userData', JSON.stringify(user));
+  }, [user])
+
   return (
-    <Router>
-      {!token && token !== "" && token !== undefined ? (
-        <Routes>
-          <Route path="/">
-            <Route index element={<LoginPage setToken={setToken} />} />
-            <Route path="registration" element={<Registration />} />
-            <Route path="forgotten-password" element={<ForgottenPassword />} />
-            <Route path="*" element={<NoPage />} />
-          </Route>
-        </Routes>
-      ) : (
-        <Routes>
-          <Route path="/" element={<Layout removeToken={removeToken} />}>
-            <Route index element={<Homepage token={token} setToken={setToken} />} />
-            <Route path="blogs" element={<Blogs />} />
-            <Route path="user-profile" element={<UserProfile token={token} setToken={setToken} />} />
-            <Route path="users" element={<Users />} />
-          </Route>
-        </Routes>
-      )}
-    </Router>
+    <UserContext.Provider value={user}>
+      <Router>
+        {!token && token !== "" && token !== undefined ? (
+          <Routes>
+            <Route path="/">
+              <Route index element={<LoginPage setToken={setToken} setUser={setUser} />} />
+              <Route path="registration" element={<Registration />} />
+              <Route path="forgotten-password" element={<ForgottenPassword />} />
+              <Route path="*" element={<NoPage />} />
+            </Route>
+          </Routes>
+        ) : (
+          <Routes>
+            <Route path="/" element={<Layout removeToken={removeToken} />}>
+              <Route index element={<Homepage token={token} setToken={setToken} />} />
+              <Route path="blogs" element={<Blogs />} />
+              <Route path="user-profile" element={<UserProfile />} />
+              <Route path="users" element={<Users />} />
+            </Route>
+          </Routes>
+        )}
+      </Router>
+    </UserContext.Provider>
   );
 }
 

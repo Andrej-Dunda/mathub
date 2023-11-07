@@ -12,6 +12,7 @@ const Layout = (props: any) => {
     .then((response) => {
        props.removeToken()
        console.log(response.data.msg)
+       localStorage.removeItem('userData')
     }).catch((error) => {
       if (error.response) {
         console.log(error.response)

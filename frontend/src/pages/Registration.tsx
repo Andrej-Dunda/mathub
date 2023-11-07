@@ -1,6 +1,7 @@
 import './Registration.scss'
 import axios from "axios";
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom"
 
 const Registration = (props: any) => {
   const [registrationForm, setRegistrationForm] = useState({
@@ -8,6 +9,7 @@ const Registration = (props: any) => {
     password: ""
   })
   const [responseMessage, setResponseMessage] = useState<string>('')
+  const navigate = useNavigate()
 
   const validateEmail = (email: string) => {
     // Regular expression for email validation
@@ -29,6 +31,7 @@ const Registration = (props: any) => {
       .then((response: any) => {
         console.log(response.data.message)  
         setResponseMessage(response.data.message)
+        navigate('/login')
       }).catch((error: any) => {
         if (error.response) {
           console.log(error.response)

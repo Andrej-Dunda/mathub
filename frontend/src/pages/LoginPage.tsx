@@ -22,6 +22,13 @@ const LoginPage = (props: any) => {
       .then((response: any) => {
         props.setToken(response.data.access_token)
         setResponseMessage(response.data.message)
+        const loggedUser = {
+          id: response.data.user_id,
+          email: response.data.email,
+          password: response.data.password
+        }
+        props.setUser(loggedUser)
+        localStorage.setItem('userData', JSON.stringify(loggedUser));
       }).catch((error: any) => {
         if (error.response) {
           console.log(error.response)
