@@ -12,10 +12,19 @@ import Registration from './pages/Registration';
 import ForgottenPassword from './pages/ForgottenPassword';
 import useToken from './utils/useToken'
 import NoPage from './pages/NoPage';
+import { useState, createContext } from "react";
+import ReactDOM from "react-dom/client";
 
 const App = () => {
   const { token, removeToken, setToken } = useToken();
+  const [user, setUser] = useState({
+    email: 'NaN',
+    desc: 'NaN',
+    registration_date: 'NaN'
+  });
 
+  // const UserContext = createContext()
+  
   return (
     <Router>
       {!token && token !== "" && token !== undefined ? (

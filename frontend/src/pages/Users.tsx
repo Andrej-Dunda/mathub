@@ -22,7 +22,7 @@ const Users = () => {
 
   const handleNewUserSubmit = (e: any) => {
     e.preventDefault();
-    fetch('/submit-new-user', {
+    fetch('/register-new-user', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -64,11 +64,11 @@ const Users = () => {
         <form onSubmit={handleNewUserSubmit}>
           <div>
             <label htmlFor="newUserName">New user name: </label>
-            <input id='newUserName' type="text" value={newUserName} onChange={(e) => setNewUserName(e.target.value)}/>
+            <input id='newUserName' type="email" required value={newUserName} onChange={(e) => setNewUserName(e.target.value)}/>
           </div>
           <div>
             <label htmlFor="newPassword">New password</label>
-            <input id='newPassword' type="text" value={newPassword} onChange={(e) => setNewPassword(e.target.value)}/>
+            <input id='newPassword' type="password" required value={newPassword} onChange={(e) => setNewPassword(e.target.value)}/>
           </div>
           <button type='submit'>Add user</button>
         </form>

@@ -3,6 +3,7 @@ import json
 from flask import Flask, request, jsonify
 import sqlite3
 from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, unset_jwt_cookies, jwt_required, JWTManager
+import hashlib
 
 app = Flask(__name__)
 
@@ -33,12 +34,24 @@ def refresh_expiring_jwts(response):
 def create_token():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
-    if email != "test" or password != "test":
-        return {"msg": "Wrong email or password"}, 401
 
-    access_token = create_access_token(identity=email)
-    response = {"access_token":access_token}
-    return response
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    cur.execute('SELECT user_password FROM users WHERE user_email = ?', (email,))
+    user_data = cur.fetchone()
+    conn.close()
+    
+    if user_data:
+        stored_password_hash = user_data[0]
+        input_password_hash = hashlib.sha256(password.encode()).hexdigest()
+        if stored_password_hash == input_password_hash:
+            access_token = create_access_token(identity=email)
+            response = {"access_token":access_token}
+            return response
+    
+    return {"msg": "Wrong email or password"}, 401
+
+    
 
 @app.route('/profile')
 @jwt_required()
@@ -67,18 +80,34 @@ def users_table():
     res = cur.execute("SELECT * FROM users").fetchall()
     return res
 
-@app.route('/submit-new-user', methods=['POST'])
-def submit_new_user():
-    data = request.get_json()
+@app.route('/register-new-user', methods=['POST'])
+def register_new_user():
+    [email, password] = request.get_json()
     # Process and save the data as needed
     conn = sqlite3.connect("habits.db")
     cur = conn.cursor()
-    cur.execute("INSERT INTO users(user_name, user_password) VALUES(?, ?)", (data[0], data[1]))
+    password_hash = hashlib.sha256(password.encode()).hexdigest()  # Hash the password
+    cur.execute('INSERT INTO users (user_email, user_password) VALUES (?, ?)', (email, password_hash))
     conn.commit()
     conn.close()
-    print(data[0])
-    print(data[1])
+    print(email)
+    print(password)
     return jsonify({'message': 'Data received successfully'})
+
+# Function to authenticate a user
+def authenticate_user(email, password):
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    cur.execute('SELECT user_password FROM users WHERE user_name = ?', (email,))
+    user_data = cur.fetchone()
+    conn.close()
+    
+    if user_data:
+        stored_password_hash = user_data[0]
+        input_password_hash = hashlib.sha256(password.encode()).hexdigest()
+        if stored_password_hash == input_password_hash:
+            return True
+    return False
 
 if __name__ == "__main__":
     app.run(debug=True)
