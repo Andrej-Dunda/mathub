@@ -1,10 +1,14 @@
+import { useEffect } from 'react';
 import './NoPage.scss'
+import { useNavigate } from 'react-router-dom';
 
 const NoPage = () => {
-  return (
-    <h1>
-      NoPage
-    </h1>
-  )
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    navigate('/')
+  })
+
+  return <></>
 }
 export default NoPage;
