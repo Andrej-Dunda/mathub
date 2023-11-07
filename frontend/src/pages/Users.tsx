@@ -40,7 +40,7 @@ const Users = () => {
 
   return (
     <div className="users">
-      <table>
+      <table className='table table-striped'>
         <thead>
           <tr>
             <th>ID</th>

@@ -4,6 +4,8 @@ from flask import Flask, request, jsonify
 import sqlite3
 from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, unset_jwt_cookies, jwt_required, JWTManager
 import hashlib
+import random
+import string
 
 app = Flask(__name__)
 
@@ -49,9 +51,7 @@ def create_token():
             response = {"access_token":access_token}
             return response
     
-    return {"msg": "Wrong email or password"}, 401
-
-    
+    return jsonify({"message": "Chybný email nebo heslo!"}), 401
 
 @app.route('/profile')
 @jwt_required()
@@ -80,34 +80,67 @@ def users_table():
     res = cur.execute("SELECT * FROM users").fetchall()
     return res
 
-@app.route('/register-new-user', methods=['POST'])
+@app.route('/registration', methods=['POST'])
 def register_new_user():
-    [email, password] = request.get_json()
-    # Process and save the data as needed
-    conn = sqlite3.connect("habits.db")
-    cur = conn.cursor()
-    password_hash = hashlib.sha256(password.encode()).hexdigest()  # Hash the password
-    cur.execute('INSERT INTO users (user_email, user_password) VALUES (?, ?)', (email, password_hash))
-    conn.commit()
-    conn.close()
-    print(email)
-    print(password)
-    return jsonify({'message': 'Data received successfully'})
+    try:
+      email = request.json.get("email", None)
+      password = request.json.get("password", None)
+      # Process and save the data as needed
+      conn = sqlite3.connect("habits.db")
+      cur = conn.cursor()
+      password_hash = hashlib.sha256(password.encode()).hexdigest()  # Hash the password
 
-# Function to authenticate a user
-def authenticate_user(email, password):
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    cur.execute('SELECT user_password FROM users WHERE user_name = ?', (email,))
-    user_data = cur.fetchone()
-    conn.close()
+      # Check if the user_name already exists in the table
+      cur.execute("SELECT user_email FROM users WHERE user_email = ?", (email,))
+      existing_user = cur.fetchone()
+
+      if existing_user is None:
+        cur.execute('INSERT INTO users (user_email, user_password) VALUES (?, ?)', (email, password_hash))
+      else:
+         return jsonify({'message': 'Uživatelské jméno již existuje!'})
+      conn.commit()
+      conn.close()
+      print(email)
+      print(password)
+    except:
+      return jsonify({'message': 'Registrace se nezdařila :('})
+    else:
+      return jsonify({'message': 'Registrace proběhla úspěšně.'})
     
-    if user_data:
-        stored_password_hash = user_data[0]
-        input_password_hash = hashlib.sha256(password.encode()).hexdigest()
-        if stored_password_hash == input_password_hash:
-            return True
-    return False
+@app.route('/forgotten-password', methods=['POST'])
+def generatre_new_password():
+    try:
+      email = request.json.get("email", None)
+
+      characters = string.ascii_letters + string.digits
+      new_password = ''.join(random.choice(characters) for _ in range(12))
+
+      # Process and save the data as needed
+      conn = sqlite3.connect("habits.db")
+      cur = conn.cursor()
+
+      # Check if the user_name already exists in the table
+      cur.execute("SELECT user_email FROM users WHERE user_email = ?", (email,))
+      existing_user = cur.fetchone()
+
+      if existing_user is None:
+        return jsonify({'console_message': 'User profile does not exist!', 'response_message': 'Tento profil neexistuje!', 'result': False})
+      
+      password_hash = hashlib.sha256(new_password.encode()).hexdigest()  # Hash the password
+      cur.execute("UPDATE users SET user_password = ? WHERE user_email = ?", (password_hash, email))
+      conn.commit()
+      conn.close()
+      print(email)
+      print(new_password)
+    except:
+      return jsonify({'console_message': 'Failed to reset password', 'response_message': 'Heslo nemohlo být resetováno', 'result': False})
+    else:
+      return jsonify({
+         'console_message': 'Password reset successfully',
+         'new_password': new_password,
+         'response_message': 'Heslo úspěšně resetováno!',
+         'result': True
+         })
 
 if __name__ == "__main__":
     app.run(debug=True)
