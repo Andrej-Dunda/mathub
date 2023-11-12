@@ -1,5 +1,6 @@
 import './Blogs.scss'
 import BlogPost from '../components/blog/BlogPost';
+import React from 'react';
 
 const Blogs = () => {
   return (

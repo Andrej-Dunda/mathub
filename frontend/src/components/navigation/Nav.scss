@@ -1,0 +1,23 @@
+.navbar {
+  height: 56px;
+  max-height: 56px;
+  .container-fluid {
+    gap: 8px;
+    #navbarNavAltMarkup {
+      .navbar-nav {
+        height: 56px;
+        max-height: 56px;
+        align-items: center;
+
+        .nav-link {
+          height: fit-content!important;
+        }
+      }
+    }
+
+    .logout {
+      text-decoration: none;
+      color: rgba(0,0,0,.55)!important;
+    }
+  }
+}

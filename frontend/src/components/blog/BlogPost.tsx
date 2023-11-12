@@ -1,6 +1,7 @@
 import './BlogPost.scss'
 import DefaultProfilePicture from '../../images/DefaultProfilePicture'
 import LikeButton from '../like-button/LikeButton'
+import React from 'react'
 
 const blogDummyData = {
   id: 0,
