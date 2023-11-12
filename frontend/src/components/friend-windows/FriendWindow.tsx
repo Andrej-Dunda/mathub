@@ -11,6 +11,8 @@ const userInfoDummy = {
 }
 
 const FriendWindow = (props: any) => {
+  const [id, first_name, last_name] = props.userData
+
   const windowTypeData = props.type === 'friend-request' ? {
     firstButtonType: 'accept',
     secondButtonType: 'remove-request'
@@ -27,7 +29,7 @@ const FriendWindow = (props: any) => {
     <div className="friend-window">
       <Logo className='profile-picture' />
       <h4 className="h4 friend-name">
-        {`${userInfoDummy.first_name} ${userInfoDummy.last_name}`}
+        {`${first_name} ${last_name}`}
       </h4>
       <div className="buttons">
         <FriendButton buttonType={windowTypeData?.firstButtonType} />

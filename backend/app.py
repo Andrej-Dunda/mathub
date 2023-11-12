@@ -93,7 +93,7 @@ def logout():
 # ENDPOINTS
 
 @app.route("/users")
-def users_table():  
+def users_table():
     conn = sqlite3.connect("habits.db")
     cur = conn.cursor()
     res = cur.execute("SELECT * FROM users").fetchall()
@@ -163,7 +163,8 @@ def generate_new_password():
          'result': True
          })
 
-@app.route('/user-habits', methods=['GET'])
+@app.route('/user-habits', methods=['POST'])
+# @jwt_required()
 def get_user_habits():
    user_id = request.json.get('id', None)
 
@@ -174,5 +175,41 @@ def get_user_habits():
 
    return jsonify({'habits': habits})
     
+@app.route('/get-friend-suggestions', methods=['POST'])
+# @jwt_required()
+def get_friend_suggestions():
+    user_id = request.json.get('user_id', None)
+    print(user_id)
+    conn = sqlite3.connect("habits.db")
+    cur = conn.cursor()
+    res = cur.execute("SELECT id, first_name, last_name FROM users WHERE id != ?", (user_id,)).fetchall()
+    return res
+   
+@app.route('/get-friends', methods=['POST'])
+# @jwt_required()
+def get_friends():
+    user_id = request.json.get('user_id', None)
+    print(user_id)
+    conn = sqlite3.connect("habits.db")
+    cur = conn.cursor()
+    friends_id = cur.execute("SELECT second_friend_id FROM friendships WHERE first_friend_id = ?", (user_id,)).fetchall()
+    friends = []
+    for friend_id in friends_id:
+       friends.append([cur.execute("SELECT id, first_name, last_name FROM users WHERE id = ?", (friend_id[0],)).fetchone()])
+    return friends
+
+@app.route('/get-friend-requests', methods=['POST'])
+# @jwt_required()
+def get_friend_requests():
+    user_id = request.json.get('user_id', None)
+    print(user_id)
+    conn = sqlite3.connect("habits.db")
+    cur = conn.cursor()
+    requestors_id = cur.execute("SELECT requestor_id FROM friend_requests WHERE acceptor_id = ?", (user_id,)).fetchall()
+    requestors = []
+    for requestor_id in requestors_id:
+       requestors.append(cur.execute("SELECT id, first_name, last_name FROM users WHERE id = ?", (requestor_id[0],)).fetchone())
+    return requestors
+
 if __name__ == "__main__":
     app.run(debug=True)
