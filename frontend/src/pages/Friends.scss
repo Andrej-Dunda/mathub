@@ -1,0 +1,28 @@
+.friends {
+  padding: 32px 0;
+
+  .friends-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .users-list {
+    .show-all-users {
+      display: flex;
+      flex-direction: row;
+      gap: 6px;
+      align-items: center;
+
+      cursor: pointer;
+
+      span {
+        margin: 0;
+      }
+
+      input {
+        cursor: pointer;
+      }
+    }
+  }
+}
