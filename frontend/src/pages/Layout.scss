@@ -6,13 +6,13 @@
     flex-direction: row;
     justify-content: space-between;
 
-    .logo-heading-wrapper {
+    .navbar .heading-wrapper {
       width: fit-content;
       display: flex;
       flex-direction: row;
       gap: 16px;
 
-      .logo {
+      .logo-wrapper .logo {
         height: 3rem;
         width: auto;
         align-self: center;

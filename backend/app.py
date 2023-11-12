@@ -48,20 +48,39 @@ def create_token():
         input_password_hash = hashlib.sha256(password.encode()).hexdigest()
         if stored_password_hash == input_password_hash:
             access_token = create_access_token(identity=email)
-            response = {"access_token":access_token}
+
+            conn = sqlite3.connect('habits.db')
+            cur = conn.cursor()
+            cur.execute('SELECT id FROM users WHERE user_email = ?', (email,))
+            user_id = cur.fetchone()[0]
+            conn.close()
+
+            response = {
+                "access_token": access_token,
+                "user_id": user_id,
+                "email": email,
+                "password": password
+               }
             return response
     
     return jsonify({"message": "Chybný email nebo heslo!"}), 401
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET'])
 @jwt_required()
 def my_profile():
-    response_body = {
-        "name": "Nagato",
-        "about" :"Hello! I'm a full stack developer that loves python and javascript"
-    }
+    
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM users WHERE id = ?', (id,))
+    user_data = cur.fetchone()
+    # response_body = {
+    #     "id": user_data[0],
+    #     "email": user_data[1],
+    #     "password": user_data[2]
+    # }
 
-    return response_body
+    # return response_body
+    return jsonify({'user_data': user_data})
 
 @app.route("/logout", methods=["POST"])
 def logout():
@@ -108,7 +127,7 @@ def register_new_user():
       return jsonify({'message': 'Registrace proběhla úspěšně.'})
     
 @app.route('/forgotten-password', methods=['POST'])
-def generatre_new_password():
+def generate_new_password():
     try:
       email = request.json.get("email", None)
 
@@ -142,5 +161,16 @@ def generatre_new_password():
          'result': True
          })
 
+@app.route('/user-habits', methods=['GET'])
+def get_user_habits():
+   user_id = request.json.get('id', None)
+
+   conn = sqlite3.connect("habits.db")
+   cur = conn.cursor()
+   cur.execute('SELECT * FROM users WHERE user_id = ?', (user_id,))
+   habits = cur.fetchall()
+
+   return jsonify({'habits': habits})
+    
 if __name__ == "__main__":
     app.run(debug=True)
