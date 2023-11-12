@@ -34,7 +34,6 @@ const Registration = (props: any) => {
   const submitRegistration = (event: any) => {
     if (!registrationForm.email || !registrationForm.password || !registrationForm.first_name || !registrationForm.last_name) return setResponseMessage('Vyplňte všechna pole!')
     if (!validateEmail(registrationForm.email)) return setResponseMessage('Neplatný formát emailu!')
-    console.log(registrationForm)
     axios({
       method: "POST",
       url: "/registration",

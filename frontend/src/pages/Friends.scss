@@ -5,6 +5,12 @@
     display: flex;
     flex-direction: column;
     gap: 32px;
+
+    div div {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 250px));
+    }
   }
 
   .users-list {

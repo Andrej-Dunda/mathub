@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS followers;
 DROP TABLE IF EXISTS friendships;
 DROP TABLE IF EXISTS group_memberships;
 DROP TABLE IF EXISTS friend_requests;
+DROP TABLE IF EXISTS excluded_suggestions;
 
 -- CREATE TABLE users (
 --   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -79,6 +80,11 @@ CREATE TABLE group_memberships (
 -- INSERT INTO group_memberships (group_id, user_id) VALUES (1, 1)
 
 CREATE TABLE friend_requests (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  requestor_id INTEGER,
+  acceptor_id INTEGER);
+
+CREATE TABLE excluded_suggestions (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   requestor_id INTEGER,
   acceptor_id INTEGER);

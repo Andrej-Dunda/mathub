@@ -121,8 +121,6 @@ def register_new_user():
          return jsonify({'message': 'Uživatelské jméno již existuje!'})
       conn.commit()
       conn.close()
-      print(email)
-      print(password)
     except:
       return jsonify({'message': 'Registrace se nezdařila :('})
     else:
@@ -151,8 +149,6 @@ def generate_new_password():
       cur.execute("UPDATE users SET user_password = ? WHERE user_email = ?", (password_hash, email))
       conn.commit()
       conn.close()
-      print(email)
-      print(new_password)
     except:
       return jsonify({'console_message': 'Failed to reset password', 'response_message': 'Heslo nemohlo být resetováno', 'result': False})
     else:
@@ -162,54 +158,129 @@ def generate_new_password():
          'response_message': 'Heslo úspěšně resetováno!',
          'result': True
          })
-
-@app.route('/user-habits', methods=['POST'])
-# @jwt_required()
-def get_user_habits():
-   user_id = request.json.get('id', None)
-
-   conn = sqlite3.connect("habits.db")
-   cur = conn.cursor()
-   cur.execute('SELECT * FROM users WHERE user_id = ?', (user_id,))
-   habits = cur.fetchall()
-
-   return jsonify({'habits': habits})
     
 @app.route('/get-friend-suggestions', methods=['POST'])
 # @jwt_required()
 def get_friend_suggestions():
     user_id = request.json.get('user_id', None)
-    print(user_id)
     conn = sqlite3.connect("habits.db")
     cur = conn.cursor()
-    res = cur.execute("SELECT id, first_name, last_name FROM users WHERE id != ?", (user_id,)).fetchall()
+    friends_id = cur.execute("SELECT second_friend_id FROM friendships WHERE first_friend_id = ?", (user_id,)).fetchall()
+    acceptor_id = cur.execute("SELECT acceptor_id FROM friend_requests WHERE requestor_id = ?", (user_id,)).fetchall()
+    requestors_id = cur.execute("SELECT requestor_id FROM friend_requests WHERE acceptor_id = ?", (user_id,)).fetchall()
+    excluded_suggestions_id = cur.execute("SELECT requestor_id FROM excluded_suggestions WHERE acceptor_id = ?", (user_id,)).fetchall()
+    excluded_id_tuples = friends_id + acceptor_id + requestors_id + excluded_suggestions_id
+    excluded_ids = (user_id)
+    for id_tuple in excluded_id_tuples:
+       excluded_ids = excluded_ids + (id_tuple[0],)
+    placeholders = ', '.join('?' for _ in excluded_ids)
+    res = cur.execute(f'SELECT id, first_name, last_name FROM users WHERE id NOT IN ({placeholders})', (excluded_ids)).fetchall()
+    conn.commit()
+    conn.close()
     return res
    
 @app.route('/get-friends', methods=['POST'])
 # @jwt_required()
 def get_friends():
     user_id = request.json.get('user_id', None)
-    print(user_id)
     conn = sqlite3.connect("habits.db")
     cur = conn.cursor()
     friends_id = cur.execute("SELECT second_friend_id FROM friendships WHERE first_friend_id = ?", (user_id,)).fetchall()
     friends = []
     for friend_id in friends_id:
-       friends.append([cur.execute("SELECT id, first_name, last_name FROM users WHERE id = ?", (friend_id[0],)).fetchone()])
+       friends.append(cur.execute("SELECT id, first_name, last_name FROM users WHERE id = ?", (friend_id[0],)).fetchone())
+    conn.commit()
+    conn.close()
     return friends
 
 @app.route('/get-friend-requests', methods=['POST'])
 # @jwt_required()
 def get_friend_requests():
     user_id = request.json.get('user_id', None)
-    print(user_id)
     conn = sqlite3.connect("habits.db")
     cur = conn.cursor()
     requestors_id = cur.execute("SELECT requestor_id FROM friend_requests WHERE acceptor_id = ?", (user_id,)).fetchall()
     requestors = []
     for requestor_id in requestors_id:
        requestors.append(cur.execute("SELECT id, first_name, last_name FROM users WHERE id = ?", (requestor_id[0],)).fetchone())
+    conn.commit()
+    conn.close()
     return requestors
+
+@app.route('/get-my-friend-requests', methods=['POST'])
+# @jwt_required()
+def get_my_friend_requests():
+    user_id = request.json.get('user_id', None)
+    conn = sqlite3.connect("habits.db")
+    cur = conn.cursor()
+    acceptor_id = cur.execute("SELECT acceptor_id FROM friend_requests WHERE requestor_id = ?", (user_id,)).fetchall()
+    acceptors = []
+    for acceptor_id in acceptor_id:
+       acceptors.append(cur.execute("SELECT id, first_name, last_name FROM users WHERE id = ?", (acceptor_id[0],)).fetchone())
+    conn.commit()
+    conn.close()
+    return acceptors
+
+@app.route('/accept-friend-request', methods=['POST'])
+def accept_friend_request():
+    acceptor_id = request.json.get('acceptor_id', None)
+    requestor_id = request.json.get('requestor_id', None)
+    conn = sqlite3.connect("habits.db")
+    cur = conn.cursor()
+    delete_friend_request(requestor_id, acceptor_id)
+    cur.execute("INSERT INTO friendships (first_friend_id, second_friend_id) VALUES (?, ?)", (acceptor_id, requestor_id))
+    cur.execute("INSERT INTO friendships (first_friend_id, second_friend_id) VALUES (?, ?)", (requestor_id, acceptor_id))
+    conn.commit()
+    conn.close()
+    return {'msg': 'Friendship accepted succesfuly!'}
+
+@app.route('/remove-friend-request', methods=['POST'])
+def remove_friend_request():
+    acceptor_id = request.json.get('acceptor_id', None)
+    requestor_id = request.json.get('requestor_id', None)
+    delete_friend_request(requestor_id, acceptor_id)
+    return {'msg': 'Friendship request removed succesfuly!'}
+
+@app.route('/add-friend-request', methods=['POST'])
+def add_friend_request():
+    acceptor_id = request.json.get('acceptor_id', None)
+    requestor_id = request.json.get('requestor_id', None)
+    conn = sqlite3.connect("habits.db")
+    cur = conn.cursor()
+    cur.execute('INSERT INTO friend_requests (requestor_id, acceptor_id) VALUES (?, ?)', (requestor_id, acceptor_id))
+    conn.commit()
+    conn.close()
+    return {'msg': 'Friendship requested succesfuly!'}
+
+@app.route('/remove-friend-suggestion', methods=['POST'])
+def remove_friend_suggestion():
+    acceptor_id = request.json.get('acceptor_id', None)
+    requestor_id = request.json.get('requestor_id', None)
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    cur.execute('INSERT INTO excluded_suggestions (acceptor_id, requestor_id) VALUES (?, ?)', (acceptor_id, requestor_id))
+    conn.commit()
+    conn.close()
+    return {'msg': 'Suggestion removed succesfuly!'}
+
+@app.route('/remove-friend', methods=['POST'])
+def remove_friend():
+    requestor_id = request.json.get('requestor_id', None)
+    acceptor_id = request.json.get('acceptor_id', None)
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    cur.execute('DELETE FROM friendships WHERE first_friend_id = ? AND second_friend_id = ?', (requestor_id, acceptor_id))
+    cur.execute('DELETE FROM friendships WHERE first_friend_id = ? AND second_friend_id = ?', (acceptor_id, requestor_id))
+    conn.commit()
+    conn.close()
+    return {'msg': 'Friendship removed succesfuly!'}
+
+def delete_friend_request(requestor_id, acceptor_id):
+   conn = sqlite3.connect("habits.db")
+   cur = conn.cursor()
+   cur.execute('DELETE FROM friend_requests WHERE requestor_id = ? AND acceptor_id = ?', (requestor_id, acceptor_id))
+   conn.commit()
+   conn.close()
 
 if __name__ == "__main__":
     app.run(debug=True)

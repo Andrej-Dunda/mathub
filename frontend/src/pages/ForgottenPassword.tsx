@@ -21,7 +21,6 @@ const ForgottenPassword = () => {
   })
 
   const submitForgottenPassword = (event: any) => {
-    console.log(forgottenPasswordEmail)
     axios({
       method: "POST",
       url: "/forgotten-password",

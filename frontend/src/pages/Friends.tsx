@@ -8,6 +8,7 @@ import axios from 'axios';
 const Friends = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [friendRequests, setFriendRequests] = useState<any[]>([])
+  const [myFriendRequests, setMyFriendRequests] = useState<any[]>([])
   const [friendSuggestions, setFriendSuggestions] = useState<any[]>([])
   const [friends, setFriends] = useState<any[]>([])
   const [showAllUsers, setShowAllUsers] = useState(false);
@@ -20,12 +21,12 @@ const Friends = () => {
   useEffect(() => {
     getAllUsers()
     getFriendSuggestions()
-    getFriendRequest()
+    getFriendRequests()
+    getMyFriendRequests()
     getFriends()
   }, [])
 
   const getFriends = () => {
-    console.log('got friends')
     axios({
       method: "POST",
       url: "/get-friends",
@@ -34,7 +35,6 @@ const Friends = () => {
       }
     })
       .then((response: any) => {
-        console.log(response.data)
         setFriends(response.data)
       }).catch((error: any) => {
         if (error.response) {
@@ -45,9 +45,7 @@ const Friends = () => {
       })
   }
 
-  const getFriendRequest = () => {
-    console.log('got friend requests')
-    console.log(userInfo.id)
+  const getFriendRequests = () => {
     axios({
       method: "POST",
       url: "/get-friend-requests",
@@ -56,8 +54,27 @@ const Friends = () => {
       }
     })
       .then((response: any) => {
-        console.log(response.data)
         setFriendRequests(response.data)
+      }).catch((error: any) => {
+        if (error.response) {
+          console.log(error.response)
+          console.log(error.response.status)
+          console.log(error.response.headers)
+        }
+      })
+  }
+
+  const getMyFriendRequests = () => {
+    axios({
+      method: "POST",
+      url: "/get-my-friend-requests",
+      data: {
+        user_id: userInfo.id
+      }
+    })
+      .then((response: any) => {
+        console.log(response.data)
+        setMyFriendRequests(response.data)
       }).catch((error: any) => {
         if (error.response) {
           console.log(error.response)
@@ -82,7 +99,6 @@ const Friends = () => {
   }
 
   const getFriendSuggestions = () => {
-    console.log(userInfo.id)
     axios({
       method: "POST",
       url: "/get-friend-suggestions",
@@ -91,7 +107,6 @@ const Friends = () => {
       }
     })
       .then((response: any) => {
-        console.log(response.data)
         setFriendSuggestions(response.data)
       }).catch((error: any) => {
         if (error.response) {
@@ -116,22 +131,37 @@ const Friends = () => {
           </div>
         </div>
         <hr />
+        <div className="my-friend-requests">
+          <h3 className='h3'>Moje žádosti o přátelství</h3>
+          <div className="my-friend-requests-windows">
+            {
+              myFriendRequests.map((user, index) => {
+                return <FriendWindow key={index} userData={user} type='my-friend-request' />
+              })
+            }
+          </div>
+        </div>
+        <hr />
         <div className="friend-suggestions">
           <h3 className='h3'>Lidé, které možná znáte</h3>
-          {
-            friendSuggestions.map((user, index) => {
-              return <FriendWindow key={index} userData={user} type='friend-suggestion' />
-            })
-          }
+          <div className="friend-suggestions-windows">
+            {
+              friendSuggestions.map((user, index) => {
+                return <FriendWindow key={index} userData={user} type='friend-suggestion' />
+              })
+            }
+          </div>
         </div>
         <hr />
         <div className="friends">
           <h3 className='h3'>Vaši přátelé</h3>
-          {
-            friends.map((user, index) => {
-              return <FriendWindow key={index} userData={user} type='friend' />
-            })
-          }
+          <div className="friends-windows">
+            {
+              friends.map((user, index) => {
+                return <FriendWindow key={index} userData={user} type='friend' />
+              })
+            }
+          </div>
         </div>
       </div>
 

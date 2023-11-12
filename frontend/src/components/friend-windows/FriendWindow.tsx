@@ -3,20 +3,15 @@ import './FriendWindow.scss'
 import FriendButton from "./FriendButton";
 import Logo from "../../images/Logo";
 
-const userInfoDummy = {
-  id: '3',
-  first_name: 'John',
-  last_name: 'Doe',
-  profile_picture: 'image.jpg'
-}
-
 const FriendWindow = (props: any) => {
   const [id, first_name, last_name] = props.userData
 
   const windowTypeData = props.type === 'friend-request' ? {
     firstButtonType: 'accept',
     secondButtonType: 'remove-request'
-
+  } : props.type === 'my-friend-request' ? {
+    firstButtonType: 'remove-my-request',
+    secondButtonType: undefined
   } : props.type === 'friend-suggestion' ? {
     firstButtonType: 'request',
     secondButtonType: 'remove-suggestion'
@@ -32,8 +27,8 @@ const FriendWindow = (props: any) => {
         {`${first_name} ${last_name}`}
       </h4>
       <div className="buttons">
-        <FriendButton buttonType={windowTypeData?.firstButtonType} />
-        <FriendButton buttonType={windowTypeData?.secondButtonType} />
+        <FriendButton buttonType={windowTypeData?.firstButtonType} userId={id} />
+        <FriendButton buttonType={windowTypeData?.secondButtonType} userId={id} />
       </div>
       
     </div>
