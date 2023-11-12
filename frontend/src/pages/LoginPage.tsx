@@ -1,5 +1,5 @@
 import './LoginPage.scss'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from "axios";
 
 const LoginPage = (props: any) => {
@@ -8,6 +8,18 @@ const LoginPage = (props: any) => {
     password: ""
   })
   const [responseMessage, setResponseMessage] = useState<string>('')
+
+  useEffect(() => {
+    const handleKeyPress = (e: any) => {
+      e.key === 'Enter' && submitLogin(e)
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  })
 
   const submitLogin = (event: any) => {
     if (!loginForm.email || !loginForm.password) return setResponseMessage('Vyplňte všechna pole!')

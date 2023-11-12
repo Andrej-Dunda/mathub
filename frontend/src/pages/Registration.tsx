@@ -1,6 +1,6 @@
 import './Registration.scss'
 import axios from "axios";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom"
 
 const Registration = (props: any) => {
@@ -12,6 +12,18 @@ const Registration = (props: any) => {
   })
   const [responseMessage, setResponseMessage] = useState<string>('')
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const handleKeyPress = (e: any) => {
+      e.key === 'Enter' && submitRegistration(e)
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  })
 
   const validateEmail = (email: string) => {
     // Regular expression for email validation
