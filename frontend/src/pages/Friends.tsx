@@ -21,32 +21,16 @@ const Friends = () => {
       });
   }, [])
 
-  const handleNewUserSubmit = (e: any) => {
-    e.preventDefault();
-    fetch('/register-new-user', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify([newUserName, newPassword]),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data); // Handle the response from Flask
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-  };
-
   return (
     <div className="users">
       <table className='table table-striped'>
         <thead>
           <tr>
             <th>ID</th>
-            <th>User Name</th>
-            <th>Password</th>
+            <th>Email</th>
+            <th>Heslo</th>
+            <th>Jméno</th>
+            <th>Příjmení</th>
           </tr>
         </thead>
         <tbody>
@@ -56,24 +40,13 @@ const Friends = () => {
                 <td>{userData[0]}</td>
                 <td>{userData[1]}</td>
                 <td>{userData[2]}</td>
+                <td>{userData[3]}</td>
+                <td>{userData[4]}</td>
               </tr>
             )
           })}
         </tbody>
       </table>
-      <div className="add-user">
-        <form onSubmit={handleNewUserSubmit}>
-          <div>
-            <label htmlFor="newUserName">New user name: </label>
-            <input id='newUserName' type="email" required value={newUserName} onChange={(e) => setNewUserName(e.target.value)}/>
-          </div>
-          <div>
-            <label htmlFor="newPassword">New password</label>
-            <input id='newPassword' type="password" required value={newPassword} onChange={(e) => setNewPassword(e.target.value)}/>
-          </div>
-          <button type='submit'>Add user</button>
-        </form>
-      </div>
     </div>
   )
 }

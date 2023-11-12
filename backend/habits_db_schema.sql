@@ -10,7 +10,9 @@ DROP TABLE IF EXISTS group_memberships;
 CREATE TABLE users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_email TEXT,
-  user_password TEXT);
+  user_password TEXT,
+  first_name TEXT,
+  last_name TEXT);
 
 -- INSERT INTO users (user_name, user_password) VALUES ('andrej_dunda', 'andrej1234')
 -- INSERT INTO users (user_name, user_password) VALUES ('tomas_svoboda', 'tomas5678')

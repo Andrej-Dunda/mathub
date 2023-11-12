@@ -104,6 +104,8 @@ def register_new_user():
     try:
       email = request.json.get("email", None)
       password = request.json.get("password", None)
+      first_name = request.json.get("first_name", None)
+      last_name = request.json.get("last_name", None)
       # Process and save the data as needed
       conn = sqlite3.connect("habits.db")
       cur = conn.cursor()
@@ -114,7 +116,7 @@ def register_new_user():
       existing_user = cur.fetchone()
 
       if existing_user is None:
-        cur.execute('INSERT INTO users (user_email, user_password) VALUES (?, ?)', (email, password_hash))
+        cur.execute('INSERT INTO users (user_email, user_password, first_name, last_name) VALUES (?, ?, ?, ?)', (email, password_hash, first_name, last_name))
       else:
          return jsonify({'message': 'Uživatelské jméno již existuje!'})
       conn.commit()
