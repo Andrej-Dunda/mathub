@@ -1,6 +1,7 @@
 import './LikeButton.scss'
 import Heart from '../../images/Heart'
 import { useState } from 'react'
+import React from 'react'
 
 const LikeButton = (props: any) => {
   const [liked, setLiked] = useState<boolean>(false)

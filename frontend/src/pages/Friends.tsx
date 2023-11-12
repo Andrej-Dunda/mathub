@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import './Users.scss'
+import './Friends.scss'
+import React from 'react';
 
-const Users = () => {
+const Friends = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [newUserName, setNewUserName] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
@@ -76,4 +77,4 @@ const Users = () => {
     </div>
   )
 }
-export default Users;
+export default Friends;
