@@ -1,0 +1,34 @@
+.blog-post {
+  display: flex;
+  flex-direction: column;
+  // gap: 16px;
+
+  padding: 32px;
+  border: 1px solid black;
+  border-radius: 4px;
+
+  .blog-post-header {
+    display: flex;
+    flex-direction: column;
+
+    .user-info {
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      align-items: center;
+
+      .user-name-and-post-time {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+
+  .blog-post-body {
+
+  }
+
+  .blog-post-footer {
+
+  }
+}
