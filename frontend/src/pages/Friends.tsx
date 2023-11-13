@@ -73,7 +73,6 @@ const Friends = () => {
       }
     })
       .then((response: any) => {
-        console.log(response.data)
         setMyFriendRequests(response.data)
       }).catch((error: any) => {
         if (error.response) {
@@ -120,57 +119,57 @@ const Friends = () => {
   return (
     <div className="friends">
       <div className="container friends-sections">
-        <div className="friend-requests">
-          <h3 className='h3'>Žádosti o přátelství</h3>
-          <div className="friend-requests-windows">
-            {
-              friendRequests.map((user, index) => {
-                return <FriendWindow key={index} userData={user} type='friend-request' />
-              })
-            }
-          </div>
-        </div>
-        <hr />
-        <div className="my-friend-requests">
-          <h3 className='h3'>Moje žádosti o přátelství</h3>
-          <div className="my-friend-requests-windows">
-            {
-              myFriendRequests.map((user, index) => {
-                return <FriendWindow key={index} userData={user} type='my-friend-request' />
-              })
-            }
-          </div>
-        </div>
-        <hr />
+        {friendRequests.length !== 0 ?
+          <>
+            <div className="friend-requests">
+              <h3 className='h3'>Žádosti o přátelství</h3>
+              <div className="friend-requests-windows">
+                {
+                  friendRequests.map((user, index) => {
+                    return <FriendWindow key={index} userData={user} type='friend-request' />
+                  })
+                }
+              </div>
+            </div>
+            <hr />
+          </> : null}
+        {myFriendRequests.length !== 0 && (
+          <>
+            <div className="my-friend-requests">
+              <h3 className='h3'>Moje žádosti o přátelství</h3>
+              <div className="my-friend-requests-windows">
+                {
+                  myFriendRequests.map((user, index) => {
+                    return <FriendWindow key={index} userData={user} type='my-friend-request' />
+                  })
+                }
+              </div>
+            </div>
+            <hr />
+          </>
+        )}
         <div className="friend-suggestions">
           <h3 className='h3'>Lidé, které možná znáte</h3>
-          <div className="friend-suggestions-windows">
+          {friendSuggestions.length !== 0 ? <div className="friend-suggestions-windows">
             {
               friendSuggestions.map((user, index) => {
                 return <FriendWindow key={index} userData={user} type='friend-suggestion' />
               })
             }
-          </div>
+          </div> : <span>Nemáte žádná doporučení</span>}
         </div>
         <hr />
         <div className="friends">
           <h3 className='h3'>Vaši přátelé</h3>
-          <div className="friends-windows">
+          {friends?.length !== 0 ? <div className="friends-windows">
             {
               friends.map((user, index) => {
                 return <FriendWindow key={index} userData={user} type='friend' />
               })
             }
-          </div>
+          </div> : <span>Nemáte žádné přátele :(</span>}
         </div>
       </div>
-
-
-
-
-
-
-
 
       <div className="container-fluid users-list">
         <label className='show-all-users' htmlFor="show-all-users">

@@ -170,7 +170,7 @@ def get_friend_suggestions():
     requestors_id = cur.execute("SELECT requestor_id FROM friend_requests WHERE acceptor_id = ?", (user_id,)).fetchall()
     excluded_suggestions_id = cur.execute("SELECT requestor_id FROM excluded_suggestions WHERE acceptor_id = ?", (user_id,)).fetchall()
     excluded_id_tuples = friends_id + acceptor_id + requestors_id + excluded_suggestions_id
-    excluded_ids = (user_id)
+    excluded_ids = (user_id,)
     for id_tuple in excluded_id_tuples:
        excluded_ids = excluded_ids + (id_tuple[0],)
     placeholders = ', '.join('?' for _ in excluded_ids)
@@ -279,6 +279,7 @@ def delete_friend_request(requestor_id, acceptor_id):
    conn = sqlite3.connect("habits.db")
    cur = conn.cursor()
    cur.execute('DELETE FROM friend_requests WHERE requestor_id = ? AND acceptor_id = ?', (requestor_id, acceptor_id))
+   cur.execute('DELETE FROM friend_requests WHERE requestor_id = ? AND acceptor_id = ?', (acceptor_id, requestor_id))
    conn.commit()
    conn.close()
 
