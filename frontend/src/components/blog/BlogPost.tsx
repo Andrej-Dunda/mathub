@@ -1,7 +1,7 @@
 import './BlogPost.scss'
 import DefaultProfilePicture from '../../images/DefaultProfilePicture'
 import LikeButton from '../like-button/LikeButton'
-import React from 'react'
+import React, { useState } from 'react'
 
 const blogDummyData = {
   id: 0,
@@ -22,6 +22,7 @@ const userDummyInfo = {
 }
 
 const BlogPost = () => {
+  const [profilePictureName, setProfilePictureName] = useState<string>('profile-picture-default.png')
   const czechMonthNames = [
     'ledna', 'února', 'března', 'dubna', 'května', 'června',
     'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'
@@ -37,13 +38,17 @@ const BlogPost = () => {
   return (
     <div className="blog-post">
       <div className="blog-post-header">
-        <div className="user-info">
+        <div className="blog-info">
           <div className="user-profile-picture">
-            <DefaultProfilePicture/>
+            <img src={`/images/${profilePictureName}`} alt="" />
           </div>
           <div className="user-name-and-post-time">
             <h3 className='user-name h3'>{userDummyInfo.name}</h3>
             <span className='blog-post-time'>{customDateFormat}</span>
+          </div>
+          <div className="blog-post-likes">
+            <LikeButton/>
+            <span>{blogDummyData.likes}</span>
           </div>
         </div>
         <hr />
@@ -51,13 +56,6 @@ const BlogPost = () => {
       </div>
       <div className="blog-post-body">
         <p className='blog-post-content'>{blogDummyData.content}</p>
-      </div>
-      <hr />
-      <div className="blog-post-footer">
-        <div className="blog-post-likes">
-          <LikeButton/>
-          <span>{blogDummyData.likes}</span>
-        </div>
       </div>
     </div>
   )

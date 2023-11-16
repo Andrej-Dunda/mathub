@@ -37,7 +37,10 @@ const LoginPage = (props: any) => {
         const loggedUser = {
           id: response.data.user_id,
           email: response.data.email,
-          password: response.data.password
+          first_name: response.data.first_name,
+          last_name: response.data.last_name,
+          profile_picture: response.data.profile_picture,
+          registration_date: response.data.registration_date
         }
         props.setUser(loggedUser)
         localStorage.setItem('userData', JSON.stringify(loggedUser));

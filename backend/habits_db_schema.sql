@@ -1,4 +1,4 @@
--- DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS habits;
 DROP TABLE IF EXISTS succes_rates;
 DROP TABLE IF EXISTS user_habits;
@@ -10,12 +10,14 @@ DROP TABLE IF EXISTS group_memberships;
 DROP TABLE IF EXISTS friend_requests;
 DROP TABLE IF EXISTS excluded_suggestions;
 
--- CREATE TABLE users (
---   id INTEGER PRIMARY KEY AUTOINCREMENT,
---   user_email TEXT,
---   user_password TEXT,
---   first_name TEXT,
---   last_name TEXT);
+CREATE TABLE users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_email TEXT,
+  user_password TEXT,
+  first_name TEXT,
+  last_name TEXT,
+  profile_picture TEXT DEFAULT 'default',
+  registration_date TEXT);
 
 -- INSERT INTO users (user_name, user_password) VALUES ('andrej_dunda', 'andrej1234')
 -- INSERT INTO users (user_name, user_password) VALUES ('tomas_svoboda', 'tomas5678')
