@@ -1,15 +1,29 @@
 import './Registration.scss'
 import axios from "axios";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom"
 
 const Registration = (props: any) => {
   const [registrationForm, setRegistrationForm] = useState({
     email: "",
-    password: ""
+    password: "",
+    first_name: "",
+    last_name: ""
   })
   const [responseMessage, setResponseMessage] = useState<string>('')
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const handleKeyPress = (e: any) => {
+      e.key === 'Enter' && submitRegistration(e)
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  })
 
   const validateEmail = (email: string) => {
     // Regular expression for email validation
@@ -18,14 +32,16 @@ const Registration = (props: any) => {
   };
 
   const submitRegistration = (event: any) => {
-    if (!registrationForm.email || !registrationForm.password) return setResponseMessage('Vyplňte všechna pole!')
+    if (!registrationForm.email || !registrationForm.password || !registrationForm.first_name || !registrationForm.last_name) return setResponseMessage('Vyplňte všechna pole!')
     if (!validateEmail(registrationForm.email)) return setResponseMessage('Neplatný formát emailu!')
     axios({
       method: "POST",
       url: "/registration",
       data: {
         email: registrationForm.email,
-        password: registrationForm.password
+        password: registrationForm.password,
+        first_name: registrationForm.first_name,
+        last_name: registrationForm.last_name
       }
     })
       .then((response: any) => {
@@ -42,7 +58,9 @@ const Registration = (props: any) => {
 
     setRegistrationForm(({
       email: "",
-      password: ""
+      password: "",
+      first_name: "",
+      last_name: ""
     }))
 
     event.preventDefault()
@@ -61,6 +79,28 @@ const Registration = (props: any) => {
       <div className="registration-window">
         <h1>Registrace</h1>
         <form>
+          <div className='registration-input'>
+            <label htmlFor="first-name-input">Jméno:</label>
+            <input
+              type="text"
+              className='first-name-input'
+              id='first-name-input'
+              value={registrationForm.first_name}
+              name='first_name'
+              onChange={handleChange}
+            />
+          </div>
+          <div className='registration-input'>
+            <label htmlFor="last-name-input">Příjmení:</label>
+            <input
+              type="text"
+              className='last-name-input'
+              id='last-name-input'
+              value={registrationForm.last_name}
+              name='last_name'
+              onChange={handleChange}
+            />
+          </div>
           <div className='registration-input'>
             <label htmlFor="email-input">E-mail:</label>
             <input

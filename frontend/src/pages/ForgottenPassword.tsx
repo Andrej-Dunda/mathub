@@ -1,6 +1,6 @@
 import './ForgottenPassword.scss'
 import axios from "axios";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const ForgottenPassword = () => {
   const [forgottenPasswordEmail, setForgottenPasswordEmail] = useState<string>('')
@@ -8,8 +8,19 @@ const ForgottenPassword = () => {
   const [resetResult, setResetResult] = useState<boolean>()
   const [newPassword, setNewPassword] = useState<string>('')
 
+  useEffect(() => {
+    const handleKeyPress = (e: any) => {
+      e.key === 'Enter' && submitForgottenPassword(e)
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  })
+
   const submitForgottenPassword = (event: any) => {
-    console.log(forgottenPasswordEmail)
     axios({
       method: "POST",
       url: "/forgotten-password",

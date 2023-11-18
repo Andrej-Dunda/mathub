@@ -1,16 +1,21 @@
-DROP TABLE IF EXISTS users;
+-- DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS habits;
 DROP TABLE IF EXISTS succes_rates;
 DROP TABLE IF EXISTS user_habits;
 DROP TABLE IF EXISTS user_groups;
 DROP TABLE IF EXISTS user_posts;
 DROP TABLE IF EXISTS followers;
+DROP TABLE IF EXISTS friendships;
 DROP TABLE IF EXISTS group_memberships;
+DROP TABLE IF EXISTS friend_requests;
+DROP TABLE IF EXISTS excluded_suggestions;
 
-CREATE TABLE users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_email TEXT,
-  user_password TEXT);
+-- CREATE TABLE users (
+--   id INTEGER PRIMARY KEY AUTOINCREMENT,
+--   user_email TEXT,
+--   user_password TEXT,
+--   first_name TEXT,
+--   last_name TEXT);
 
 -- INSERT INTO users (user_name, user_password) VALUES ('andrej_dunda', 'andrej1234')
 -- INSERT INTO users (user_name, user_password) VALUES ('tomas_svoboda', 'tomas5678')
@@ -60,10 +65,10 @@ CREATE TABLE user_posts (
 -- INSERT INTO user_posts (user_id, post_time, post_title, post_description, post_image, habit_id, group_id)
 -- VALUES (1, '03-10-2023 08:44:13', 'Autumn Race', 'Yearly race that takes in autumn', 'race_2022.jpg', 2, 1)
 
-CREATE TABLE followers (
+CREATE TABLE friendships (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  follower_id INTEGER,
-  user_id INTEGER);
+  first_friend_id INTEGER,
+  second_friend_id INTEGER);
   
 -- INSERT INTO followers (follower_id, user_id) VALUES (1, 2)
 
@@ -73,3 +78,13 @@ CREATE TABLE group_memberships (
   user_id INTEGER);
   
 -- INSERT INTO group_memberships (group_id, user_id) VALUES (1, 1)
+
+CREATE TABLE friend_requests (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  requestor_id INTEGER,
+  acceptor_id INTEGER);
+
+CREATE TABLE excluded_suggestions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  requestor_id INTEGER,
+  acceptor_id INTEGER);
