@@ -14,6 +14,7 @@ import NoPage from './pages/NoPage';
 import { useState, createContext, useEffect } from "react";
 import React from 'react';
 import Habits from './pages/Habits';
+import axios from 'axios';
 
 interface iUser {
   id: number,
@@ -57,6 +58,22 @@ const App = () => {
     localStorage.setItem('userData', JSON.stringify(user));
   }, [user])
 
+  const updateUser = () => {
+    axios.get(`/user/${user.id}`)
+      .then((res: any) => {
+        setUser({
+          id: res.data.user[0],
+          email: res.data.user[1],
+          first_name: res.data.user[2],
+          last_name: res.data.user[3],
+          profile_picture: res.data.user[4],
+          registration_date: res.data.user[5]
+        })
+        console.log(res.data.user)
+      })
+      .catch((err) => console.error(err))
+  }
+
   return (
     <UserContext.Provider value={user}>
       <Router>
@@ -75,7 +92,7 @@ const App = () => {
               <Route index element={<Homepage token={token} setToken={setToken} />} />
               <Route path="habits" element={<Habits />} />
               <Route path="blogs" element={<Blogs />} />
-              <Route path="user-profile" element={<UserProfile />} />
+              <Route path="user-profile" element={<UserProfile removeToken={removeToken} updateUser={updateUser} />} />
               <Route path="friends" element={<Friends />} />
             </Route>
           </Routes>

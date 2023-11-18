@@ -1,0 +1,29 @@
+.profile-picture {
+  border: 1px solid lightgrey;
+  border-radius: 100%;
+
+  &.xsmall {
+    width: 20px;
+    height: 20px;
+  }
+
+  &.small {
+    width: 40px;
+    height: 40px;
+  }
+
+  &.medium {
+    width: 100px;
+    height: 100px;
+  }
+
+  &.large {
+    width: 250px;
+    height: 250px;
+  }
+
+  &.xlarge {
+    width: 500px;
+    height: 500px;
+  }
+}

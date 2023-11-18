@@ -379,6 +379,12 @@ body {
     }
 }
 
+button {
+    border-radius: 8px;
+    padding: 8px;
+    cursor: pointer;
+}
+
 button:focus {
     outline: none !important;
 }

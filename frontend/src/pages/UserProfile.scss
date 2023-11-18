@@ -1,11 +1,82 @@
 .user-profile {
   display: flex;
   flex-direction: row;
-  gap: 32px;
+  justify-content: center;
+  align-items: center;
+
+  .user-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 600px;
+    height: 600px;
+
+    padding: 32px;
+    margin: 32px;
+    border: 1px gray solid;
+    border-radius: 16px;
+  }
 
   .user-info {
     display: flex;
     flex-direction: column;
-    gap: 32px;
+
+    width: 90%;
+
+    .h1 {
+      text-align: center;
+    }
+
+    .user-info-fields-wrapper {
+      display: flex;
+      flex-direction: row;
+
+      .user-info-field {
+        flex-grow: 1;
+
+        hr {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  .account-operations {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 16px;
+
+    width: 90%;
+
+    button {
+      width: 50%;
+      min-width: fit-content;
+    }
+  }
+}
+
+.new-password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .password-visibility-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+
+    input,
+    label {
+      cursor: pointer;
+    }
+  }
+
+  .password-input-wrapper {
+    input {
+      width: 100%;
+    }
   }
 }

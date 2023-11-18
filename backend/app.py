@@ -9,14 +9,16 @@ import string
 from werkzeug.utils import secure_filename
 import os
 from flask_cors import CORS
+from PIL import Image
+
 
 app = Flask(__name__)
-CORS(app)
 
-# LOGIN LOGOUT
+CORS(app)
 
 app.config["JWT_SECRET_KEY"] = "2a0304fc-7233-11ee-b962-0242ac120002"
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+app.config['UPLOAD_FOLDER'] = 'uploads/'
 jwt = JWTManager(app)
 
 @app.after_request
@@ -24,7 +26,7 @@ def refresh_expiring_jwts(response):
     try:
         exp_timestamp = get_jwt()["exp"]
         now = datetime.now(timezone.utc)
-        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=1))
         if target_timestamp > exp_timestamp:
             access_token = create_access_token(identity=get_jwt_identity())
             data = response.get_json()
@@ -35,7 +37,14 @@ def refresh_expiring_jwts(response):
     except (RuntimeError, KeyError):
         # Case where there is not a valid JWT. Just return the original respone
         return response
-    
+
+@app.route('/user/<id>', methods=['GET'])
+def get_user(id):
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    user = cur.execute('SELECT id, user_email, first_name, last_name, profile_picture, registration_date FROM users WHERE id = ?', (id,)).fetchone()
+    return {"user": user}
+
 @app.route('/login', methods=["POST"])
 def create_token():
     email = request.json.get("email", None)
@@ -56,11 +65,12 @@ def create_token():
             conn = sqlite3.connect('habits.db')
             cur = conn.cursor()
             cur.execute('SELECT id, first_name, last_name, profile_picture, registration_date FROM users WHERE user_email = ?', (email,))
-            user_id = cur.fetchone()[0]
-            first_name = cur.fetchone()[1]
-            last_name = cur.fetchone()[2]
-            profile_picture = cur.fetchone()[3]
-            registration_date = cur.fetchone()[4]
+            user = cur.fetchone()
+            user_id = user[0]
+            first_name = user[1]
+            last_name = user[2]
+            profile_picture = user[3]
+            registration_date = user[4]
             conn.close()
 
             response = {
@@ -76,32 +86,11 @@ def create_token():
     
     return jsonify({"message": "Chybný email nebo heslo!"}), 401
 
-@app.route('/profile', methods=['GET'])
-@jwt_required()
-def my_profile():
-    
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    cur.execute('SELECT * FROM users WHERE id = ?', (id,))
-    user_data = cur.fetchone()
-    # response_body = {
-    #     "id": user_data[0],
-    #     "email": user_data[1],
-    #     "password": user_data[2]
-    # }
-
-    # return response_body
-    return jsonify({'user_data': user_data})
-
 @app.route("/logout", methods=["POST"])
 def logout():
     response = jsonify({"msg": "logout successful"})
     unset_jwt_cookies(response)
     return response
-
-
-
-# ENDPOINTS
 
 @app.route("/users")
 def users_table():
@@ -127,15 +116,15 @@ def register_new_user():
       existing_user = cur.fetchone()
 
       if existing_user is None:
-        cur.execute('INSERT INTO users (user_email, user_password, first_name, last_name) VALUES (?, ?, ?, ?)', (email, password_hash, first_name, last_name))
+        cur.execute('INSERT INTO users (user_email, user_password, first_name, last_name, registration_date) VALUES (?, ?, ?, ?, ?)', (email, password_hash, first_name, last_name, datetime.now().isoformat()))
       else:
-         return jsonify({'message': 'Uživatelské jméno již existuje!'})
+         return {'message': 'Uživatelské jméno již existuje!'}
       conn.commit()
       conn.close()
     except:
-      return jsonify({'message': 'Registrace se nezdařila :('})
+        return {'message': 'Registrace se nezdařila :('}
     else:
-      return jsonify({'message': 'Registrace proběhla úspěšně.'})
+        return {'message': 'Registrace proběhla úspěšně.'}
     
 @app.route('/forgotten-password', methods=['POST'])
 def generate_new_password():
@@ -294,23 +283,70 @@ def delete_friend_request(requestor_id, acceptor_id):
    conn.commit()
    conn.close()
 
+def crop_image_to_square(image_path):
+    with Image.open(image_path) as img:
+        width, height = img.size
+        new_size = min(width, height)
 
-app.config['UPLOAD_FOLDER'] = 'uploads/'
+        left = (width - new_size) / 2
+        top = (height - new_size) / 2
+        right = (width + new_size) / 2
+        bottom = (height + new_size) / 2
 
-@app.route('/upload-profile-picture', methods=['POST'])
-def upload_profile_picture():
+        img = img.crop((left, top, right, bottom))
+        img.save(image_path)  # Overwrite the original image or save as a new file
+
+@app.route('/upload-profile-picture/<id>', methods=['POST'])
+def upload_profile_picture(id):
     if 'profile_picture' in request.files:
         file = request.files['profile_picture']
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        conn = sqlite3.connect('habits.db')
+        cur = conn.cursor()
+        cur.execute('UPDATE users SET profile_picture = ? WHERE id = ?', (filename, id))
+        conn.commit()
+        conn.close()
+        crop_image_to_square(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         return 'File uploaded successfully', 200
     else:
         return 'No file part', 400
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    # return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-    return filename
+    if filename == 'default':
+        return send_from_directory(app.config['UPLOAD_FOLDER'], 'profile-picture-default.png')
+    try:
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    except:
+        return send_from_directory(app.config['UPLOAD_FOLDER'], 'profile-picture-default.png')
+
+@app.route('/change-password', methods=['POST'])
+def change_password():
+    try:
+        user_id = request.json.get('user_id', None)
+        old_password = request.json.get('old_password', None)
+        hashed_old_password = hashlib.sha256(old_password.encode()).hexdigest()
+        new_password = request.json.get('new_password', None)
+        hashed_new_password = hashlib.sha256(new_password.encode()).hexdigest()
+        
+        conn = sqlite3.connect('habits.db')
+        cur = conn.cursor()
+        
+        fetched_old_password = cur.execute('SELECT user_password FROM users WHERE id = ?', (user_id,)).fetchone()[0]
+        if fetched_old_password == hashed_old_password:
+            cur.execute('UPDATE users SET user_password = ? WHERE id = ?', (hashed_new_password, user_id))
+            conn.commit()
+            conn.close()
+            return {'success': True}
+        else:
+            conn.close()
+            return {'success': False}
+    except sqlite3.Error as e:
+        return {'msg': f'Databázová chyba: {str(e)}', 'success': False}
+    finally:
+        conn.close()
+
 
 if __name__ == "__main__":
     app.run(debug=True)

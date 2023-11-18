@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import './Nav.scss'
 import axios from "axios";
 import DefaultProfilePicture from "../../images/DefaultProfilePicture";
+import ProfilePicture from '../profile-picture/ProfilePicture';
 
 const Nav = (props: any) => {
   const logout = () => {
@@ -40,7 +41,7 @@ const Nav = (props: any) => {
         </div>
         <Link to='' className="logout" onClick={logout}>Odhlásit se</Link>
         <a className="profile-badge" href='/user-profile'>
-          <DefaultProfilePicture />
+          <ProfilePicture className='small' />
         </a>
       </div>
     </nav>
