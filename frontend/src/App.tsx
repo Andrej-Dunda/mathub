@@ -1,4 +1,3 @@
-import './App.scss';
 import './global.scss'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './pages/Layout'
@@ -19,13 +18,19 @@ import Habits from './pages/Habits';
 interface iUser {
   id: number,
   email: string,
-  password: string
+  first_name: string,
+  last_name: string,
+  profile_picture: string,
+  registration_date: string
 }
 
 export const UserContext = createContext<iUser>({
   id: 0,
-  email: 'NaN',
-  password: 'NaN'
+  email: '',
+  first_name: '',
+  last_name: '',
+  profile_picture: 'profile-picture-default.png',
+  registration_date: '2000-01-01T00:00:00'
 })
 
 const App = () => {
@@ -34,7 +39,10 @@ const App = () => {
   const [user, setUser] = useState(userLocalData ? JSON.parse(userLocalData) : {
     id: 0,
     email: 'NaN',
-    password: 'NaN'
+    first_name: '',
+    last_name: '',
+    profile_picture: 'profile-picture-default.png',
+    registration_date: '2000-01-01T00:00:00'
   });
 
   useEffect(() => {

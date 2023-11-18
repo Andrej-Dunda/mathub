@@ -1,13 +1,17 @@
 from datetime import datetime, timedelta, timezone
 import json
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import sqlite3
 from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, unset_jwt_cookies, jwt_required, JWTManager
 import hashlib
 import random
 import string
+from werkzeug.utils import secure_filename
+import os
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # LOGIN LOGOUT
 
@@ -51,15 +55,22 @@ def create_token():
 
             conn = sqlite3.connect('habits.db')
             cur = conn.cursor()
-            cur.execute('SELECT id FROM users WHERE user_email = ?', (email,))
+            cur.execute('SELECT id, first_name, last_name, profile_picture, registration_date FROM users WHERE user_email = ?', (email,))
             user_id = cur.fetchone()[0]
+            first_name = cur.fetchone()[1]
+            last_name = cur.fetchone()[2]
+            profile_picture = cur.fetchone()[3]
+            registration_date = cur.fetchone()[4]
             conn.close()
 
             response = {
                 "access_token": access_token,
                 "user_id": user_id,
                 "email": email,
-                "password": password
+                "first_name": first_name,
+                "last_name": last_name,
+                "profile_picture": profile_picture,
+                "registration_date": registration_date
                }
             return response
     
@@ -168,7 +179,7 @@ def get_friend_suggestions():
     friends_id = cur.execute("SELECT second_friend_id FROM friendships WHERE first_friend_id = ?", (user_id,)).fetchall()
     acceptor_id = cur.execute("SELECT acceptor_id FROM friend_requests WHERE requestor_id = ?", (user_id,)).fetchall()
     requestors_id = cur.execute("SELECT requestor_id FROM friend_requests WHERE acceptor_id = ?", (user_id,)).fetchall()
-    excluded_suggestions_id = cur.execute("SELECT requestor_id FROM excluded_suggestions WHERE acceptor_id = ?", (user_id,)).fetchall()
+    excluded_suggestions_id = cur.execute("SELECT acceptor_id FROM excluded_suggestions WHERE requestor_id = ?", (user_id,)).fetchall()
     excluded_id_tuples = friends_id + acceptor_id + requestors_id + excluded_suggestions_id
     excluded_ids = (user_id,)
     for id_tuple in excluded_id_tuples:
@@ -282,6 +293,24 @@ def delete_friend_request(requestor_id, acceptor_id):
    cur.execute('DELETE FROM friend_requests WHERE requestor_id = ? AND acceptor_id = ?', (acceptor_id, requestor_id))
    conn.commit()
    conn.close()
+
+
+app.config['UPLOAD_FOLDER'] = 'uploads/'
+
+@app.route('/upload-profile-picture', methods=['POST'])
+def upload_profile_picture():
+    if 'profile_picture' in request.files:
+        file = request.files['profile_picture']
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return 'File uploaded successfully', 200
+    else:
+        return 'No file part', 400
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    # return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    return filename
 
 if __name__ == "__main__":
     app.run(debug=True)

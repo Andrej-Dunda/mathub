@@ -1,12 +1,11 @@
 .user-profile {
-  padding: 0 10%;
-  
-  .table {
-    width: fit-content;
-    padding: 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
 
-    tr td {
-      padding: 16px;
-    }
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
   }
 }

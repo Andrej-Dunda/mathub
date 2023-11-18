@@ -22,7 +22,8 @@ const FriendWindow = (props: any) => {
 
   return (
     <div className="friend-window">
-      <Logo className='profile-picture' />
+      {/* <Logo className='profile-picture' /> */}
+      <img src="https://brur.ac.bd/wp-content/uploads/2019/03/male.jpg" alt="" className="profile-picture" />
       <h4 className="h4 friend-name">
         {`${first_name} ${last_name}`}
       </h4>
