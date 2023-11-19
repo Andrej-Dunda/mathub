@@ -18,7 +18,8 @@ CORS(app)
 
 app.config["JWT_SECRET_KEY"] = "2a0304fc-7233-11ee-b962-0242ac120002"
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
-app.config['UPLOAD_FOLDER'] = 'uploads/'
+app.config['PROFILE_PICTURES_FOLDER'] = 'media/profile-pictures'
+app.config['POST_IMAGES_FOLDER'] = 'media/post-images'
 jwt = JWTManager(app)
 
 @app.after_request
@@ -47,6 +48,7 @@ def get_user(id):
 
 @app.route('/login', methods=["POST"])
 def create_token():
+    print('Login')
     email = request.json.get("email", None)
     password = request.json.get("password", None)
 
@@ -82,8 +84,10 @@ def create_token():
                 "profile_picture": profile_picture,
                 "registration_date": registration_date
                }
+            print("Login successful")
             return response
     
+    print("Something went wrong")
     return jsonify({"message": "Chybný email nebo heslo!"}), 401
 
 @app.route("/logout", methods=["POST"])
@@ -301,25 +305,16 @@ def upload_profile_picture(id):
     if 'profile_picture' in request.files:
         file = request.files['profile_picture']
         filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        file.save(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], filename))
         conn = sqlite3.connect('habits.db')
         cur = conn.cursor()
         cur.execute('UPDATE users SET profile_picture = ? WHERE id = ?', (filename, id))
         conn.commit()
         conn.close()
-        crop_image_to_square(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        crop_image_to_square(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], filename))
         return 'File uploaded successfully', 200
     else:
         return 'No file part', 400
-
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    if filename == 'default':
-        return send_from_directory(app.config['UPLOAD_FOLDER'], 'profile-picture-default.png')
-    try:
-        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-    except:
-        return send_from_directory(app.config['UPLOAD_FOLDER'], 'profile-picture-default.png')
 
 @app.route('/change-password', methods=['POST'])
 def change_password():
@@ -347,14 +342,50 @@ def change_password():
     finally:
         conn.close()
 
-@app.route('/user-profile-picture/<id>', methods=['GET'])
+@app.route('/user-profile-picture/<user_id>')
+def get_profile_picture(user_id):
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    try:
+        profile_picture = cur.execute('SELECT profile_picture FROM users WHERE id = ?', (user_id,)).fetchone()[0]
+    except:
+        profile_picture = 'profile-picture-defualt.png'
+    return profile_picture
+
+@app.route('/profile-picture/<id>')
 def get_user_profile_picture(id):
     conn = sqlite3.connect('habits.db')
     cur = conn.cursor()
-    profile_picture = cur.execute('SELECT profile_picture FROM users WHERE id = ?', (id,)).fetchone()[0]
+    try:
+        profile_picture = cur.execute('SELECT profile_picture FROM users WHERE id = ?', (id,)).fetchone()[0]
+        return send_from_directory(app.config['PROFILE_PICTURES_FOLDER'], profile_picture)
+    except:
+        return send_from_directory(app.config['PROFILE_PICTURES_FOLDER'], 'profile-picture-default.png')
+    finally:
+        conn.close()
+
+@app.route('/post/<id>')
+def get_post(id):
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    post_data = cur.execute('SELECT * FROM user_posts WHERE id = ?', (id,)).fetchone()
     conn.close()
-    print(profile_picture)
-    return profile_picture
+    return post_data
+
+@app.route('/post-image/<filename>')
+def get_post_image(filename):
+    try:
+        return send_from_directory(app.config['POST_IMAGES_FOLDER'], filename)
+    except:
+        return
+
+@app.route('/posts')
+def get_posts():
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    posts_data = cur.execute('SELECT * FROM user_posts').fetchall()
+    conn.close()
+    return posts_data
 
 if __name__ == "__main__":
     app.run(debug=True)

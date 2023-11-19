@@ -50,9 +50,7 @@ CREATE TABLE user_posts (
   post_time TEXT,
   post_title TEXT,
   post_description TEXT,
-  post_image TEXT,
-  habit_id INTEGER,
-  group_id INTEGER);
+  post_image TEXT);
 
 CREATE TABLE friendships (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

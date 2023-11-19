@@ -2,7 +2,6 @@ import './global.scss'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './pages/Layout'
 import Homepage from './pages/Homepage';
-import Blogs from './pages/Blogs';
 import UserProfile from './pages/UserProfile';
 import Friends from './pages/Friends';
 import LoginPage from './pages/LoginPage';
@@ -11,7 +10,6 @@ import ForgottenPassword from './pages/ForgottenPassword';
 import useToken from './utils/useToken'
 import { useState, createContext, useEffect } from "react";
 import React from 'react';
-import Habits from './pages/Habits';
 import axios from 'axios';
 
 interface iUser {
@@ -87,11 +85,10 @@ const App = () => {
         ) : (
           <Routes>
             <Route path="/" element={<Layout removeToken={removeToken} />}>
-              <Route index element={<Homepage token={token} setToken={setToken} />} />
-              <Route path="habits" element={<Habits />} />
-              <Route path="blogs" element={<Blogs />} />
+              <Route index element={<Homepage />} />
               <Route path="user-profile" element={<UserProfile removeToken={removeToken} updateUser={updateUser} />} />
               <Route path="friends" element={<Friends />} />
+              <Route path="*" element={<Homepage />} />
             </Route>
           </Routes>
         )}

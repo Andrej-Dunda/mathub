@@ -1,5 +1,5 @@
 import './UserProfile.scss'
-import { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react'
+import { ChangeEvent, FormEvent, useContext, useState } from 'react'
 import { UserContext } from '../App';
 import axios from 'axios';
 import Modal from '../components/modal/Modal';
@@ -123,7 +123,7 @@ const UserProfile = (props: any) => {
       <div className="user-profile">
         <div className="user-wrapper">
           <div className="profile-picture-wrapper">
-            <ProfilePicture className='large radius-100' userId={userInfo.id} />
+            <ProfilePicture className='large radius-100 border' userId={userInfo.id} />
           </div>
           <div className="user-info">
             <h1 className='h1'>{userInfo.first_name + ' ' + userInfo.last_name}</h1><hr />

@@ -47,7 +47,7 @@ const Registration = (props: any) => {
       .then((response: any) => {
         console.log(response.data.message)  
         setResponseMessage(response.data.message)
-        navigate('/login')
+        navigate('/')
       }).catch((error: any) => {
         if (error.response) {
           console.log(error.response)

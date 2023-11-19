@@ -36,14 +36,12 @@ const Nav = (props: any) => {
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div className="navbar-nav">
             <Link to='' className="nav-link" aria-current="page">Domů</Link>
-            <Link to='habits' className="nav-link">Návyky</Link>
-            <Link to='blogs' className="nav-link">Blogy</Link>
             <Link to='friends' className="nav-link">Přátelé</Link>
           </div>
         </div>
         <Link to='' className="logout" onClick={logout}>Odhlásit se</Link>
         <a className="profile-badge" href='/user-profile'>
-          <ProfilePicture className='small radius-100' userId={userInfo.id} />
+          <ProfilePicture className='small radius-100 border' userId={userInfo.id} />
         </a>
       </div>
     </nav>
