@@ -41,7 +41,23 @@
     height: 65px;
   }
 
-  &.border {
+  &.border-gray {
     border: 1px solid grey;
+  }
+
+  &.border-black {
+    border: 1px solid black;
+  }
+
+  &.border-white {
+    border: 1px solid white;
+    transition: box-shadow 0.2s;
+  }
+
+  &.border-hover-gray:hover {
+    border: 1px solid #dedede!important;
+    box-shadow: 0px 0px 30px 1px rgba(255,255,255,0.75);
+    -webkit-box-shadow: 0px 0px 30px 1px rgba(255,255,255,0.75);
+    -moz-box-shadow: 0px 0px 30px 1px rgba(255,255,255,0.75);
   }
 }

@@ -14,10 +14,10 @@
   }
 
   &.remove-suggestion, &.remove-request, &.remove-my-request {
-    background-color: #383B3E;
+    background-color: #000;
 
     &:hover {
-      background-color: #404040;
+      background-color: #202020;
     }
   }
 
@@ -30,10 +30,10 @@
   }
 
   &.remove-friend {
-    background-color: #383B3E;
+    background-color: #000;
 
     &:hover {
-      background-color: #404040;
+      background-color: #202020;
     }
   }
 }

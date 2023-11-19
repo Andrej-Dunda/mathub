@@ -2,12 +2,14 @@ import './BlogPost.scss'
 import LikeButton from '../like-button/LikeButton'
 import ProfilePicture from '../profile-picture/ProfilePicture'
 import Comment from '../comment/Comment'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-  import { faComment, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { faComment, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { UserContext } from '../../App'
 
 const BlogPost = (props: any) => {
+  const userInfo = useContext(UserContext)
   const [userName, setUserName] = useState<string>('')
   const rawPostDate = new Date(props.postData[2])
   const czechMonthNames = [
@@ -30,6 +32,7 @@ const BlogPost = (props: any) => {
     likes: 12
   }
   const [comments, setComments] = useState([])
+  const [newComment, setNewComment] = useState<string>('')
 
   useEffect(() => {
     axios.get(`/user/${postData.user_id}`)
@@ -46,10 +49,36 @@ const BlogPost = (props: any) => {
   const getComments = () => {
     axios.get(`/comments/${postData.id}`)
     .then(res => {
-      console.log(res.data)
       setComments(res.data)
     })
     .catch(err => console.log(err))
+  }
+
+  const handleCommentKeyPress = (e: any) => {
+    console.log(newComment)
+    if (e.key === 'Enter') submitComment();
+  }
+
+  const handleCommentChange = (e: any) => {
+    setNewComment(e.target.value)
+  }
+
+  const submitComment = () => {
+    newComment.trim() && axios({
+      url: '/add-comment',
+      method: 'POST',
+      data: {
+        post_id: postData.id,
+        commenter_id: userInfo.id,
+        comment: newComment
+      }
+    })
+    .then((res) => {
+      console.log(res.data)
+      setNewComment('')
+      getComments()
+    })
+    .catch(err => console.error(err))
   }
 
   return (
@@ -97,8 +126,15 @@ const BlogPost = (props: any) => {
           }
         </div>
         <div className="comment-input-wrapper">
-          <input type="text" className='comment-input' placeholder='Přidat komentář...' />
-          <button className='submit-comment'>
+          <input
+            type="text"
+            className='comment-input'
+            placeholder='Přidat komentář...'
+            value={newComment}
+            onChange={handleCommentChange}
+            onKeyDown={handleCommentKeyPress}
+          />
+          <button className='submit-comment' onClick={submitComment}>
             <FontAwesomeIcon icon={faPaperPlane} style={{color: "#ffffff",}} />
           </button>
         </div>

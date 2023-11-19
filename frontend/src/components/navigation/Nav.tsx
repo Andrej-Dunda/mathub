@@ -27,23 +27,18 @@ const Nav = (props: any) => {
   }
 
   return (
-    <nav className="navbar navbar-expand-sm navbar-light bg-light">
-      <div className="container-fluid">
-        <a className="navbar-brand" href="/">Habitator</a>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div className="navbar-nav">
-            <Link to='' className="nav-link" aria-current="page">Domů</Link>
-            <Link to='friends' className="nav-link">Přátelé</Link>
-          </div>
+    <nav className="navigation">
+        <div className="navbar-left">
+          <a className="navbar-heading link" href="/">Habitator</a>
+          <Link to='' className="link" aria-current="page">Domů</Link>
+          <Link to='friends' className="link">Přátelé</Link>
         </div>
-        <Link to='' className="logout" onClick={logout}>Odhlásit se</Link>
-        <a className="profile-badge" href='/user-profile'>
-          <ProfilePicture className='small radius-100 border' userId={userInfo.id} />
-        </a>
-      </div>
+        <div className="navbar-right">
+          <Link to='' className="logout" onClick={logout}>Odhlásit se</Link>
+          <a className="profile-badge" href='/user-profile'>
+            <ProfilePicture className='small radius-100 border-white border-hover-gray' userId={userInfo.id} />
+          </a>
+        </div>
     </nav>
   )
 }

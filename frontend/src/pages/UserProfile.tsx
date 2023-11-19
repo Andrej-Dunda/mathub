@@ -123,7 +123,7 @@ const UserProfile = (props: any) => {
       <div className="user-profile">
         <div className="user-wrapper">
           <div className="profile-picture-wrapper">
-            <ProfilePicture className='large radius-100 border' userId={userInfo.id} />
+            <ProfilePicture className='large radius-100 border-black' userId={userInfo.id} />
           </div>
           <div className="user-info">
             <h1 className='h1'>{userInfo.first_name + ' ' + userInfo.last_name}</h1><hr />
@@ -139,8 +139,8 @@ const UserProfile = (props: any) => {
             </div>
           </div>
           <div className='account-operations'>
-            <button className='button btn-primary' onClick={changeProfilePicture}>Změnit profilový obrázek</button>
-            <button className='button btn-primary' onClick={openChangePasswordModal}>Změnit heslo</button>
+            <button onClick={changeProfilePicture}>Změnit profilový obrázek</button>
+            <button onClick={openChangePasswordModal}>Změnit heslo</button>
           </div>
         </div>
       </div>

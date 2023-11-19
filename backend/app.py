@@ -423,5 +423,20 @@ def get_comments(post_id):
     conn.close()
     return comments
 
+@app.route('/add-comment', methods=['POST'])
+def add_comment():
+    post_id = request.json.get('post_id', None)
+    commenter_id = request.json.get('commenter_id', None)
+    comment = request.json.get('comment', None)
+    comment_time = datetime.now().isoformat()
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    cur.execute('INSERT INTO post_comments (post_id, commenter_id, comment, comment_time) VALUES (?, ?, ?, ?)',
+                (post_id, commenter_id, comment, comment_time))
+    conn.commit()
+    conn.close()
+    return 'Comment added successfuly!'
+    
+
 if __name__ == "__main__":
     app.run(debug=True)
