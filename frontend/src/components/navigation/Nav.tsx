@@ -15,13 +15,13 @@ const Nav = (props: any) => {
     })
       .then((response) => {
         props.removeToken()
-        console.log(response.data.msg)
+        console.error(response.data.msg)
         localStorage.removeItem('userData')
       }).catch((error) => {
         if (error.response) {
-          console.log(error.response)
-          console.log(error.response.status)
-          console.log(error.response.headers)
+          console.error(error.response)
+          console.error(error.response.status)
+          console.error(error.response.headers)
         }
       })
   }

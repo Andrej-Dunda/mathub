@@ -20,11 +20,15 @@ const Friends = () => {
 
   useEffect(() => {
     getAllUsers()
+    updateFriends()
+  }, [])
+
+  const updateFriends = () => {
     getFriendSuggestions()
     getFriendRequests()
     getMyFriendRequests()
     getFriends()
-  }, [])
+  }
 
   const getFriends = () => {
     axios({
@@ -38,9 +42,9 @@ const Friends = () => {
         setFriends(response.data)
       }).catch((error: any) => {
         if (error.response) {
-          console.log(error.response)
-          console.log(error.response.status)
-          console.log(error.response.headers)
+          console.error(error.response)
+          console.error(error.response.status)
+          console.error(error.response.headers)
         }
       })
   }
@@ -57,9 +61,9 @@ const Friends = () => {
         setFriendRequests(response.data)
       }).catch((error: any) => {
         if (error.response) {
-          console.log(error.response)
-          console.log(error.response.status)
-          console.log(error.response.headers)
+          console.error(error.response)
+          console.error(error.response.status)
+          console.error(error.response.headers)
         }
       })
   }
@@ -76,9 +80,9 @@ const Friends = () => {
         setMyFriendRequests(response.data)
       }).catch((error: any) => {
         if (error.response) {
-          console.log(error.response)
-          console.log(error.response.status)
-          console.log(error.response.headers)
+          console.error(error.response)
+          console.error(error.response.status)
+          console.error(error.response.headers)
         }
       })
   }
@@ -109,9 +113,9 @@ const Friends = () => {
         setFriendSuggestions(response.data)
       }).catch((error: any) => {
         if (error.response) {
-          console.log(error.response)
-          console.log(error.response.status)
-          console.log(error.response.headers)
+          console.error(error.response)
+          console.error(error.response.status)
+          console.error(error.response.headers)
         }
       })
   }
@@ -126,7 +130,7 @@ const Friends = () => {
               <div className="friend-requests-windows">
                 {
                   friendRequests.map((user, index) => {
-                    return <FriendWindow key={index} userData={user} type='friend-request' />
+                    return <FriendWindow key={index} userData={user} type='friend-request' updateFriends={updateFriends} />
                   })
                 }
               </div>
@@ -140,7 +144,7 @@ const Friends = () => {
               <div className="my-friend-requests-windows">
                 {
                   myFriendRequests.map((user, index) => {
-                    return <FriendWindow key={index} userData={user} type='my-friend-request' />
+                    return <FriendWindow key={index} userData={user} type='my-friend-request' updateFriends={updateFriends} />
                   })
                 }
               </div>
@@ -153,7 +157,7 @@ const Friends = () => {
           {friendSuggestions.length !== 0 ? <div className="friend-suggestions-windows">
             {
               friendSuggestions.map((user, index) => {
-                return <FriendWindow key={index} userData={user} type='friend-suggestion' />
+                return <FriendWindow key={index} userData={user} type='friend-suggestion' updateFriends={updateFriends} />
               })
             }
           </div> : <span>Nemáte žádná doporučení</span>}
@@ -164,7 +168,7 @@ const Friends = () => {
           {friends?.length !== 0 ? <div className="friends-windows">
             {
               friends.map((user, index) => {
-                return <FriendWindow key={index} userData={user} type='friend' />
+                return <FriendWindow key={index} userData={user} type='friend' updateFriends={updateFriends} />
               })
             }
           </div> : <span>Nemáte žádné přátele :(</span>}

@@ -46,9 +46,9 @@ const LoginPage = (props: any) => {
         localStorage.setItem('userData', JSON.stringify(loggedUser));
       }).catch((error: any) => {
         if (error.response) {
-          console.log(error.response)
-          console.log(error.response.status)
-          console.log(error.response.headers)
+          console.error(error.response)
+          console.error(error.response.status)
+          console.error(error.response.headers)
           setResponseMessage(error.response.data.message)
         }
       })

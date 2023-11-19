@@ -27,8 +27,8 @@ const FriendWindow = (props: any) => {
         {`${first_name} ${last_name}`}
       </h4>
       <div className="buttons">
-        <FriendButton buttonType={windowTypeData?.firstButtonType} userId={id} />
-        <FriendButton buttonType={windowTypeData?.secondButtonType} userId={id} />
+        <FriendButton buttonType={windowTypeData?.firstButtonType} userId={id} updateFriends={props.updateFriends} />
+        <FriendButton buttonType={windowTypeData?.secondButtonType} userId={id} updateFriends={props.updateFriends} />
       </div>
       
     </div>

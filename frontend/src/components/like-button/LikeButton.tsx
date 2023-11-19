@@ -22,7 +22,7 @@ const LikeButton = (props: any) => {
       setLiked(isLiked)
       setLikesCount(res.data.length)
     })
-    .catch(err => console.log(err))
+    .catch(err => console.error(err))
   }
 
   const onLikeButtonClick = () => {
@@ -37,7 +37,7 @@ const LikeButton = (props: any) => {
     .then(res => {
       getLikes()
     })
-    .catch(err => console.log(err))
+    .catch(err => console.error(err))
     // setLiked(!liked)
   }
 

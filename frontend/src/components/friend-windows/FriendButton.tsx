@@ -66,14 +66,13 @@ const FriendButton = (props: any) => {
         acceptor_id: buttonData.acceptor_id
       }
     })
-      .then((response: any) => {
-        console.log(response.data.msg)
-        window.location.reload()
+      .then(() => {
+        props.updateFriends()
       }).catch((error: any) => {
         if (error.response) {
-          console.log(error.response)
-          console.log(error.response.status)
-          console.log(error.response.headers)
+          console.error(error.response)
+          console.error(error.response.status)
+          console.error(error.response.headers)
         }
       })
   }

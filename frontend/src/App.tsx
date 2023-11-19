@@ -65,7 +65,6 @@ const App = () => {
           profile_picture: res.data.user[4],
           registration_date: res.data.user[5]
         })
-        console.log(res.data.user)
       })
       .catch((err) => console.error(err))
   }

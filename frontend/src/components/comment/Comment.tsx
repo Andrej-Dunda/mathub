@@ -24,7 +24,7 @@ const Comment = (props: any) => {
     .then(res => {
       setAuthorName(`${res.data.user[2]} ${res.data.user[3]}`)
     })
-    .catch(err => console.log(err))
+    .catch(err => console.error(err))
   }, [commentContent.commentator_id])
 
 

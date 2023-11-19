@@ -29,15 +29,15 @@ const ForgottenPassword = () => {
       }
     })
       .then((response: any) => {
-        console.log(response.data.console_message)
+        console.error(response.data.console_message)
         setNewPassword(response.data.new_password)
         setResponseMessage(response.data.response_message)
         setResetResult(response.data.result)
       }).catch((error: any) => {
         if (error.response) {
-          console.log(error.response)
-          console.log(error.response.status)
-          console.log(error.response.headers)
+          console.error(error.response)
+          console.error(error.response.status)
+          console.error(error.response.headers)
         }
       })
 

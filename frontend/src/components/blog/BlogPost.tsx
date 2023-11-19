@@ -51,11 +51,10 @@ const BlogPost = (props: any) => {
     .then(res => {
       setComments(res.data)
     })
-    .catch(err => console.log(err))
+    .catch(err => console.error(err))
   }
 
   const handleCommentKeyPress = (e: any) => {
-    console.log(newComment)
     if (e.key === 'Enter') submitComment();
   }
 
@@ -74,7 +73,6 @@ const BlogPost = (props: any) => {
       }
     })
     .then((res) => {
-      console.log(res.data)
       setNewComment('')
       getComments()
     })

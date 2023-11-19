@@ -45,14 +45,13 @@ const Registration = (props: any) => {
       }
     })
       .then((response: any) => {
-        console.log(response.data.message)  
         setResponseMessage(response.data.message)
         navigate('/')
       }).catch((error: any) => {
         if (error.response) {
-          console.log(error.response)
-          console.log(error.response.status)
-          console.log(error.response.headers)
+          console.error(error.response)
+          console.error(error.response.status)
+          console.error(error.response.headers)
         }
       })
 

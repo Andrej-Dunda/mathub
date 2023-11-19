@@ -9,7 +9,6 @@ const Homepage = (props: any) => {
   useEffect(() => {
     axios.get('/posts')
     .then(res => {
-      console.log(res.data)
       setPosts(res.data)
     })
   }, [])  
