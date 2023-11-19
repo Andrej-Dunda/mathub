@@ -1,7 +1,7 @@
 import React from "react";
 import './FriendWindow.scss'
 import FriendButton from "./FriendButton";
-import Logo from "../../images/Logo";
+import ProfilePicture from "../profile-picture/ProfilePicture";
 
 const FriendWindow = (props: any) => {
   const [id, first_name, last_name] = props.userData
@@ -22,8 +22,7 @@ const FriendWindow = (props: any) => {
 
   return (
     <div className="friend-window">
-      {/* <Logo className='profile-picture' /> */}
-      <img src="https://brur.ac.bd/wp-content/uploads/2019/03/male.jpg" alt="" className="profile-picture" />
+      <ProfilePicture className='medium' userId={id} />
       <h4 className="h4 friend-name">
         {`${first_name} ${last_name}`}
       </h4>

@@ -5,12 +5,10 @@ import Homepage from './pages/Homepage';
 import Blogs from './pages/Blogs';
 import UserProfile from './pages/UserProfile';
 import Friends from './pages/Friends';
-// import NoPage from './pages/NoPage';
 import LoginPage from './pages/LoginPage';
 import Registration from './pages/Registration';
 import ForgottenPassword from './pages/ForgottenPassword';
 import useToken from './utils/useToken'
-import NoPage from './pages/NoPage';
 import { useState, createContext, useEffect } from "react";
 import React from 'react';
 import Habits from './pages/Habits';
@@ -83,7 +81,7 @@ const App = () => {
               <Route index element={<LoginPage setToken={setToken} setUser={setUser} />} />
               <Route path="registration" element={<Registration />} />
               <Route path="forgotten-password" element={<ForgottenPassword />} />
-              <Route path="*" element={<NoPage />} />
+              <Route path="*" element={<LoginPage />} />
             </Route>
           </Routes>
         ) : (

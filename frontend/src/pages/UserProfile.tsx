@@ -123,7 +123,7 @@ const UserProfile = (props: any) => {
       <div className="user-profile">
         <div className="user-wrapper">
           <div className="profile-picture-wrapper">
-            <ProfilePicture className='large' />
+            <ProfilePicture className='large radius-100' userId={userInfo.id} />
           </div>
           <div className="user-info">
             <h1 className='h1'>{userInfo.first_name + ' ' + userInfo.last_name}</h1><hr />
@@ -167,7 +167,7 @@ const UserProfile = (props: any) => {
         </div>
       </Modal>
       <Modal isOpen={isProfilePictureModalOpen} onClose={closeProfilePictureModal} onSubmit={handleNewProfilePictureSubmit} submitContent='Nahrát' cancelContent='Zrušit' >
-        <input type="file" onChange={handleFileChange} />
+        <input type="file" accept="image/*" onChange={handleFileChange} />
       </Modal>
     </>
   )

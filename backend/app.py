@@ -347,6 +347,14 @@ def change_password():
     finally:
         conn.close()
 
+@app.route('/user-profile-picture/<id>', methods=['GET'])
+def get_user_profile_picture(id):
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    profile_picture = cur.execute('SELECT profile_picture FROM users WHERE id = ?', (id,)).fetchone()[0]
+    conn.close()
+    print(profile_picture)
+    return profile_picture
 
 if __name__ == "__main__":
     app.run(debug=True)

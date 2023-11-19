@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from "react-router-dom";
 import './Nav.scss'
 import axios from "axios";
-import DefaultProfilePicture from "../../images/DefaultProfilePicture";
 import ProfilePicture from '../profile-picture/ProfilePicture';
+import { UserContext } from '../../App';
 
 const Nav = (props: any) => {
+  const userInfo = useContext(UserContext)
+
   const logout = () => {
     axios({
       method: "POST",
@@ -41,7 +43,7 @@ const Nav = (props: any) => {
         </div>
         <Link to='' className="logout" onClick={logout}>Odhlásit se</Link>
         <a className="profile-badge" href='/user-profile'>
-          <ProfilePicture className='small' />
+          <ProfilePicture className='small radius-100' userId={userInfo.id} />
         </a>
       </div>
     </nav>

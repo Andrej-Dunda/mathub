@@ -1,6 +1,15 @@
 .profile-picture {
-  border: 1px solid lightgrey;
-  border-radius: 100%;
+  &.radius-100 {
+    border-radius: 100%;
+  }
+
+  &.radius-50 {
+    border-radius: 50%;
+  }
+
+  &.radius-25 {
+    border-radius: 25%;
+  }
 
   &.xsmall {
     width: 20px;

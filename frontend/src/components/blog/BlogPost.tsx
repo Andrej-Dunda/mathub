@@ -1,5 +1,4 @@
 import './BlogPost.scss'
-import DefaultProfilePicture from '../../images/DefaultProfilePicture'
 import LikeButton from '../like-button/LikeButton'
 import React, { useState } from 'react'
 
