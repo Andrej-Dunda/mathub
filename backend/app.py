@@ -372,6 +372,14 @@ def get_post(id):
     conn.close()
     return post_data
 
+@app.route('/post-likes/<post_id>')
+def get_post_likes(post_id):
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    post_liker_ids = cur.execute('SELECT liker_id FROM post_likes WHERE post_id = ?', (post_id,)).fetchall()
+    conn.close()
+    return post_liker_ids
+
 @app.route('/post-image/<filename>')
 def get_post_image(filename):
     try:
@@ -386,6 +394,34 @@ def get_posts():
     posts_data = cur.execute('SELECT * FROM user_posts').fetchall()
     conn.close()
     return posts_data
+
+@app.route('/toggle-post-like', methods=['POST'])
+def toggle_post_like():
+    post_id = request.json.get('post_id', None)
+    user_id = request.json.get('user_id', None)
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    like_data = cur.execute('SELECT * FROM post_likes WHERE post_id = ? AND liker_id = ?', (post_id, user_id)).fetchone()
+
+    print(like_data)
+    if like_data != None:
+        cur.execute('DELETE FROM post_likes WHERE post_id = ? AND liker_id = ?', (post_id, user_id))
+        conn.commit()
+        conn.close()
+        return 'unliked'
+    else:
+        cur.execute('INSERT INTO post_likes (post_id, liker_id) VALUES (?, ?)', (post_id, user_id))
+        conn.commit()
+        conn.close()
+        return 'liked'
+
+@app.route('/comments/<post_id>')
+def get_comments(post_id):
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    comments = cur.execute('SELECT commenter_id, comment, comment_time FROM post_comments WHERE post_id = ?', (post_id,)).fetchall()
+    conn.close()
+    return comments
 
 if __name__ == "__main__":
     app.run(debug=True)

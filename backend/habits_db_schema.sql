@@ -9,6 +9,8 @@ DROP TABLE IF EXISTS friendships;
 DROP TABLE IF EXISTS group_memberships;
 DROP TABLE IF EXISTS friend_requests;
 DROP TABLE IF EXISTS excluded_suggestions;
+DROP TABLE IF EXISTS post_likes;
+DROP TABLE IF EXISTS post_comments;
 
 CREATE TABLE users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,6 +53,18 @@ CREATE TABLE user_posts (
   post_title TEXT,
   post_description TEXT,
   post_image TEXT);
+
+CREATE TABLE post_likes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  post_id INTEGER,
+  liker_id INTEGER);
+
+CREATE TABLE post_comments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  post_id INTEGER,
+  commenter_id INTEGER,
+  comment TEXT,
+  comment_time TEXT);
 
 CREATE TABLE friendships (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

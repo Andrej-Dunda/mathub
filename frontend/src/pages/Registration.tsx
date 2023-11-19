@@ -125,7 +125,7 @@ const Registration = (props: any) => {
           </div>
           <span className='text-danger'>{responseMessage}</span>
           <div className='registration-other-options'>
-            <a href='/login'>zpět na přihlášení</a>
+            <a href='/'>zpět na přihlášení</a>
             <a href="/forgotten-password">zapomenuté heslo</a>
           </div>
           <div className='registration-submit'>

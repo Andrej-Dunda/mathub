@@ -1,71 +1,108 @@
 import './BlogPost.scss'
 import LikeButton from '../like-button/LikeButton'
 import ProfilePicture from '../profile-picture/ProfilePicture'
-
-const blogDummyData = {
-  id: 0,
-  user_id: 4,
-  time: '2023-11-12 11:30:45',
-  title: 'Lorem Ipsum',
-  content: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam justo enim, consectetuer nec, ullamcorper ac, vestibulum in, elit. Maecenas aliquet accumsan leo. Nam quis nulla. Nulla turpis magna, cursus sit amet, suscipit a, interdum id, felis. Mauris dolor felis, sagittis at, luctus sed, aliquam non, tellus. Nullam eget nisl. Morbi scelerisque luctus velit. Nulla non lectus sed nisl molestie malesuada. Fusce dui leo, imperdiet in, aliquam sit amet, feugiat eu, orci. Et harum quidem rerum facilis est et expedita distinctio. Sed ac dolor sit amet purus malesuada congue. Cras elementum. Ut tempus purus at lorem. Nulla est. Aliquam erat volutpat.',
-  image: 'image.png',
-  likes: 12,
-  habit_id: 0,
-  group_id: 0
-}
-
-const userDummyInfo = {
-  id: 0,
-  name: 'Borek Stavitel',
-  profilePicture: 'profile-picture-default.png'
-}
+import Comment from '../comment/Comment'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+  import { faComment, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 
 const BlogPost = (props: any) => {
-  const postData = {
-    id: 0,
-    user_id: 4,
-    time: '2023-11-12 11:30:45',
-    title: 'Lorem Ipsum',
-    content: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam justo enim, consectetuer nec, ullamcorper ac, vestibulum in, elit. Maecenas aliquet accumsan leo. Nam quis nulla. Nulla turpis magna, cursus sit amet, suscipit a, interdum id, felis. Mauris dolor felis, sagittis at, luctus sed, aliquam non, tellus. Nullam eget nisl. Morbi scelerisque luctus velit. Nulla non lectus sed nisl molestie malesuada. Fusce dui leo, imperdiet in, aliquam sit amet, feugiat eu, orci. Et harum quidem rerum facilis est et expedita distinctio. Sed ac dolor sit amet purus malesuada congue. Cras elementum. Ut tempus purus at lorem. Nulla est. Aliquam erat volutpat.',
-    image: 'image.png',
-    likes: 12,
-    habit_id: 0,
-    group_id: 0
-  }
+  const [userName, setUserName] = useState<string>('')
+  const rawPostDate = new Date(props.postData[2])
   const czechMonthNames = [
     'ledna', 'února', 'března', 'dubna', 'května', 'června',
     'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'
   ];
-  const postCreationDate = new Date(blogDummyData.time)
   // Custom format for Czech date string
-  const dayOfMonth = postCreationDate.getDate();
-  const monthName = czechMonthNames[postCreationDate.getMonth()];
-  const hour = postCreationDate.getHours();
-  const minute = postCreationDate.getMinutes();
+  const dayOfMonth = rawPostDate.getDate();
+  const monthName = czechMonthNames[rawPostDate.getMonth()];
+  const hour = rawPostDate.getHours();
+  const minute = rawPostDate.getMinutes();
   const customDateFormat = `${dayOfMonth}. ${monthName} v ${hour}:${minute}`;
+  const postData = {
+    id: props.postData[0],
+    user_id: props.postData[1],
+    time: customDateFormat,
+    title: props.postData[3],
+    content: props.postData[4],
+    image: props.postData[5],
+    likes: 12
+  }
+  const [comments, setComments] = useState([])
+
+  useEffect(() => {
+    axios.get(`/user/${postData.user_id}`)
+    .then(res => {
+      setUserName(res.data.user[2] + ' ' + res.data.user[3])
+    })
+    .catch((err) => console.error(err))
+  }, [postData.user_id])
+
+  useEffect(() => {
+    getComments()
+  }, [])
+
+  const getComments = () => {
+    axios.get(`/comments/${postData.id}`)
+    .then(res => {
+      console.log(res.data)
+      setComments(res.data)
+    })
+    .catch(err => console.log(err))
+  }
 
   return (
     <div className="blog-post">
+      <main className="blog-post-main">
       <div className="blog-post-header">
         <div className="blog-info">
           <div className="user-profile-picture">
-            {/* <ProfilePicture className='small radius-100 border' /> */}
+            <ProfilePicture className='post-size radius-100 border' userId={postData.user_id} />
           </div>
           <div className="user-name-and-post-time">
-            <h3 className='user-name h3'>{userDummyInfo.name}</h3>
-            <span className='blog-post-time'>{customDateFormat}</span>
+            <h3 className='user-name h3'>{userName}</h3>
+            <span className='blog-post-time'>{postData.time}</span>
           </div>
           <div className="blog-post-likes">
-            <LikeButton/>
-            <span>{blogDummyData.likes}</span>
+            <LikeButton postId={postData.id} />
           </div>
         </div>
         <hr />
-        <h2 className='h2'>{blogDummyData.title}</h2>
+        <h4 className='h4'>{postData.title}</h4>
       </div>
       <div className="blog-post-body">
-        <p className='blog-post-content'>{blogDummyData.content}</p>
+        <img
+          className='post-image'
+          src={`http://127.0.0.1:5000/post-image/${postData.image}`}
+          alt=""
+        />
+        <p className='blog-post-content'>{postData.content}</p>
       </div>
+      </main>
+      <aside className="blog-post-aside blog-post-comments">
+        <div className="comments-header">
+          <h3 className="h3">Komentáře</h3>
+          <FontAwesomeIcon icon={faComment} className='comment-icon'/>
+        </div>
+        <div className="comments">
+          {
+            !comments ? (
+              <span>Žádné komentáře</span>
+            ) : (
+              comments.map((comment, index) => {
+                return <Comment key={index} commentContent={comment} />
+              })
+            )
+          }
+        </div>
+        <div className="comment-input-wrapper">
+          <input type="text" className='comment-input' placeholder='Přidat komentář...' />
+          <button className='submit-comment'>
+            <FontAwesomeIcon icon={faPaperPlane} style={{color: "#ffffff",}} />
+          </button>
+        </div>
+      </aside>
     </div>
   )
 }

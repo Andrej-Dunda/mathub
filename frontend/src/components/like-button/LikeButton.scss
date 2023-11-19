@@ -1,3 +1,16 @@
 .like-button {
-  
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  width: fit-content;
+  cursor: pointer;
+  font-weight: 600;
+  border: 2px solid black;
+
+  &.liked {
+    background-color: black;
+    color: white;
+  }
 }

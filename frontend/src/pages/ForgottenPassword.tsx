@@ -73,7 +73,7 @@ const ForgottenPassword = () => {
           </div>
           <span  className={resetResult ? 'text-success' : 'text-danger'}>{responseMessage}</span>
           <div className='forgotten-password-other-options'>
-            <a href='/login'>zpět na přihlášení</a>
+            <a href='/'>zpět na přihlášení</a>
             <a href="/registration">registrovat se</a>
           </div>
           <div className='forgotten-password-submit'>

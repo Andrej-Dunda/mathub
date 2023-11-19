@@ -29,7 +29,8 @@ users = [
     {"user_email": "karen.hall@example.com", "user_password": "karenH2023", "first_name": "Karen", "last_name": "Hall", "profile_picture": "profile-picture-default.png"},
     {"user_email": "laura.davis@example.com", "user_password": "laurad2023", "first_name": "Laura", "last_name": "Davis", "profile_picture": "pp5.png"},
     {"user_email": "james.harris@example.com", "user_password": "jamesh", "first_name": "James", "last_name": "Harris", "profile_picture": "profile-picture-default.png"},
-    {"user_email": "patricia.clark@example.com", "user_password": "patriciaC", "first_name": "Patricia", "last_name": "Clark", "profile_picture": "pp4.png"}
+    {"user_email": "patricia.clark@example.com", "user_password": "patriciaC", "first_name": "Patricia", "last_name": "Clark", "profile_picture": "pp4.png"},
+    {"user_email": "andrejdunda@gmail.com", "user_password": "andrej", "first_name": "Andrej", "last_name": "Dunda", "profile_picture": "andrej.jpg"}
 ]
 
 posts = [
@@ -56,6 +57,57 @@ posts = [
     }
 ]
 
+comments = [
+    {
+        "post_id": 1,
+        "commenter_id": 4,
+        "comment": "Skvělá inspirace, díky!",
+        "comment_time": datetime.now().isoformat()
+    },
+    {
+        "post_id": 1,
+        "commenter_id": 5,
+        "comment": "Myslím si, že každá slušná posilovna by nikdy nic takového neudělala! Za minulého režimu to bylo jednoduché, žádné rádoby fit boostery ani jiné steroidy jsme nebrali! To se věci ještě dělaly pořádně, ale to vy nemůžete pochopit. Dávám palec dolů!",
+        "comment_time": datetime.now().isoformat()
+    },
+    {
+        "post_id": 1,
+        "commenter_id": 5,
+        "comment": "Myslím si, že každá slušná posilovna by nikdy nic takového neudělala! Za minulého režimu to bylo jednoduché, žádné rádoby fit boostery ani jiné steroidy jsme nebrali! To se věci ještě dělaly pořádně, ale to vy nemůžete pochopit. Dávám palec dolů!",
+        "comment_time": datetime.now().isoformat()
+    },
+    {
+        "post_id": 1,
+        "commenter_id": 5,
+        "comment": "Myslím si, že každá slušná posilovna by nikdy nic takového neudělala! Za minulého režimu to bylo jednoduché, žádné rádoby fit boostery ani jiné steroidy jsme nebrali! To se věci ještě dělaly pořádně, ale to vy nemůžete pochopit. Dávám palec dolů!",
+        "comment_time": datetime.now().isoformat()
+    },
+    {
+        "post_id": 1,
+        "commenter_id": 5,
+        "comment": "Myslím si, že každá slušná posilovna by nikdy nic takového neudělala! Za minulého režimu to bylo jednoduché, žádné rádoby fit boostery ani jiné steroidy jsme nebrali! To se věci ještě dělaly pořádně, ale to vy nemůžete pochopit. Dávám palec dolů!",
+        "comment_time": datetime.now().isoformat()
+    },
+    {
+        "post_id": 1,
+        "commenter_id": 5,
+        "comment": "Myslím si, že každá slušná posilovna by nikdy nic takového neudělala! Za minulého režimu to bylo jednoduché, žádné rádoby fit boostery ani jiné steroidy jsme nebrali! To se věci ještě dělaly pořádně, ale to vy nemůžete pochopit. Dávám palec dolů!",
+        "comment_time": datetime.now().isoformat()
+    },
+    {
+        "post_id": 2,
+        "commenter_id": 6,
+        "comment": "Nevíte někdo, kde sehnat levné ale kvalitní běžecké boty?",
+        "comment_time": datetime.now().isoformat()
+    },
+    {
+        "post_id": 3,
+        "commenter_id": 7,
+        "comment": "V pubertě jsem skoro nečetla a teď toho lituju, jsem ráda, že jsem se konečně vrátila ke čtení.",
+        "comment_time": datetime.now().isoformat()
+    }
+]
+
 for user in users:
     cur.execute("INSERT INTO users (user_email, user_password, first_name, last_name, registration_date, profile_picture) VALUES (?, ?, ?, ?, ?, ?)",
                 (user['user_email'], hashlib.sha256(user['user_password'].encode()).hexdigest(), user['first_name'], user['last_name'], datetime.now().isoformat(), user['profile_picture']))
@@ -63,6 +115,10 @@ for user in users:
 for post in posts:
     cur.execute("INSERT INTO user_posts (user_id, post_time, post_title, post_description, post_image) VALUES (?, ?, ?, ?, ?)",
                 (post['user_id'], post['post_time'], post['post_title'], post['post_description'], post['post_image']))
+    
+for comment in comments:
+    cur.execute('INSERT INTO post_comments (post_id, commenter_id, comment, comment_time) VALUES (?, ?, ?, ?)',
+                (comment['post_id'], comment['commenter_id'], comment['comment'], comment['comment_time']))
 
 cur.execute('INSERT INTO friendships (first_friend_id, second_friend_id) VALUES (?, ?)', (1, 2))
 cur.execute('INSERT INTO friendships (first_friend_id, second_friend_id) VALUES (?, ?)', (1, 4))
@@ -76,6 +132,16 @@ cur.execute('INSERT INTO friend_requests (requestor_id, acceptor_id) VALUES (?, 
 
 cur.execute('INSERT INTO friend_requests (requestor_id, acceptor_id) VALUES (?, ?)', (8, 1))
 cur.execute('INSERT INTO friend_requests (requestor_id, acceptor_id) VALUES (?, ?)', (11, 1))
+
+for i in range(15):
+    cur.execute('INSERT INTO post_likes (post_id, liker_id) VALUES (?, ?)', (1, i))
+cur.execute('INSERT INTO post_likes (post_id, liker_id) VALUES (?, ?)', (1, 17))
+
+for i in range(10):
+    cur.execute('INSERT INTO post_likes (post_id, liker_id) VALUES (?, ?)', (2, i))
+
+for i in range(7):
+    cur.execute('INSERT INTO post_likes (post_id, liker_id) VALUES (?, ?)', (3, i))
 
 # # Commit the changes and close the connection
 connection.commit()
