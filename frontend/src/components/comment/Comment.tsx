@@ -11,7 +11,7 @@ const Comment = (props: any) => {
   const hour = rawPostDate.getHours();
   const minute = rawPostDate.getMinutes();
   const addLeadingZero = (num: number) => (num < 10 ? `0${num}` : num);
-  const customDateFormat = `${dayOfMonth}. ${addLeadingZero(month)}. ${addLeadingZero(hour)}:${addLeadingZero(minute)}`;
+  const customDateFormat = `${dayOfMonth}. ${addLeadingZero(month)}. ${hour}:${addLeadingZero(minute)}`;
 
   const commentContent = {
     commentator_id: props.commentContent[0],

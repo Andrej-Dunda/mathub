@@ -339,6 +339,29 @@ def new_blog_post():
     conn.close()
     return 'Post added successfuly!', 200
 
+@app.route('/update-blog-post', methods=['POST'])
+def update_blog_post():
+    post_id = request.form.get('post_id', None)
+    post_time = datetime.now().isoformat()
+    post_title = request.form.get('post_title', None)
+    post_description = request.form.get('post_description', None)
+    post_image_name = None
+
+    if 'post_image' in request.files:
+        post_image = request.files['post_image']
+        post_image_name = secure_filename(post_image.filename)
+        post_image.save(os.path.join(app.config['POST_IMAGES_FOLDER'], post_image_name))
+
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+
+    cur.execute('UPDATE user_posts SET post_title = ?, post_description = ?, post_image = ? WHERE id = ?',
+                (post_title, post_description, post_image_name, post_id))
+
+    conn.commit()
+    conn.close()
+    return 'Post edited successfuly!', 200
+
 @app.route('/user-profile-picture/<user_id>')
 def get_profile_picture(user_id):
     conn = sqlite3.connect('habits.db')
@@ -467,6 +490,17 @@ def add_comment():
     conn.commit()
     conn.close()
     return 'Comment added successfuly!'
+
+@app.route('/delete-blog-post/<post_id>', methods=['POST'])
+def delete_blog_post(post_id):
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    cur.execute('DELETE FROM user_posts WHERE id = ?', (post_id,))
+    conn.commit()
+    conn.close()
+    return 'Post successfuly deleted'
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

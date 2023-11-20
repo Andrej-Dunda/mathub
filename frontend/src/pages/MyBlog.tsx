@@ -10,6 +10,7 @@ const MyBlog = () => {
   const [postTitle, setPostTitle] = useState('')
   const [postDescription, setPostDescription] = useState('')
   const [postImage, setPostImage] = useState<File | null>(null);
+  const [inputKey, setInputKey] = useState(Date.now());
 
   useEffect(() => {
     getMyPosts()
@@ -22,7 +23,6 @@ const MyBlog = () => {
     })
       .then(res => {
         setMyPosts(res.data)
-        console.log(res.data)
       })
       .catch(err => console.error(err))
   }
@@ -51,6 +51,9 @@ const MyBlog = () => {
         getMyPosts()
         setPostDescription('')
         setPostTitle('')
+        setPostImage(null)
+        setInputKey(Date.now());
+        alert("Příspěvek úspěšně zveřejněn :)")
       })
       .catch(err => console.error(err))
   }
@@ -98,7 +101,7 @@ const MyBlog = () => {
             </div>
             <div className="new-post-input">
               <label htmlFor="post-image-input">Obrázek k příspěvku:</label>
-              <input id='post-image-input' type="file" accept="image/*" onChange={handleImageChange} />
+              <input id='post-image-input' type="file" accept="image/*" key={inputKey} onChange={handleImageChange} />
             </div>
             <button className="submit-post-button" onClick={submitNewPost}>Zveřejnit příspěvek</button>
           </div>
@@ -108,7 +111,7 @@ const MyBlog = () => {
         <div className="old-posts">
           {
             myPosts.length > 0 ? myPosts.map((post, index) => {
-              return <BlogPost key={index} postData={post} showComments={false} myBlogFormat={true} />
+              return <BlogPost key={index} postData={post} showComments={false} myBlogFormat={true} getMyPosts={getMyPosts} />
             }) : (
               <span className='no-posts'>Zatím nemáte žádné příspěvky :(</span>
             )

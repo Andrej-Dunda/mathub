@@ -9,6 +9,7 @@ import { faComment, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { UserContext } from '../../App'
 import CommentButton from '../comment-button/CommentButton'
 import EditButton from '../edit-button/EditButton'
+import DeleteButton from '../delete-button/DeleteButton'
 
 const BlogPost = (props: any) => {
   const userInfo = useContext(UserContext)
@@ -23,7 +24,8 @@ const BlogPost = (props: any) => {
   const monthName = czechMonthNames[rawPostDate.getMonth()];
   const hour = rawPostDate.getHours();
   const minute = rawPostDate.getMinutes();
-  const customDateFormat = `${dayOfMonth}. ${monthName} v ${hour}:${minute}`;
+  const addLeadingZero = (num: number) => (num < 10 ? `0${num}` : num);
+  const customDateFormat = `${dayOfMonth}. ${monthName} v ${hour}:${addLeadingZero(minute)}`;
   const postData = {
     id: props.postData[0],
     user_id: props.postData[1],
@@ -104,66 +106,69 @@ const BlogPost = (props: any) => {
   }
 
   return (
-    <div className={`blog-post ${!showComments && 'no-comments'}`}>
-      <main className={`blog-post-main ${showComments && 'border-right-grey'}`} ref={postContentRef} style={{ height: 'auto' }} >
-        <div className="blog-post-header">
-          <div className="blog-info">
-            <div className="user-profile-picture">
-              <ProfilePicture className='post-size radius-100 border' userId={postData.user_id} />
+    <>
+      <div className={`blog-post ${!showComments && 'no-comments'}`}>
+        <main className={`blog-post-main ${showComments && 'border-right-grey'}`} ref={postContentRef} style={{ height: 'auto' }} >
+          <div className="blog-post-header">
+            <div className="blog-info">
+              <div className="user-profile-picture">
+                <ProfilePicture className='post-size radius-100 border' userId={postData.user_id} />
+              </div>
+              <div className="user-name-and-post-time">
+                <h3 className='user-name h3'>{userName}</h3>
+                <span className='blog-post-time'>{postData.time}</span>
+              </div>
+              <div className="blog-post-buttons">
+                <LikeButton postId={postData.id} />
+                {!props.myBlogFormat && <CommentButton showComments={showComments} setShowComments={setShowComments} commentsCount={comments.length} />}
+                {props.myBlogFormat && <EditButton postData={postData} getMyPosts={props.getMyPosts} />}
+                {props.myBlogFormat && <DeleteButton postId={postData.id} getMyPosts={props.getMyPosts} />}
+              </div>
             </div>
-            <div className="user-name-and-post-time">
-              <h3 className='user-name h3'>{userName}</h3>
-              <span className='blog-post-time'>{postData.time}</span>
-            </div>
-            <div className="blog-post-buttons">
-              <LikeButton postId={postData.id} />
-              {!props.myBlogFormat && <CommentButton showComments={showComments} setShowComments={setShowComments} commentsCount={comments.length} />}
-              {props.myBlogFormat && <EditButton postId={postData.id} />}
-            </div>
+            <hr />
+            <h4 className='h4'>{postData.title}</h4>
           </div>
-          <hr />
-          <h4 className='h4'>{postData.title}</h4>
-        </div>
-        <div className="blog-post-body">
-          <img
-            className='post-image'
-            src={`http://127.0.0.1:5000/post-image/${postData.image}`}
-            alt=""
-          />
-          <p className='blog-post-content'>{postData.content}</p>
-        </div>
-      </main>
-      {showComments && <aside className="blog-post-aside blog-post-comments" ref={commentSectionRef} style={{ height: `${height}px` }} >
-        <div className="comments-header">
-          <h3 className="h3">Komentáře</h3>
-          <FontAwesomeIcon icon={faComment} className='comment-icon' />
-        </div>
-        <div className="comments">
-          {
-            !comments ? (
-              <span>Žádné komentáře</span>
-            ) : (
-              comments.map((comment, index) => {
-                return <Comment key={index} commentContent={comment} />
-              })
-            )
-          }
-        </div>
-        <div className="comment-input-wrapper">
-          <input
-            type="text"
-            className='comment-input'
-            placeholder='Přidat komentář...'
-            value={newComment}
-            onChange={handleCommentChange}
-            onKeyDown={handleCommentKeyPress}
-          />
-          <button className='submit-comment' onClick={submitComment}>
-            <FontAwesomeIcon icon={faPaperPlane} style={{ color: "#ffffff", }} />
-          </button>
-        </div>
-      </aside>}
-    </div>
+          <div className="blog-post-body">
+            <img
+              className='post-image'
+              src={`/post-image/${postData.image}`}
+              alt=""
+            />
+            <p className='blog-post-content'>{postData.content}</p>
+          </div>
+        </main>
+        {showComments && <aside className="blog-post-aside blog-post-comments" ref={commentSectionRef} style={{ height: `${height}px` }} >
+          <div className="comments-header">
+            <h3 className="h3">Komentáře</h3>
+            <FontAwesomeIcon icon={faComment} className='comment-icon' />
+          </div>
+          <div className="comments">
+            {
+              !comments ? (
+                <span>Žádné komentáře</span>
+              ) : (
+                comments.map((comment, index) => {
+                  return <Comment key={index} commentContent={comment} />
+                })
+              )
+            }
+          </div>
+          <div className="comment-input-wrapper">
+            <input
+              type="text"
+              className='comment-input'
+              placeholder='Přidat komentář...'
+              value={newComment}
+              onChange={handleCommentChange}
+              onKeyDown={handleCommentKeyPress}
+            />
+            <button className='submit-comment' onClick={submitComment}>
+              <FontAwesomeIcon icon={faPaperPlane} style={{ color: "#ffffff", }} />
+            </button>
+          </div>
+        </aside>}
+      </div>
+    </>
   )
 }
 export default BlogPost;
