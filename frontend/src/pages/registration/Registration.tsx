@@ -1,17 +1,27 @@
 import './Registration.scss'
 import axios from "axios";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom"
+import ErrorMessage from '../../components/error-message/ErrorMessage';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const Registration = (props: any) => {
   const [registrationForm, setRegistrationForm] = useState({
     email: "",
     password: "",
+    password_again: "",
     first_name: "",
-    last_name: ""
+    last_name: "",
   })
   const [responseMessage, setResponseMessage] = useState<string>('')
   const navigate = useNavigate()
+  const emailInputRef = useRef<HTMLInputElement>(null)
+  const firstNameInputRef = useRef<HTMLInputElement>(null)
+  const lastNameInputRef = useRef<HTMLInputElement>(null)
+  const passwordInputRef = useRef<HTMLInputElement>(null)
+  const passwordAgainInputRef = useRef<HTMLInputElement>(null)
+  const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => {
     const handleKeyPress = (e: any) => {
@@ -31,9 +41,24 @@ const Registration = (props: any) => {
     return emailRegex.test(email);
   };
 
+  const errorResponse = (message: string, inputRef: React.RefObject<HTMLInputElement>) => {
+    setResponseMessage(message)
+    inputRef.current?.focus()
+  }
+
   const submitRegistration = (event: any) => {
-    if (!registrationForm.email || !registrationForm.password || !registrationForm.first_name || !registrationForm.last_name) return setResponseMessage('Vyplňte všechna pole!')
-    if (!validateEmail(registrationForm.email)) return setResponseMessage('Neplatný formát emailu!')
+    if (!registrationForm.first_name) return errorResponse('Vyplňte pole Jméno!', firstNameInputRef)
+    if (!registrationForm.last_name) return errorResponse('Vyplňte pole Příjmení!', lastNameInputRef)
+    if (!registrationForm.email) return errorResponse('Vyplňte pole E-mail!', emailInputRef)
+    if (!validateEmail(registrationForm.email)) return errorResponse('Neplatný formát emailu!', emailInputRef)
+    if (!registrationForm.password) return errorResponse('Vyplňte pole Heslo!', passwordInputRef)
+    if (!registrationForm.password_again) return errorResponse('Vyplňte pole Heslo znovu!', passwordAgainInputRef)
+    if (registrationForm.password !== registrationForm.password_again) return errorResponse('Hesla se neshodují!', passwordInputRef)
+    if (registrationForm.password.length < 8) return errorResponse('Heslo musí být alespoň 8 znaků dlouhé!', passwordInputRef)
+    if (!/[A-Z]/.test(registrationForm.password)) return errorResponse('Heslo musí alespoň 1 velké písmeno!', passwordInputRef)
+    if (!/[a-z]/.test(registrationForm.password)) return errorResponse('Heslo musí alespoň 1 malé písmeno!', passwordInputRef)
+    if (!/[0-9]/.test(registrationForm.password)) return errorResponse('Heslo musí alespoň 1 číslo!', passwordInputRef)
+
     axios({
       method: "POST",
       url: "/registration",
@@ -46,7 +71,24 @@ const Registration = (props: any) => {
     })
       .then((response: any) => {
         setResponseMessage(response.data.message)
-        navigate('/')
+        if (response.data.success) {
+          setRegistrationForm({
+            email: "",
+            password: "",
+            password_again: "",
+            first_name: "",
+            last_name: ""
+          })
+          navigate('/')
+        } else {
+          response.data.email_already_registered ? emailInputRef.current?.focus() : setRegistrationForm({
+            email: "",
+            password: "",
+            password_again: "",
+            first_name: "",
+            last_name: ""
+          })
+        }
       }).catch((error: any) => {
         if (error.response) {
           console.error(error.response)
@@ -54,13 +96,6 @@ const Registration = (props: any) => {
           console.error(error.response.headers)
         }
       })
-
-    setRegistrationForm(({
-      email: "",
-      password: "",
-      first_name: "",
-      last_name: ""
-    }))
 
     event.preventDefault()
   }
@@ -73,62 +108,94 @@ const Registration = (props: any) => {
     )
   }
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword)
+  }
+
   return (
     <div className="registration-page">
+      <h1 className="h1 habitator-heading">Habitator</h1>
       <div className="registration-window">
-        <h1>Registrace</h1>
+        <h2 className='h2 form-heading'>Registrace</h2>
         <form>
-          <div className='registration-input'>
-            <label htmlFor="first-name-input">Jméno:</label>
-            <input
-              type="text"
-              className='first-name-input'
-              id='first-name-input'
-              value={registrationForm.first_name}
-              name='first_name'
-              onChange={handleChange}
-            />
+          <div className="form-body">
+            <div className='registration-input first-last-name-inputs'>
+              <div className='name-input'>
+                <label htmlFor="first-name-input">Jméno:</label>
+                <input
+                  type="text"
+                  className='first-name-input'
+                  id='first-name-input'
+                  value={registrationForm.first_name}
+                  name='first_name'
+                  onChange={handleChange}
+                  ref={firstNameInputRef}
+                />
+              </div>
+              <div className='name-input'>
+                <label htmlFor="last-name-input">Příjmení:</label>
+                <input
+                  type="text"
+                  className='last-name-input'
+                  id='last-name-input'
+                  value={registrationForm.last_name}
+                  name='last_name'
+                  onChange={handleChange}
+                  ref={lastNameInputRef}
+                />
+              </div>
+            </div>
+            <div className='registration-input'>
+              <label htmlFor="email-input">E-mail:</label>
+              <input
+                type="email"
+                className='email-input'
+                id='email-input'
+                value={registrationForm.email}
+                name='email'
+                onChange={handleChange}
+                ref={emailInputRef}
+              />
+            </div>
+            <div className='registration-input visibility-toggle'>
+              <label htmlFor="password-input">Heslo:</label>
+              <div>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  className='password-input'
+                  id='password-input'
+                  value={registrationForm.password}
+                  name='password'
+                  onChange={handleChange}
+                  ref={passwordInputRef}
+                  title='Alespoň 8 znaků, 1 velké a malé písmeno, 1 číslo'
+                />
+                <FontAwesomeIcon onClick={togglePasswordVisibility} className={`eye-icon ${!showPassword && 'password-hidden'}`} icon={showPassword ? faEye : faEyeSlash} />
+              </div>
+            </div>
+            <div className='registration-input'>
+              <label htmlFor="password-again-input">Heslo znovu:</label>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                className='password-again-input'
+                id='password-again-input'
+                value={registrationForm.password_again}
+                name='password_again'
+                onChange={handleChange}
+                ref={passwordAgainInputRef}
+                title='Alespoň 8 znaků, 1 velké a malé písmeno, 1 číslo'
+              />
+            </div>
           </div>
-          <div className='registration-input'>
-            <label htmlFor="last-name-input">Příjmení:</label>
-            <input
-              type="text"
-              className='last-name-input'
-              id='last-name-input'
-              value={registrationForm.last_name}
-              name='last_name'
-              onChange={handleChange}
-            />
-          </div>
-          <div className='registration-input'>
-            <label htmlFor="email-input">E-mail:</label>
-            <input
-              type="email"
-              className='email-input'
-              id='email-input'
-              value={registrationForm.email}
-              name='email'
-              onChange={handleChange}
-            />
-          </div>
-          <div className='registration-input'>
-            <label htmlFor="password-input">Heslo:</label>
-            <input
-              type="password"
-              className='password-input'
-              id='password-input'
-              value={registrationForm.password}
-              name='password'
-              onChange={handleChange}
-            />
-          </div>
-          <span className='error-message'>{responseMessage}</span>
-          <div className='registration-other-options'>
-            <a href='/'>zpět na přihlášení</a>
-            <a href="/forgotten-password">zapomenuté heslo</a>
-          </div>
-          <div className='registration-submit'>
-            <button type='button' className='registration-submit-button' onClick={submitRegistration}>Registrovat se</button>
+          <div className="form-footer">
+            <div className='registration-other-options'>
+              <a href='/'>zpět na přihlášení</a>
+              <a href="/forgotten-password">zapomenuté heslo</a>
+            </div>
+            <ErrorMessage content={responseMessage} />
+            <div className='registration-submit'>
+              <button type='button' className='registration-submit-button' onClick={submitRegistration}>Registrovat se</button>
+            </div>
           </div>
         </form>
       </div>
