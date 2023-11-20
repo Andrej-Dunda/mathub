@@ -145,7 +145,7 @@ const UserProfile = (props: any) => {
         </div>
       </div>
       <Modal isOpen={isPasswordModalOpen} onClose={closePasswordModal} onSubmit={changePassword} submitContent='Změnit heslo' cancelContent='Zrušit'>
-        <h1>Změnit heslo</h1>
+        <h1 className='h1'>Změnit heslo</h1>
         <div className="new-password-form">
           <div className='password-input-wrapper'>
             <label htmlFor="old-password">Staré heslo:</label>

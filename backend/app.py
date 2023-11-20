@@ -122,13 +122,13 @@ def register_new_user():
       if existing_user is None:
         cur.execute('INSERT INTO users (user_email, user_password, first_name, last_name, registration_date) VALUES (?, ?, ?, ?, ?)', (email, password_hash, first_name, last_name, datetime.now().isoformat()))
       else:
-         return {'message': 'Uživatelské jméno již existuje!'}
+         return {'message': 'Tento email je již registrován!', 'success': False, 'email_already_registered': True}
       conn.commit()
       conn.close()
     except:
-        return {'message': 'Registrace se nezdařila :('}
+        return {'message': 'Registrace se nezdařila :(', 'success': False, 'email_already_registered': False}
     else:
-        return {'message': 'Registrace proběhla úspěšně.'}
+        return {'message': 'Registrace proběhla úspěšně.', 'success': True, 'email_already_registered': False}
     
 @app.route('/forgotten-password', methods=['POST'])
 def generate_new_password():

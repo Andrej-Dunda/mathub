@@ -1,6 +1,7 @@
 import './Login.scss'
 import { useEffect, useState } from 'react';
 import axios from "axios";
+import ErrorMessage from '../../components/error-message/ErrorMessage';
 
 const LoginPage = (props: any) => {
   const [loginForm, setLoginForm] = useState({
@@ -44,14 +45,7 @@ const LoginPage = (props: any) => {
         }
         props.setUser(loggedUser)
         localStorage.setItem('userData', JSON.stringify(loggedUser));
-      }).catch((error: any) => {
-        if (error.response) {
-          console.error(error.response)
-          console.error(error.response.status)
-          console.error(error.response.headers)
-          setResponseMessage(error.response.data.message)
-        }
-      })
+      }).catch((error: any) => error.response && setResponseMessage(error.response.data.message))
 
     setLoginForm(({
       email: "",
@@ -71,38 +65,43 @@ const LoginPage = (props: any) => {
 
   return (
     <div className="login-page">
+      <h1 className="h1 habitator-heading">Habitator</h1>
       <div className="login-window">
-        <h1>Přihlášení</h1>
+        <h2 className='h2 form-heading'>Přihlášení</h2>
         <form>
-          <div className='login-input'>
-            <label htmlFor="email-input">E-mail:</label>
-            <input
-              type="email"
-              className='email-input'
-              id='email-input'
-              value={loginForm.email}
-              name='email'
-              onChange={handleChange}
-            />
+          <div className="form-body">
+            <div className='login-input'>
+              <label htmlFor="email-input">E-mail:</label>
+              <input
+                type="email"
+                className='email-input'
+                id='email-input'
+                value={loginForm.email}
+                name='email'
+                onChange={handleChange}
+              />
+            </div>
+            <div className='login-input'>
+              <label htmlFor="password-input">Heslo:</label>
+              <input
+                type="password"
+                className='password-input'
+                id='password-input'
+                value={loginForm.password}
+                name='password'
+                onChange={handleChange}
+              />
+            </div>
           </div>
-          <div className='login-input'>
-            <label htmlFor="password-input">Heslo:</label>
-            <input
-              type="password"
-              className='password-input'
-              id='password-input'
-              value={loginForm.password}
-              name='password'
-              onChange={handleChange}
-            />
-          </div>
-          <span className='error-message'>{responseMessage}</span>
-          <div className='login-other-options'>
-            <a href='/registration'>registrovat se</a>
-            <a href="/forgotten-password">zapomenuté heslo</a>
-          </div>
-          <div className='login-submit'>
-            <button type='button' className='login-button' onClick={submitLogin}>Přihlásit se</button>
+          <div className="form-footer">
+            <div className='login-other-options'>
+              <a href='/registration'>registrovat se</a>
+              <a href="/forgotten-password">zapomenuté heslo</a>
+            </div>
+            <ErrorMessage content={responseMessage}/>
+            <div className='login-submit'>
+              <button type='button' className='login-button' onClick={submitLogin}>Přihlásit se</button>
+            </div>
           </div>
         </form>
       </div>

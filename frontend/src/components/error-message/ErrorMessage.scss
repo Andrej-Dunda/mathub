@@ -1,0 +1,16 @@
+.error-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: red;
+  font-weight: 500;
+  align-self: center;
+  height: 0;
+  overflow: hidden;
+  transition: height 0.3s;
+
+  &.active {
+    height: 24px;
+  }
+}

@@ -3,10 +3,11 @@ import axios from "axios";
 import { useEffect, useState } from 'react';
 import Modal from '../../components/modal/Modal';
 import { useNavigate } from 'react-router-dom';
+import ErrorMessage from '../../components/error-message/ErrorMessage';
 
 const ForgottenPassword = () => {
   const [forgottenPasswordEmail, setForgottenPasswordEmail] = useState<string>('')
-  const [errroResponseMessage, setErrorResponseMessage] = useState<string>('')
+  const [errorResponseMessage, setErrorResponseMessage] = useState<string>('')
   const [newPassword, setNewPassword] = useState<string>('')
   const [isForgottenPasswordModalOpen, setIsForgottenPasswordModalOpen] = useState<boolean>(false)
   const navigate = useNavigate()
@@ -67,8 +68,9 @@ const ForgottenPassword = () => {
   return (
     <>
       <div className="forgotten-password-page">
+        <h1 className="h1 habitator-heading">Habitator</h1>
         <div className="forgotten-password-window">
-          <h1>Resetovat heslo</h1>
+          <h2 className='h2'>Resetovat heslo</h2>
           <form>
             <div className='forgotten-password-input'>
               <label htmlFor="email-input">E-mail:</label>
@@ -81,7 +83,7 @@ const ForgottenPassword = () => {
                 onChange={handleChange}
               />
             </div>
-            <span className='error-message'>{errroResponseMessage}</span>
+            <ErrorMessage content={errorResponseMessage}/>
             <div className='forgotten-password-other-options'>
               <a href='/'>zpět na přihlášení</a>
               <a href="/registration">registrovat se</a>
@@ -90,7 +92,6 @@ const ForgottenPassword = () => {
               <button type='button' className='get-new-password-button' onClick={submitForgottenPassword}>Získat nové heslo</button>
             </div>
           </form>
-          
         </div>
       </div>
       <Modal isOpen={isForgottenPasswordModalOpen} onClose={closeForgottenPasswordModal} onSubmit={goToLogin} submitContent='Přihlásit se' cancelContent='Zavřít'>
