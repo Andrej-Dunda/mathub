@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './LikeButton.scss'
 import { useContext, useEffect, useState } from 'react'
 import React from 'react'

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './MyBlog.scss'
 import axios from "axios";
 import { ChangeEvent, useContext, useEffect, useState } from "react";

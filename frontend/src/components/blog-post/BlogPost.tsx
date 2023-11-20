@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './BlogPost.scss'
 import LikeButton from '../like-button/LikeButton'
 import ProfilePicture from '../profile-picture/ProfilePicture'
