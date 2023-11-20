@@ -138,7 +138,7 @@ const BlogPost = (props: any) => {
             />}
           </div>
         </main>
-        {showComments && <aside className="blog-post-aside blog-post-comments" ref={commentSectionRef} style={{ height: `${height}px` }} >
+        <aside className={`blog-post-aside blog-post-comments ${!showComments && 'comments-hidden'}`} ref={commentSectionRef} style={{ height: `${height}px` }} >
           <div className="comments-header">
             <h3 className="h3">Komentáře</h3>
             <FontAwesomeIcon icon={faComment} className='comment-icon' />
@@ -167,7 +167,7 @@ const BlogPost = (props: any) => {
               <FontAwesomeIcon icon={faPaperPlane} style={{ color: "#ffffff", }} />
             </button>
           </div>
-        </aside>}
+        </aside>
       </div>
     </>
   )
