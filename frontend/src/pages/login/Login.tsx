@@ -1,7 +1,9 @@
 import './Login.scss'
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from "axios";
 import ErrorMessage from '../../components/error-message/ErrorMessage';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const LoginPage = (props: any) => {
   const [loginForm, setLoginForm] = useState({
@@ -9,6 +11,9 @@ const LoginPage = (props: any) => {
     password: ""
   })
   const [responseMessage, setResponseMessage] = useState<string>('')
+  const [showPassword, setShowPassword] = useState<boolean>(false)
+  const emailInputRef = useRef<HTMLInputElement>(null)
+  const passwordInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const handleKeyPress = (e: any) => {
@@ -63,6 +68,10 @@ const LoginPage = (props: any) => {
     )
   }
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword)
+  }
+
   return (
     <div className="login-page">
       <h1 className="h1 habitator-heading">Habitator</h1>
@@ -79,18 +88,23 @@ const LoginPage = (props: any) => {
                 value={loginForm.email}
                 name='email'
                 onChange={handleChange}
+                ref={emailInputRef}
               />
             </div>
-            <div className='login-input'>
+            <div className='login-input visibility-toggle'>
               <label htmlFor="password-input">Heslo:</label>
-              <input
-                type="password"
-                className='password-input'
-                id='password-input'
-                value={loginForm.password}
-                name='password'
-                onChange={handleChange}
-              />
+              <div>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  className='password-input'
+                  id='password-input'
+                  value={loginForm.password}
+                  name='password'
+                  onChange={handleChange}
+                  ref={passwordInputRef}
+                />
+                <FontAwesomeIcon onClick={togglePasswordVisibility} className={`eye-icon ${!showPassword && 'password-hidden'}`} icon={showPassword ? faEye : faEyeSlash} />
+              </div>
             </div>
           </div>
           <div className="form-footer">
@@ -98,7 +112,7 @@ const LoginPage = (props: any) => {
               <a href='/registration'>registrovat se</a>
               <a href="/forgotten-password">zapomenuté heslo</a>
             </div>
-            <ErrorMessage content={responseMessage}/>
+            <ErrorMessage content={responseMessage} />
             <div className='login-submit'>
               <button type='button' className='login-button' onClick={submitLogin}>Přihlásit se</button>
             </div>
