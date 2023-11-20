@@ -341,19 +341,18 @@ def new_blog_post():
 
 @app.route('/update-blog-post', methods=['POST'])
 def update_blog_post():
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+
     post_id = request.form.get('post_id', None)
-    post_time = datetime.now().isoformat()
     post_title = request.form.get('post_title', None)
     post_description = request.form.get('post_description', None)
-    post_image_name = None
+    post_image_name = cur.execute('SELECT post_image FROM user_posts WHERE id = ?', (post_id,)).fetchone()[0]
 
     if 'post_image' in request.files:
         post_image = request.files['post_image']
         post_image_name = secure_filename(post_image.filename)
         post_image.save(os.path.join(app.config['POST_IMAGES_FOLDER'], post_image_name))
-
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
 
     cur.execute('UPDATE user_posts SET post_title = ?, post_description = ?, post_image = ? WHERE id = ?',
                 (post_title, post_description, post_image_name, post_id))

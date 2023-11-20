@@ -1,17 +1,17 @@
 import './global.scss'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './pages/Layout'
-import Homepage from './pages/Homepage';
-import UserProfile from './pages/UserProfile';
-import Friends from './pages/Friends';
-import LoginPage from './pages/LoginPage';
-import Registration from './pages/Registration';
-import ForgottenPassword from './pages/ForgottenPassword';
+import Layout from './pages/layout/Layout'
+import Homepage from './pages/homepage/Homepage';
+import UserProfile from './pages/user-profile/UserProfile';
+import Friends from './pages/friends/Friends';
+import LoginPage from './pages/login/Login';
+import Registration from './pages/registration/Registration';
+import ForgottenPassword from './pages/forgotten-password/ForgottenPassword';
 import useToken from './utils/useToken'
 import { useState, createContext, useEffect } from "react";
 import React from 'react';
 import axios from 'axios';
-import MyBlog from './pages/MyBlog';
+import MyBlog from './pages/my-blog/MyBlog';
 
 interface iUser {
   id: number,

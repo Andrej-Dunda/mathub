@@ -38,7 +38,6 @@ const LikeButton = (props: any) => {
       getLikes()
     })
     .catch(err => console.error(err))
-    // setLiked(!liked)
   }
 
   return (
