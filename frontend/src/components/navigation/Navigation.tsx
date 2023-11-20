@@ -28,6 +28,7 @@ const Nav = (props: any) => {
   return (
     <nav className="navigation">
         <div className="navbar-left">
+          <img className='habitator-logo' src="/logo" alt="" />
           <a className="navbar-heading link" href="/">Habitator</a>
           <Link to='' className="link" aria-current="page">Domů</Link>
           <Link to='friends' className="link">Přátelé</Link>

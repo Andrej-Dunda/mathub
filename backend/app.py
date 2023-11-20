@@ -20,6 +20,7 @@ app.config["JWT_SECRET_KEY"] = "2a0304fc-7233-11ee-b962-0242ac120002"
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 app.config['PROFILE_PICTURES_FOLDER'] = 'media/profile-pictures'
 app.config['POST_IMAGES_FOLDER'] = 'media/post-images'
+app.config['STATIC_FOLDER'] = 'media/static'
 jwt = JWTManager(app)
 
 @app.after_request
@@ -499,7 +500,9 @@ def delete_blog_post(post_id):
     conn.close()
     return 'Post successfuly deleted'
 
-
+@app.route('/logo')
+def get_logo():
+    return send_from_directory(app.config['STATIC_FOLDER'], 'logo.png')
 
 if __name__ == "__main__":
     app.run(debug=True)
