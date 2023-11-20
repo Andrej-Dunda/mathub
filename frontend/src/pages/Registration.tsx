@@ -122,13 +122,13 @@ const Registration = (props: any) => {
               onChange={handleChange}
             />
           </div>
-          <span className='text-danger'>{responseMessage}</span>
+          <span className='error-message'>{responseMessage}</span>
           <div className='registration-other-options'>
             <a href='/'>zpět na přihlášení</a>
             <a href="/forgotten-password">zapomenuté heslo</a>
           </div>
           <div className='registration-submit'>
-            <button type='button' className='button btn-primary' onClick={submitRegistration}>Registrovat se</button>
+            <button type='button' className='registration-submit-button' onClick={submitRegistration}>Registrovat se</button>
           </div>
         </form>
       </div>

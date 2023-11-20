@@ -148,15 +148,15 @@ const UserProfile = (props: any) => {
         <h1>Změnit heslo</h1>
         <div className="new-password-form">
           <div className='password-input-wrapper'>
-            <label htmlFor="old-password">Staré heslo:</label><br />
+            <label htmlFor="old-password">Staré heslo:</label>
             <input type={showPassword ? 'text' : 'password'} id='old-password' name='oldPassword' value={newPasswordForm.oldPassword} onChange={handleChange} />
           </div>
           <div className='password-input-wrapper'>
-            <label htmlFor="new-password">Nové heslo:</label><br />
+            <label htmlFor="new-password">Nové heslo:</label>
             <input type={showPassword ? 'text' : 'password'} id='new-password' name='newPassword' value={newPasswordForm.newPassword} onChange={handleChange} />
           </div>
           <div className='password-input-wrapper'>
-            <label htmlFor="new-password-again">Nové heslo znovu:</label><br />
+            <label htmlFor="new-password-again">Nové heslo znovu:</label>
             <input type={showPassword ? 'text' : 'password'} id='new-password-again' name='newPasswordAgain' value={newPasswordForm.newPasswordAgain} onChange={handleChange} />
           </div>
           <span className='text-danger'>{failureMessage}</span>
@@ -167,7 +167,7 @@ const UserProfile = (props: any) => {
         </div>
       </Modal>
       <Modal isOpen={isProfilePictureModalOpen} onClose={closeProfilePictureModal} onSubmit={handleNewProfilePictureSubmit} submitContent='Nahrát' cancelContent='Zrušit' >
-        <input type="file" accept="image/*" onChange={handleFileChange} />
+        <input id='profile-picture-upload-input' type="file" accept="image/*" onChange={handleFileChange} />
       </Modal>
     </>
   )

@@ -96,13 +96,13 @@ const LoginPage = (props: any) => {
               onChange={handleChange}
             />
           </div>
-          <span className='text-danger'>{responseMessage}</span>
+          <span className='error-message'>{responseMessage}</span>
           <div className='login-other-options'>
             <a href='/registration'>registrovat se</a>
             <a href="/forgotten-password">zapomenuté heslo</a>
           </div>
           <div className='login-submit'>
-            <button type='button' className='button btn-primary' onClick={submitLogin}>Přihlásit se</button>
+            <button type='button' className='login-button' onClick={submitLogin}>Přihlásit se</button>
           </div>
         </form>
       </div>

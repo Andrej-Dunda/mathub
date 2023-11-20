@@ -1,5 +1,7 @@
 venv/
 
+habits.db
+
 media/post-images/
 
 # Ignore everything in the media/profile-pictures directory

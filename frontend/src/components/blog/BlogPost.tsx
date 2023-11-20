@@ -5,7 +5,7 @@ import Comment from '../comment/Comment'
 import { useContext, useEffect, useState, useRef } from 'react'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faComment, faPaperPlane, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faComment, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { UserContext } from '../../App'
 import CommentButton from '../comment-button/CommentButton'
 import EditButton from '../edit-button/EditButton'
@@ -104,7 +104,7 @@ const BlogPost = (props: any) => {
   }
 
   return (
-    <div className="blog-post">
+    <div className={`blog-post ${!showComments && 'no-comments'}`}>
       <main className={`blog-post-main ${showComments && 'border-right-grey'}`} ref={postContentRef} style={{ height: 'auto' }} >
         <div className="blog-post-header">
           <div className="blog-info">

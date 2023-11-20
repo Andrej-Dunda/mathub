@@ -62,7 +62,7 @@
       border: none;
       background-color: black;
       color: white;
-      font-weight: 600;
+      font-weight: 500;
 
       box-shadow: 0px 0px 101px -33px rgba(0,0,0,0.75);
       -webkit-box-shadow: 0px 0px 101px -33px rgba(0,0,0,0.75);
@@ -70,6 +70,9 @@
 
       &:hover {
         background-color: #202020;
+        box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
+        -webkit-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
+        -moz-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
       }
     }
   }
@@ -89,11 +92,48 @@
     label {
       cursor: pointer;
     }
+
+    label {
+      font-weight: 500;
+    }
   }
 
   .password-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
     input {
       width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid black;
     }
+
+    label {
+      font-weight: 500;
+    }
+  }
+}
+
+#profile-picture-upload-input {
+  padding: 10px;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
+  color: black;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+
+  &:hover {
+    background-color: #e8e8e8;
+    border-color: #c0c0c0;
+  }
+
+  &:focus {
+    border-color: #a0a0a0;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15);
   }
 }

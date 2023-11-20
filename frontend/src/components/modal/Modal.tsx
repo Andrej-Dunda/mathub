@@ -11,8 +11,12 @@ const Modal = ({ isOpen, onClose, onSubmit, children, submitContent, cancelConte
               {children}
             </div>
             <div className="modal-footer">
-              <button type='button' className='btn btn-primary' onClick={onSubmit}>{submitContent}</button>
-              <button type='button' className='btn btn-danger' onClick={onClose}>{cancelContent}</button>
+              <div>
+                <button type='button' className='modal-button cancel-button' onClick={onClose}>{cancelContent}</button>
+              </div>
+              <div>
+                <button type='button' className='modal-button submit-button' onClick={onSubmit}>{submitContent}</button>
+              </div>
             </div>
           </div>
         </div>

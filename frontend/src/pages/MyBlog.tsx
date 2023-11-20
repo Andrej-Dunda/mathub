@@ -107,9 +107,11 @@ const MyBlog = () => {
         <h2 className="h2">Moje Příspěvky</h2>
         <div className="old-posts">
           {
-            myPosts && myPosts.map((post, index) => {
+            myPosts.length > 0 ? myPosts.map((post, index) => {
               return <BlogPost key={index} postData={post} showComments={false} myBlogFormat={true} />
-            })
+            }) : (
+              <span className='no-posts'>Zatím nemáte žádné příspěvky :(</span>
+            )
           }
         </div>
       </div>

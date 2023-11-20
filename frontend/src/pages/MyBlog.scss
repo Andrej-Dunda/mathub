@@ -61,10 +61,6 @@
               border-color: #a0a0a0;
               box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15);
             }
-
-            #file-upload-button {
-              background-color: black;
-            }
           }
         }
 
@@ -76,6 +72,9 @@
 
           &:hover {
             background-color: #202020;
+            box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
+            -webkit-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
+            -moz-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
           }
         }
       }
@@ -87,6 +86,11 @@
       gap: 16px;
 
       align-items: center;
+
+      .no-posts {
+        font-size: 20px;
+        font-weight: 500;
+      }
     }
 
     hr {
