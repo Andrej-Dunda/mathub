@@ -2,11 +2,13 @@ import './BlogPost.scss'
 import LikeButton from '../like-button/LikeButton'
 import ProfilePicture from '../profile-picture/ProfilePicture'
 import Comment from '../comment/Comment'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState, useRef } from 'react'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faComment, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { faComment, faPaperPlane, faEdit } from '@fortawesome/free-solid-svg-icons'
 import { UserContext } from '../../App'
+import CommentButton from '../comment-button/CommentButton'
+import EditButton from '../edit-button/EditButton'
 
 const BlogPost = (props: any) => {
   const userInfo = useContext(UserContext)
@@ -28,18 +30,40 @@ const BlogPost = (props: any) => {
     time: customDateFormat,
     title: props.postData[3],
     content: props.postData[4],
-    image: props.postData[5],
-    likes: 12
+    image: props.postData[5]
   }
   const [comments, setComments] = useState([])
   const [newComment, setNewComment] = useState<string>('')
+  const [showComments, setShowComments] = useState<boolean>(false)
+  const postContentRef = useRef<HTMLDivElement>(null);
+  const commentSectionRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState<number>(0)
+
+  useEffect(() => {
+    // Function to update height
+    const updateHeight = () => {
+      if (postContentRef.current) {
+        // Using getBoundingClientRect to get full outer dimensions
+        const rect = postContentRef.current.getBoundingClientRect();
+        setHeight(rect.height);
+      }
+    };
+
+    // Delaying the update to ensure content is loaded
+    setTimeout(updateHeight, 100);
+
+    window.addEventListener('resize', updateHeight);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', updateHeight);
+  }, [showComments]);
 
   useEffect(() => {
     axios.get(`/user/${postData.user_id}`)
-    .then(res => {
-      setUserName(res.data.user[2] + ' ' + res.data.user[3])
-    })
-    .catch((err) => console.error(err))
+      .then(res => {
+        setUserName(res.data.user[2] + ' ' + res.data.user[3])
+      })
+      .catch((err) => console.error(err))
   }, [postData.user_id])
 
   useEffect(() => {
@@ -48,10 +72,10 @@ const BlogPost = (props: any) => {
 
   const getComments = () => {
     axios.get(`/comments/${postData.id}`)
-    .then(res => {
-      setComments(res.data)
-    })
-    .catch(err => console.error(err))
+      .then(res => {
+        setComments(res.data)
+      })
+      .catch(err => console.error(err))
   }
 
   const handleCommentKeyPress = (e: any) => {
@@ -72,45 +96,47 @@ const BlogPost = (props: any) => {
         comment: newComment
       }
     })
-    .then((res) => {
-      setNewComment('')
-      getComments()
-    })
-    .catch(err => console.error(err))
+      .then((res) => {
+        setNewComment('')
+        getComments()
+      })
+      .catch(err => console.error(err))
   }
 
   return (
     <div className="blog-post">
-      <main className="blog-post-main">
-      <div className="blog-post-header">
-        <div className="blog-info">
-          <div className="user-profile-picture">
-            <ProfilePicture className='post-size radius-100 border' userId={postData.user_id} />
+      <main className={`blog-post-main ${showComments && 'border-right-grey'}`} ref={postContentRef} style={{ height: 'auto' }} >
+        <div className="blog-post-header">
+          <div className="blog-info">
+            <div className="user-profile-picture">
+              <ProfilePicture className='post-size radius-100 border' userId={postData.user_id} />
+            </div>
+            <div className="user-name-and-post-time">
+              <h3 className='user-name h3'>{userName}</h3>
+              <span className='blog-post-time'>{postData.time}</span>
+            </div>
+            <div className="blog-post-buttons">
+              <LikeButton postId={postData.id} />
+              {!props.myBlogFormat && <CommentButton showComments={showComments} setShowComments={setShowComments} commentsCount={comments.length} />}
+              {props.myBlogFormat && <EditButton postId={postData.id} />}
+            </div>
           </div>
-          <div className="user-name-and-post-time">
-            <h3 className='user-name h3'>{userName}</h3>
-            <span className='blog-post-time'>{postData.time}</span>
-          </div>
-          <div className="blog-post-likes">
-            <LikeButton postId={postData.id} />
-          </div>
+          <hr />
+          <h4 className='h4'>{postData.title}</h4>
         </div>
-        <hr />
-        <h4 className='h4'>{postData.title}</h4>
-      </div>
-      <div className="blog-post-body">
-        <img
-          className='post-image'
-          src={`http://127.0.0.1:5000/post-image/${postData.image}`}
-          alt=""
-        />
-        <p className='blog-post-content'>{postData.content}</p>
-      </div>
+        <div className="blog-post-body">
+          <img
+            className='post-image'
+            src={`http://127.0.0.1:5000/post-image/${postData.image}`}
+            alt=""
+          />
+          <p className='blog-post-content'>{postData.content}</p>
+        </div>
       </main>
-      <aside className="blog-post-aside blog-post-comments">
+      {showComments && <aside className="blog-post-aside blog-post-comments" ref={commentSectionRef} style={{ height: `${height}px` }} >
         <div className="comments-header">
           <h3 className="h3">Komentáře</h3>
-          <FontAwesomeIcon icon={faComment} className='comment-icon'/>
+          <FontAwesomeIcon icon={faComment} className='comment-icon' />
         </div>
         <div className="comments">
           {
@@ -133,10 +159,10 @@ const BlogPost = (props: any) => {
             onKeyDown={handleCommentKeyPress}
           />
           <button className='submit-comment' onClick={submitComment}>
-            <FontAwesomeIcon icon={faPaperPlane} style={{color: "#ffffff",}} />
+            <FontAwesomeIcon icon={faPaperPlane} style={{ color: "#ffffff", }} />
           </button>
         </div>
-      </aside>
+      </aside>}
     </div>
   )
 }

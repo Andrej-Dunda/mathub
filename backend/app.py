@@ -316,6 +316,51 @@ def upload_profile_picture(id):
     else:
         return 'No file part', 400
 
+@app.route('/new-blog-post', methods=['POST'])
+def new_blog_post():
+    user_id = request.form.get('user_id', None)
+    post_time = datetime.now().isoformat()
+    post_title = request.form.get('post_title', None)
+    post_description = request.form.get('post_description', None)
+    post_image_name = None
+
+    if 'post_image' in request.files:
+        post_image = request.files['post_image']
+        post_image_name = secure_filename(post_image.filename)
+        post_image.save(os.path.join(app.config['POST_IMAGES_FOLDER'], post_image_name))
+
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+
+    cur.execute('INSERT INTO user_posts (user_id, post_time, post_title, post_description, post_image) VALUES (?, ?, ?, ?, ?)',
+                (user_id, post_time, post_title, post_description, post_image_name))
+
+    conn.commit()
+    conn.close()
+    return 'Post added successfuly!', 200
+
+@app.route('/user-profile-picture/<user_id>')
+def get_profile_picture(user_id):
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    try:
+        profile_picture = cur.execute('SELECT profile_picture FROM users WHERE id = ?', (user_id,)).fetchone()[0]
+    except:
+        profile_picture = 'profile-picture-defualt.png'
+    return profile_picture
+
+@app.route('/profile-picture/<id>')
+def get_user_profile_picture(id):
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    try:
+        profile_picture = cur.execute('SELECT profile_picture FROM users WHERE id = ?', (id,)).fetchone()[0]
+        return send_from_directory(app.config['PROFILE_PICTURES_FOLDER'], profile_picture)
+    except:
+        return send_from_directory(app.config['PROFILE_PICTURES_FOLDER'], 'profile-picture-default.png')
+    finally:
+        conn.close()
+
 @app.route('/change-password', methods=['POST'])
 def change_password():
     try:
@@ -339,28 +384,6 @@ def change_password():
             return {'success': False}
     except sqlite3.Error as e:
         return {'msg': f'Databázová chyba: {str(e)}', 'success': False}
-    finally:
-        conn.close()
-
-@app.route('/user-profile-picture/<user_id>')
-def get_profile_picture(user_id):
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    try:
-        profile_picture = cur.execute('SELECT profile_picture FROM users WHERE id = ?', (user_id,)).fetchone()[0]
-    except:
-        profile_picture = 'profile-picture-defualt.png'
-    return profile_picture
-
-@app.route('/profile-picture/<id>')
-def get_user_profile_picture(id):
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    try:
-        profile_picture = cur.execute('SELECT profile_picture FROM users WHERE id = ?', (id,)).fetchone()[0]
-        return send_from_directory(app.config['PROFILE_PICTURES_FOLDER'], profile_picture)
-    except:
-        return send_from_directory(app.config['PROFILE_PICTURES_FOLDER'], 'profile-picture-default.png')
     finally:
         conn.close()
 
@@ -392,6 +415,14 @@ def get_posts():
     conn = sqlite3.connect('habits.db')
     cur = conn.cursor()
     posts_data = cur.execute('SELECT * FROM user_posts').fetchall()
+    conn.close()
+    return posts_data
+
+@app.route('/get-my-posts/<user_id>')
+def get_my_posts(user_id):
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    posts_data = cur.execute('SELECT * FROM user_posts WHERE user_id = ?', (user_id,)).fetchall()
     conn.close()
     return posts_data
 
@@ -436,7 +467,6 @@ def add_comment():
     conn.commit()
     conn.close()
     return 'Comment added successfuly!'
-    
 
 if __name__ == "__main__":
     app.run(debug=True)

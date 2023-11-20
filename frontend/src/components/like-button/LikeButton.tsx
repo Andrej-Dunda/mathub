@@ -13,7 +13,7 @@ const LikeButton = (props: any) => {
 
   useEffect(() => {
     getLikes()
-  })
+  }, [])
 
   const getLikes = () => {
     axios.get(`/post-likes/${props.postId}`)

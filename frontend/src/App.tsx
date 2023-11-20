@@ -11,6 +11,7 @@ import useToken from './utils/useToken'
 import { useState, createContext, useEffect } from "react";
 import React from 'react';
 import axios from 'axios';
+import MyBlog from './pages/MyBlog';
 
 interface iUser {
   id: number,
@@ -87,6 +88,7 @@ const App = () => {
               <Route index element={<Homepage />} />
               <Route path="user-profile" element={<UserProfile removeToken={removeToken} updateUser={updateUser} />} />
               <Route path="friends" element={<Friends />} />
+              <Route path="my-blog" element={<MyBlog />} />
               <Route path="*" element={<Homepage />} />
             </Route>
           </Routes>

@@ -32,6 +32,7 @@ const Nav = (props: any) => {
           <a className="navbar-heading link" href="/">Habitator</a>
           <Link to='' className="link" aria-current="page">Domů</Link>
           <Link to='friends' className="link">Přátelé</Link>
+          <Link to='my-blog' className="link">Můj Blog</Link>
         </div>
         <div className="navbar-right">
           <Link to='' className="logout" onClick={logout}>Odhlásit se</Link>

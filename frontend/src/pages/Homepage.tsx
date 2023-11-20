@@ -3,7 +3,7 @@ import './Homepage.scss'
 import axios from "axios";
 import BlogPost from "../components/blog/BlogPost";
 
-const Homepage = (props: any) => {
+const Homepage = () => {
   const [posts, setPosts] = useState([])
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const Homepage = (props: any) => {
         {
           posts && posts.map((post, index) => {
             return (
-              <BlogPost key={index} postData={post} />
+              <BlogPost key={index} postData={post} showComments={false} myBlogFormat={false} />
             )
           })
         }

@@ -46,7 +46,7 @@ const UserProfile = (props: any) => {
     formData.append('profile_picture', newProfilePicture);
 
     try {
-      await axios.post(`http://127.0.0.1:5000/upload-profile-picture/${userInfo.id}`, formData, {
+      await axios.post(`/upload-profile-picture/${userInfo.id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }
