@@ -15,7 +15,6 @@ const Nav = (props: any) => {
     })
       .then((response) => {
         props.removeToken()
-        console.error(response.data.msg)
         localStorage.removeItem('userData')
       }).catch((error) => {
         if (error.response) {

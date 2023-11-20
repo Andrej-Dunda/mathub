@@ -50,10 +50,6 @@
           width: fit-content;
         }
       }
-
-      .blog-post-heading {
-        text-align: justify;
-      }
     }
 
     .blog-post-body {
@@ -109,8 +105,6 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-
-      text-align: justify;
     }
 
     .comment-input-wrapper {
