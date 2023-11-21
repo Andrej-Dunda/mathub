@@ -12,6 +12,7 @@ import { useState, createContext, useEffect } from "react";
 import React from 'react';
 import axios from 'axios';
 import MyBlog from './pages/my-blog/MyBlog';
+import Documentation from './pages/documentation/Documentation';
 
 interface iUser {
   id: number,
@@ -73,17 +74,16 @@ const App = () => {
   return (
     <UserContext.Provider value={user}>
       <Router>
-        {!token && token !== "" && token !== undefined ? (
-          <Routes>
+        <Routes>
+          <Route path="/documentation" element={<Documentation />} />
+          {!token && token !== "" && token !== undefined ? (
             <Route path="/">
               <Route index element={<LoginPage setToken={setToken} setUser={setUser} />} />
               <Route path="registration" element={<Registration />} />
               <Route path="forgotten-password" element={<ForgottenPassword />} />
               <Route path="*" element={<LoginPage />} />
             </Route>
-          </Routes>
-        ) : (
-          <Routes>
+          ) : (
             <Route path="/" element={<Layout removeToken={removeToken} />}>
               <Route index element={<Homepage />} />
               <Route path="user-profile" element={<UserProfile removeToken={removeToken} updateUser={updateUser} />} />
@@ -91,8 +91,8 @@ const App = () => {
               <Route path="my-blog" element={<MyBlog />} />
               <Route path="*" element={<Homepage />} />
             </Route>
-          </Routes>
-        )}
+          )}
+        </Routes>
       </Router>
     </UserContext.Provider>
   );

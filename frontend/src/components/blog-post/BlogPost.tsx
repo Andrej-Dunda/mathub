@@ -40,6 +40,7 @@ const BlogPost = (props: any) => {
   const [showComments, setShowComments] = useState<boolean>(false)
   const postContentRef = useRef<HTMLDivElement>(null);
   const commentSectionRef = useRef<HTMLDivElement>(null);
+  const commentsRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>(0)
 
   useEffect(() => {
@@ -102,6 +103,7 @@ const BlogPost = (props: any) => {
       .then((res) => {
         setNewComment('')
         getComments()
+        if (commentsRef.current) commentsRef.current.scrollTop = 0;
       })
       .catch(err => console.error(err))
   }
@@ -143,7 +145,7 @@ const BlogPost = (props: any) => {
             <h3 className="h3">Komentáře</h3>
             <FontAwesomeIcon icon={faComment} className='comment-icon' />
           </div>
-          <div className="comments">
+          <div className="comments" ref={commentsRef} >
             {
               !comments ? (
                 <span>Žádné komentáře</span>
@@ -164,7 +166,7 @@ const BlogPost = (props: any) => {
               onKeyDown={handleCommentKeyPress}
             />
             <button className='submit-comment' onClick={submitComment}>
-              <FontAwesomeIcon icon={faPaperPlane} style={{ color: "#ffffff", }} />
+              <FontAwesomeIcon icon={faPaperPlane} style={{ color: "#ffffff" }} />
             </button>
           </div>
         </aside>
