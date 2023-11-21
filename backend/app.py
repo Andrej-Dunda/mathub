@@ -10,7 +10,7 @@ from werkzeug.utils import secure_filename
 import os
 from flask_cors import CORS
 from PIL import Image
-
+from flask_swagger import swagger
 
 app = Flask(__name__)
 
@@ -40,12 +40,10 @@ def refresh_expiring_jwts(response):
         # Case where there is not a valid JWT. Just return the original respone
         return response
 
-@app.route('/user/<id>', methods=['GET'])
-def get_user(id):
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    user = cur.execute('SELECT id, user_email, first_name, last_name, profile_picture, registration_date FROM users WHERE id = ?', (id,)).fetchone()
-    return {"user": user}
+
+# ---------------------
+# LOGIN PAGES ENDPOINTS
+# ---------------------
 
 @app.route('/login', methods=["POST"])
 def create_token():
@@ -96,13 +94,6 @@ def logout():
     response = jsonify({"msg": "logout successful"})
     unset_jwt_cookies(response)
     return response
-
-@app.route("/users")
-def users_table():
-    conn = sqlite3.connect("habits.db")
-    cur = conn.cursor()
-    res = cur.execute("SELECT * FROM users").fetchall()
-    return res
 
 @app.route('/registration', methods=['POST'])
 def register_new_user():
@@ -164,6 +155,18 @@ def generate_new_password():
          'result': True
          })
     
+
+# -----------------
+# FRIENDS ENDPOINTS
+# -----------------
+
+@app.route("/users")
+def users_table():
+    conn = sqlite3.connect("habits.db")
+    cur = conn.cursor()
+    res = cur.execute("SELECT * FROM users").fetchall()
+    return res
+
 @app.route('/get-friend-suggestions', methods=['POST'])
 # @jwt_required()
 def get_friend_suggestions():
@@ -288,34 +291,10 @@ def delete_friend_request(requestor_id, acceptor_id):
    conn.commit()
    conn.close()
 
-def crop_image_to_square(image_path):
-    with Image.open(image_path) as img:
-        width, height = img.size
-        new_size = min(width, height)
 
-        left = (width - new_size) / 2
-        top = (height - new_size) / 2
-        right = (width + new_size) / 2
-        bottom = (height + new_size) / 2
-
-        img = img.crop((left, top, right, bottom))
-        img.save(image_path)  # Overwrite the original image or save as a new file
-
-@app.route('/upload-profile-picture/<id>', methods=['POST'])
-def upload_profile_picture(id):
-    if 'profile_picture' in request.files:
-        file = request.files['profile_picture']
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], filename))
-        conn = sqlite3.connect('habits.db')
-        cur = conn.cursor()
-        cur.execute('UPDATE users SET profile_picture = ? WHERE id = ?', (filename, id))
-        conn.commit()
-        conn.close()
-        crop_image_to_square(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], filename))
-        return 'File uploaded successfully', 200
-    else:
-        return 'No file part', 400
+# --------------------
+# BLOG POSTS ENDPOINTS
+# --------------------
 
 @app.route('/new-blog-post', methods=['POST'])
 def new_blog_post():
@@ -361,6 +340,142 @@ def update_blog_post():
     conn.commit()
     conn.close()
     return 'Post edited successfuly!', 200
+
+@app.route('/delete-blog-post/<post_id>', methods=['POST'])
+def delete_blog_post(post_id):
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    cur.execute('DELETE FROM user_posts WHERE id = ?', (post_id,))
+    conn.commit()
+    conn.close()
+    return 'Post successfuly deleted'
+
+@app.route('/post/<id>')
+def get_post(id):
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    post_data = cur.execute('SELECT * FROM user_posts WHERE id = ?', (id,)).fetchone()
+    conn.close()
+    return post_data
+
+@app.route('/posts')
+def get_posts():
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    posts_data = cur.execute('SELECT * FROM user_posts ORDER BY id DESC').fetchall()
+    conn.close()
+    return posts_data
+
+@app.route('/get-my-posts/<user_id>')
+def get_my_posts(user_id):
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    posts_data = cur.execute('SELECT * FROM user_posts WHERE user_id = ? ORDER BY id DESC', (user_id,)).fetchall()
+    conn.close()
+    return posts_data
+
+@app.route('/post-likes/<post_id>')
+def get_post_likes(post_id):
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    post_liker_ids = cur.execute('SELECT liker_id FROM post_likes WHERE post_id = ?', (post_id,)).fetchall()
+    conn.close()
+    return post_liker_ids
+
+@app.route('/toggle-post-like', methods=['POST'])
+def toggle_post_like():
+    post_id = request.json.get('post_id', None)
+    user_id = request.json.get('user_id', None)
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    like_data = cur.execute('SELECT * FROM post_likes WHERE post_id = ? AND liker_id = ?', (post_id, user_id)).fetchone()
+
+    print(like_data)
+    if like_data != None:
+        cur.execute('DELETE FROM post_likes WHERE post_id = ? AND liker_id = ?', (post_id, user_id))
+        conn.commit()
+        conn.close()
+        return 'unliked'
+    else:
+        cur.execute('INSERT INTO post_likes (post_id, liker_id) VALUES (?, ?)', (post_id, user_id))
+        conn.commit()
+        conn.close()
+        return 'liked'
+
+@app.route('/post-image/<filename>')
+def get_post_image(filename):
+    try:
+        return send_from_directory(app.config['POST_IMAGES_FOLDER'], filename)
+    except:
+        return
+
+
+# ------------------
+# COMMENTS ENDPOINTS
+# ------------------
+
+@app.route('/comments/<post_id>')
+def get_comments(post_id):
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    comments = cur.execute('SELECT commenter_id, comment, comment_time FROM post_comments WHERE post_id = ? ORDER BY id DESC', (post_id,)).fetchall()
+    conn.close()
+    return comments
+
+@app.route('/add-comment', methods=['POST'])
+def add_comment():
+    post_id = request.json.get('post_id', None)
+    commenter_id = request.json.get('commenter_id', None)
+    comment = request.json.get('comment', None)
+    comment_time = datetime.now().isoformat()
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    cur.execute('INSERT INTO post_comments (post_id, commenter_id, comment, comment_time) VALUES (?, ?, ?, ?)',
+                (post_id, commenter_id, comment, comment_time))
+    conn.commit()
+    conn.close()
+    return 'Comment added successfuly!'
+
+
+# ----------------------
+# USER ACCOUNT ENDPOINTS
+# ----------------------
+
+@app.route('/user/<id>', methods=['GET'])
+def get_user(id):
+    conn = sqlite3.connect('habits.db')
+    cur = conn.cursor()
+    user = cur.execute('SELECT id, user_email, first_name, last_name, profile_picture, registration_date FROM users WHERE id = ?', (id,)).fetchone()
+    return {"user": user}
+
+def crop_image_to_square(image_path):
+    with Image.open(image_path) as img:
+        width, height = img.size
+        new_size = min(width, height)
+
+        left = (width - new_size) / 2
+        top = (height - new_size) / 2
+        right = (width + new_size) / 2
+        bottom = (height + new_size) / 2
+
+        img = img.crop((left, top, right, bottom))
+        img.save(image_path)  # Overwrite the original image or save as a new file
+
+@app.route('/upload-profile-picture/<id>', methods=['POST'])
+def upload_profile_picture(id):
+    if 'profile_picture' in request.files:
+        file = request.files['profile_picture']
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], filename))
+        conn = sqlite3.connect('habits.db')
+        cur = conn.cursor()
+        cur.execute('UPDATE users SET profile_picture = ? WHERE id = ?', (filename, id))
+        conn.commit()
+        conn.close()
+        crop_image_to_square(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], filename))
+        return 'File uploaded successfully', 200
+    else:
+        return 'No file part', 400
 
 @app.route('/user-profile-picture/<user_id>')
 def get_profile_picture(user_id):
@@ -410,99 +525,22 @@ def change_password():
     finally:
         conn.close()
 
-@app.route('/post/<id>')
-def get_post(id):
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    post_data = cur.execute('SELECT * FROM user_posts WHERE id = ?', (id,)).fetchone()
-    conn.close()
-    return post_data
 
-@app.route('/post-likes/<post_id>')
-def get_post_likes(post_id):
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    post_liker_ids = cur.execute('SELECT liker_id FROM post_likes WHERE post_id = ?', (post_id,)).fetchall()
-    conn.close()
-    return post_liker_ids
-
-@app.route('/post-image/<filename>')
-def get_post_image(filename):
-    try:
-        return send_from_directory(app.config['POST_IMAGES_FOLDER'], filename)
-    except:
-        return
-
-@app.route('/posts')
-def get_posts():
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    posts_data = cur.execute('SELECT * FROM user_posts').fetchall()
-    conn.close()
-    return posts_data
-
-@app.route('/get-my-posts/<user_id>')
-def get_my_posts(user_id):
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    posts_data = cur.execute('SELECT * FROM user_posts WHERE user_id = ?', (user_id,)).fetchall()
-    conn.close()
-    return posts_data
-
-@app.route('/toggle-post-like', methods=['POST'])
-def toggle_post_like():
-    post_id = request.json.get('post_id', None)
-    user_id = request.json.get('user_id', None)
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    like_data = cur.execute('SELECT * FROM post_likes WHERE post_id = ? AND liker_id = ?', (post_id, user_id)).fetchone()
-
-    print(like_data)
-    if like_data != None:
-        cur.execute('DELETE FROM post_likes WHERE post_id = ? AND liker_id = ?', (post_id, user_id))
-        conn.commit()
-        conn.close()
-        return 'unliked'
-    else:
-        cur.execute('INSERT INTO post_likes (post_id, liker_id) VALUES (?, ?)', (post_id, user_id))
-        conn.commit()
-        conn.close()
-        return 'liked'
-
-@app.route('/comments/<post_id>')
-def get_comments(post_id):
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    comments = cur.execute('SELECT commenter_id, comment, comment_time FROM post_comments WHERE post_id = ?', (post_id,)).fetchall()
-    conn.close()
-    return comments
-
-@app.route('/add-comment', methods=['POST'])
-def add_comment():
-    post_id = request.json.get('post_id', None)
-    commenter_id = request.json.get('commenter_id', None)
-    comment = request.json.get('comment', None)
-    comment_time = datetime.now().isoformat()
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    cur.execute('INSERT INTO post_comments (post_id, commenter_id, comment, comment_time) VALUES (?, ?, ?, ?)',
-                (post_id, commenter_id, comment, comment_time))
-    conn.commit()
-    conn.close()
-    return 'Comment added successfuly!'
-
-@app.route('/delete-blog-post/<post_id>', methods=['POST'])
-def delete_blog_post(post_id):
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    cur.execute('DELETE FROM user_posts WHERE id = ?', (post_id,))
-    conn.commit()
-    conn.close()
-    return 'Post successfuly deleted'
+# ---------------
+# OTHER ENDPOINTS
+# ---------------
 
 @app.route('/logo')
 def get_logo():
     return send_from_directory(app.config['STATIC_FOLDER'], 'logo.png')
+
+# swagger documentation visualisation
+@app.route("/documentation")
+def get_documentation():
+    swag = swagger(app)
+    swag['info']['version'] = "1.0"
+    swag['info']['title'] = "My API"
+    return jsonify(swag)
 
 if __name__ == "__main__":
     app.run(debug=True)
