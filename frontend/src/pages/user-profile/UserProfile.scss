@@ -116,24 +116,42 @@
   }
 }
 
-#profile-picture-upload-input {
-  padding: 10px;
-  background-color: white;
-  border: 1px solid black;
-  border-radius: 5px;
-  color: black;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 100%;
+.new-profile-picture {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 
-  &:hover {
-    background-color: #e8e8e8;
-    border-color: #c0c0c0;
+  .profile-picture-upload-label {
+    font-size: calc(1.375rem + 1.5vw);
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    line-height: 1.2;
   }
 
-  &:focus {
-    border-color: #a0a0a0;
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15);
+  #profile-picture-upload-input {
+    padding: 10px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 5px;
+    color: black;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+
+    &:hover {
+      background-color: #e8e8e8;
+      border-color: #c0c0c0;
+    }
+
+    &:focus {
+      border-color: #a0a0a0;
+      box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  .uploaded-image-name {
+    text-align: center;
   }
 }
