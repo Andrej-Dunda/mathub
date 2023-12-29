@@ -5,6 +5,7 @@ import './Friends.scss'
 import React from 'react';
 import FriendWindow from '../../components/friend-window/FriendWindow';
 import axios from 'axios';
+import Checkbox from '../../components/checkbox/Checkbox';
 
 const Friends = () => {
   const [users, setUsers] = useState<any[]>([]);
@@ -177,10 +178,7 @@ const Friends = () => {
       </div>
 
       <div className="container-fluid users-list">
-        <label className='show-all-users' htmlFor="show-all-users">
-          <input type="checkbox" name='show-all-users' id='show-all-users' checked={showAllUsers} onChange={toggleShowAllUsers} />
-          <span className='form-text'>Zobrazit seznam všech uživatelů</span>
-        </label>
+        <Checkbox checked={showAllUsers} onToggle={toggleShowAllUsers} label='Zobrazit seznam všech uživatelů'/>
         {showAllUsers && <table className='table table-striped'>
           <thead>
             <tr>

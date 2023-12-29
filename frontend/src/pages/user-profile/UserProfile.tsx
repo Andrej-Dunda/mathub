@@ -7,6 +7,7 @@ import ProfilePicture from '../../components/profile-picture/ProfilePicture';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import Snackbar from '../../components/snack-bar/SnackBar';
 import FileUploader from '../../components/file-uploader/FileUploader';
+import Checkbox from '../../components/checkbox/Checkbox';
 
 const UserProfile = (props: any) => {
   const userInfo = useContext(UserContext)
@@ -183,8 +184,7 @@ const UserProfile = (props: any) => {
           </div>
           <ErrorMessage content={errorMessage}/>
           <div className='password-visibility-wrapper'>
-            <input type="checkbox" checked={showPassword} onChange={togglePasswordVisibility} id='password-visibility' />
-            <label htmlFor="password-visibility">Zobrazit hesla</label>
+            <Checkbox checked={showPassword} onToggle={togglePasswordVisibility} label='Zobrazit hesla'/>
           </div>
         </div>
       </Modal>
