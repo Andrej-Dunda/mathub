@@ -1,0 +1,95 @@
+.my-materials-window {
+  padding: 32px;
+
+  .h1 {
+    text-align: center;
+  }
+
+  .my-materials {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 200px);
+    gap: 16px;
+
+    padding: 16px;
+
+    justify-content: center;
+
+    .material-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      padding: 8px;
+
+      aspect-ratio: 1/1;
+      border: 1px solid black;
+      border-radius: 8px;
+
+      background-color: white;
+      font-weight: 500;
+
+      box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+      -webkit-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+      -moz-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+
+      &:hover {
+        background-color: #F5F5F5;
+      }
+    }
+
+    .add-material-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      padding: 8px;
+
+      aspect-ratio: 1/1;
+      border: 1px dashed grey;
+      border-radius: 8px;
+
+      background-color: white;
+      font-weight: 500;
+
+      box-shadow: 1px 1px 8px 1px rgb(245,245,245);
+      -webkit-box-shadow: 1px 1px 8px 1px rgb(245,245,245);
+      -moz-box-shadow: 1px 1px 8px 1px rgb(245,245,245);
+
+      &:hover {
+        border-color: #707070;
+        background-color: #F5F5F5;
+
+        box-shadow: 1px 1px 8px 1px 	rgb(211,211,211);
+        -webkit-box-shadow: 1px 1px 8px 1px 	rgb(211,211,211);
+        -moz-box-shadow: 1px 1px 8px 1px 	rgb(211,211,211);
+
+        .edit-icon {
+          color: #707070
+        }
+      }
+    }
+  }
+
+  .new-material-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  
+    .new-material-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+  
+      input {
+        width: 100%;
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid black;
+      }
+  
+      label {
+        font-weight: 500;
+      }
+    }
+  }
+}
