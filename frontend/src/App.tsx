@@ -13,7 +13,7 @@ import React from 'react';
 import axios from 'axios';
 import MyBlog from './pages/my-blog/MyBlog';
 import Documentation from './pages/documentation/Documentation';
-import MyMaterials from './pages/my-materials/MyMaterials';
+import MyMaterialsWindow from './pages/my-materials-window/MyMaterialsWindow';
 import NewBookAnalysis from './pages/new-book-analysis/NewBookAnalysis';
 
 interface iUser {
@@ -91,7 +91,7 @@ const App = () => {
               <Route path="user-profile" element={<UserProfile removeToken={removeToken} updateUser={updateUser} />} />
               <Route path="friends" element={<Friends />} />
               <Route path="my-blog" element={<MyBlog />} />
-              <Route path="my-materials" element={<MyMaterials />} />
+              <Route path="my-materials" element={<MyMaterialsWindow />} />
               <Route path="new-book-analysis" element={<NewBookAnalysis />} />
               <Route path="*" element={<Homepage />} />
             </Route>

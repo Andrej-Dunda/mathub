@@ -74,7 +74,7 @@ const LoginPage = (props: any) => {
 
   return (
     <div className="login-page">
-      <h1 className="h1 habitator-heading">Habitator</h1>
+      <h1 className="h1 mathub-heading">MatHub</h1>
       <div className="login-window">
         <h2 className='h2 form-heading'>Přihlášení</h2>
         <form>

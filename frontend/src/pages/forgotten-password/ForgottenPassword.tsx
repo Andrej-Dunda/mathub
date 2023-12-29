@@ -68,7 +68,7 @@ const ForgottenPassword = () => {
   return (
     <>
       <div className="forgotten-password-page">
-        <h1 className="h1 habitator-heading">Habitator</h1>
+        <h1 className="h1 mathub-heading">MatHub</h1>
         <div className="forgotten-password-window">
           <h2 className='h2'>Resetovat heslo</h2>
           <form>

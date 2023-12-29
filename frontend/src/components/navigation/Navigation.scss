@@ -18,21 +18,34 @@
     gap: 20px;
     align-items: center;
 
-    .habitator-logo {
+    .mathub-logo {
       height: 40px;
       width: 40px;
       border-radius: 100%;
+
+      pointer-events: all;
+      cursor: pointer;
+
+      &:hover {
+        box-shadow: 1px 1px 8px 1px rgb(245,245,245);
+        -webkit-box-shadow: 1px 1px 8px 1px rgb(245,245,245);
+        -moz-box-shadow: 1px 1px 8px 1px rgb(245,245,245);
+      }
     }
 
     .navbar-heading {
       font-size: 24px;
       font-weight: 500;
+      margin: 0;
+      cursor: pointer;
     }
 
     .link {
       color: white;
       text-decoration: none;
       font-weight: 500;
+
+      user-select: none;
 
       &:hover {
         color: #dedede;
@@ -52,8 +65,20 @@
       color: white;
       font-weight: 500;
 
+      user-select: none;
+
       &:hover {
         color: #dedede;
+      }
+    }
+
+    .profile-badge {
+      border-radius: 100%;
+
+      &:hover {
+        box-shadow: 1px 1px 8px 1px rgb(245,245,245);
+        -webkit-box-shadow: 1px 1px 8px 1px rgb(245,245,245);
+        -moz-box-shadow: 1px 1px 8px 1px rgb(245,245,245);
       }
     }
   }

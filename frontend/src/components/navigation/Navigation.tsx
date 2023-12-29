@@ -1,12 +1,13 @@
 import React, { useContext } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import './Navigation.scss'
 import axios from "axios";
 import ProfilePicture from '../profile-picture/ProfilePicture';
 import { UserContext } from '../../App';
 
-const Nav = (props: any) => {
+const Navigation = (props: any) => {
   const userInfo = useContext(UserContext)
+  const navigate = useNavigate();
 
   const logout = () => {
     axios({
@@ -25,11 +26,15 @@ const Nav = (props: any) => {
       })
   }
 
+  const home = () => {
+    navigate('/')
+  }
+
   return (
     <nav className="navigation">
         <div className="navbar-left">
-          <img className='habitator-logo' src="/logo" alt="" />
-          <a className="navbar-heading link" href="/">Habitator</a>
+          <img className='mathub-logo' src="/logo" alt="" onClick={home} />
+          <h1 className="navbar-heading link" onClick={home}>MatHub</h1>
           <Link to='' className="link" aria-current="page">Domů</Link>
           <Link to='friends' className="link">Přátelé</Link>
           <Link to='my-blog' className="link">Můj Blog</Link>
@@ -44,4 +49,4 @@ const Nav = (props: any) => {
     </nav>
   )
 }
-export default Nav;
+export default Navigation;

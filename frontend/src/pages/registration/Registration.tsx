@@ -114,7 +114,7 @@ const Registration = (props: any) => {
 
   return (
     <div className="registration-page">
-      <h1 className="h1 habitator-heading">Habitator</h1>
+      <h1 className="h1 mathub-heading">MatHub</h1>
       <div className="registration-window">
         <h2 className='h2 form-heading'>Registrace</h2>
         <form>

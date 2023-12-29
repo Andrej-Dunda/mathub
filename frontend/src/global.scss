@@ -383,8 +383,14 @@ button {
     border-radius: 8px;
     padding: 8px;
     cursor: pointer;
+    background-color: white;
 }
 
 button:focus {
     outline: none !important;
+}
+
+img {
+    user-select: none;
+    pointer-events: none;
 }
