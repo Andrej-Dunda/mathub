@@ -18,6 +18,7 @@ const ProfilePicture = (props: any) => {
       className={`profile-picture ${props.className}`}
       src={imgSrc}
       alt=""
+      onClick={() => props.onClick()}
     />
   );
 };

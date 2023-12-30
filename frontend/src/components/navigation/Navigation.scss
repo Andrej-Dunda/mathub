@@ -3,8 +3,8 @@
   flex-direction: row;
   justify-content: space-between;
 
-  height: 56px;
-  max-height: 56px;
+  height: var(--navigation-menu-height);
+  max-height: var(--navigation-menu-height);
   background-color: black;
 
   padding: 0 16px;
@@ -27,9 +27,9 @@
       cursor: pointer;
 
       &:hover {
-        box-shadow: 1px 1px 8px 1px rgb(245,245,245);
-        -webkit-box-shadow: 1px 1px 8px 1px rgb(245,245,245);
-        -moz-box-shadow: 1px 1px 8px 1px rgb(245,245,245);
+        box-shadow: 0px 0px 30px 1px rgba(255,255,255,0.75);
+        -webkit-box-shadow: 0px 0px 30px 1px rgba(255,255,255,0.75);
+        -moz-box-shadow: 0px 0px 30px 1px rgba(255,255,255,0.75);
       }
     }
 
@@ -74,12 +74,8 @@
 
     .profile-badge {
       border-radius: 100%;
-
-      &:hover {
-        box-shadow: 1px 1px 8px 1px rgb(245,245,245);
-        -webkit-box-shadow: 1px 1px 8px 1px rgb(245,245,245);
-        -moz-box-shadow: 1px 1px 8px 1px rgb(245,245,245);
-      }
+      pointer-events: all;
+      cursor: pointer;
     }
   }
 }

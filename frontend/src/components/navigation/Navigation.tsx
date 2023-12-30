@@ -26,9 +26,8 @@ const Navigation = (props: any) => {
       })
   }
 
-  const home = () => {
-    navigate('/')
-  }
+  const home = () => navigate('/')
+  const userProfile = () => navigate('/user-profile')
 
   return (
     <nav className="navigation">
@@ -38,13 +37,11 @@ const Navigation = (props: any) => {
           <Link to='' className="link" aria-current="page">Domů</Link>
           <Link to='friends' className="link">Přátelé</Link>
           <Link to='my-blog' className="link">Můj Blog</Link>
-          <Link to='my-materials' className="link">Moje materiály</Link>
+          <Link to='my-subjects' className="link">Moje předměty</Link>
         </div>
         <div className="navbar-right">
           <Link to='' className="logout" onClick={logout}>Odhlásit se</Link>
-          <a className="profile-badge" href='/user-profile'>
-            <ProfilePicture className='small radius-100 border-white border-hover-gray' userId={userInfo.id} />
-          </a>
+          <ProfilePicture className='small radius-100 border-white border-hover-gray profile-badge' userId={userInfo.id} onClick={userProfile} />
         </div>
     </nav>
   )
