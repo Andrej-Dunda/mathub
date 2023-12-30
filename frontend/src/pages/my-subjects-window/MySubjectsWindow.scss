@@ -1,11 +1,11 @@
-.my-materials-window {
+.my-subjects-window {
   padding: 32px;
 
   .h1 {
     text-align: center;
   }
 
-  .my-materials {
+  .my-subjects {
     display: grid;
     grid-template-columns: repeat(auto-fill, 200px);
     gap: 16px;
@@ -14,7 +14,7 @@
 
     justify-content: center;
 
-    .material-button {
+    .subject-button {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -37,7 +37,7 @@
       }
     }
 
-    .add-material-button {
+    .add-subject-button {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -70,12 +70,12 @@
     }
   }
 
-  .new-material-form {
+  .new-subject-form {
     display: flex;
     flex-direction: column;
     gap: 8px;
   
-    .new-material-wrapper {
+    .new-subject-wrapper {
       display: flex;
       flex-direction: column;
       gap: 4px;
