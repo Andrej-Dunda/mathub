@@ -9,6 +9,9 @@
   }
 
   .aside-main-container {
+    max-height: calc(100vh - var(--navigation-menu-height));
+    overflow: hidden;
+
     .aside-button {
       width: 300px;
       height: 50px;
