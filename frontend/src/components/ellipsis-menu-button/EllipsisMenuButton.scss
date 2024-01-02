@@ -1,0 +1,47 @@
+.ellipsis-menu-button {
+  --primary-color: white;
+  --secondary-color: black;
+
+  .ellipsis-button {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: none;
+
+    color: var(--primary-color);
+    background-color: var(--secondary-color);
+  }
+
+  .popup-menu {
+    position: absolute;
+
+    border-radius: 16px;
+    overflow: hidden;
+
+    z-index: 1000;
+
+    background-color: var(--primary-color);
+
+    box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+    -webkit-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+    -moz-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+
+    .menu-item {
+      padding: 16px;
+      color: var(--secondary-color);
+      background-color: var(--primary-color);
+
+      z-index: 1000;
+
+      cursor: pointer;
+
+      &:hover {
+        background-color: #F5F5F5;
+      }
+    }
+  }
+}

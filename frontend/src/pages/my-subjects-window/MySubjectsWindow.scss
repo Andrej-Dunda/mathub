@@ -16,24 +16,56 @@
 
     .subject-button {
       display: flex;
-      justify-content: center;
-      align-items: center;
-
-      padding: 8px;
+      flex-direction: column;
 
       aspect-ratio: 1/1;
-      border: 1px solid black;
       border-radius: 8px;
-
-      background-color: white;
-      font-weight: 500;
 
       box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
       -webkit-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
       -moz-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
 
-      &:hover {
-        background-color: #F5F5F5;
+      header {
+        height: 32px;
+        width: 100%;
+
+        display: flex;
+        justify-content: flex-end;
+
+        background-color: black;
+        color: white;
+
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      }
+
+      main {
+        height: calc(100% - 32px);
+        max-height: calc(100% - 32px);
+        width: 100%;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        padding: 8px;
+
+        font-weight: 500;
+
+        cursor: pointer;
+
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+          
+        &:hover {
+          background-color: #F5F5F5;
+        }
+
+        span {
+          text-wrap: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
     }
 

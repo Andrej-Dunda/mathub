@@ -8,6 +8,7 @@ import Snackbar from '../../components/snack-bar/SnackBar';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { iSubject } from '../../interfaces/materials-interface';
+import EllipsisMenuButton from '../../components/ellipsis-menu-button/EllipsisMenuButton';
 
 const MySubjectsWindow = () => {
   const [subjects, setSubjects] = useState<iSubject[]>([
@@ -74,9 +75,16 @@ const MySubjectsWindow = () => {
         {
           subjects.map((subject: iSubject, index: number) => {
             return (
-              <button key={index} type='button' className="subject-button" onClick={viewSubjects}>
-                {subject.subjectName}
-              </button>
+              <div key={index} className="subject-button">
+                <header>
+                  <EllipsisMenuButton menuOptions={['option 1', 'option 2', 'option 3', 'option 4']}/>
+                </header>
+                <main onClick={viewSubjects} title={subject.subjectName}>
+                  <span>
+                    {subject.subjectName}
+                  </span>
+                </main>
+              </div>
             )
           })
         }
