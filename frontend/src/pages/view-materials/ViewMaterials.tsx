@@ -44,7 +44,7 @@ const ViewMaterials = () => {
   const [newMaterialName, setNewMaterialName] = useState<string>('')
   const [newMaterialModalError, setNewMaterialModalError] = useState<string>('')
   const newMaterialNameInputRef = useRef<HTMLInputElement>(null)
-  const [oldMaterialNamesLength, setOldMaterialNamesLength] = useState<number>(activeMaterials.length)
+  const [oldMaterialsLength, setOldMaterialsLength] = useState<number>(activeMaterials.length)
   const elementRefs = useRef<Array<HTMLElement | null>>([]);
   const [subjects, setSubjects] = useState<iSubject[]>([
     {subjectName: 'Češtinaalskdjhgljkhalskdjfhlakjhdsfadflgkjhaldkjgh', subjectId: 'id-cestina', materials: [{ materialId: 'id-1', materialName: '1. Literatura 2. poloviny 20. století' }]},
@@ -78,12 +78,12 @@ const ViewMaterials = () => {
   }, [isNewMaterialModalOpen])
 
   useEffect(() => {
-    if (oldMaterialNamesLength < activeMaterials.length) {
+    if (oldMaterialsLength === activeMaterials.length - 1) {
       setActiveMaterialId(activeMaterials.length - 1)
       scrollToElement(activeMaterials.length - 1);
-      setOldMaterialNamesLength(activeMaterials.length)
     }
-  }, [activeMaterials, oldMaterialNamesLength])
+    setOldMaterialsLength(activeMaterials.length)
+  }, [activeMaterials, oldMaterialsLength])
 
   useEffect(() => {
     isAsideMenuOpen && setTimeout(() => setIsSubjectDropdownOpen(false), 350)
