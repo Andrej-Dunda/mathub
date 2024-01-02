@@ -6,12 +6,7 @@ import ProfilePicture from '../profile-picture/ProfilePicture';
 const Comment = (props: any) => {
   const [authorName, setAuthorName] = useState('')
   const rawPostDate = new Date(props.commentContent[2])
-  const czechMonthNames = [
-    'ledna', 'února', 'března', 'dubna', 'května', 'června',
-    'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'
-  ];
   const dayOfMonth = rawPostDate.getDate();
-  // const month = czechMonthNames[rawPostDate.getMonth()];
   const month = rawPostDate.getMonth() + 1;
   const hour = rawPostDate.getHours();
   const minute = rawPostDate.getMinutes();

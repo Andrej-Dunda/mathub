@@ -1,28 +1,20 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../App';
 import './Friends.scss'
 import React from 'react';
 import FriendWindow from '../../components/friend-window/FriendWindow';
 import axios from 'axios';
-import Checkbox from '../../components/checkbox/Checkbox';
 
 const Friends = () => {
-  const [users, setUsers] = useState<any[]>([]);
   const [friendRequests, setFriendRequests] = useState<any[]>([])
   const [myFriendRequests, setMyFriendRequests] = useState<any[]>([])
   const [friendSuggestions, setFriendSuggestions] = useState<any[]>([])
   const [friends, setFriends] = useState<any[]>([])
-  const [showAllUsers, setShowAllUsers] = useState(false);
   const userInfo = useContext(UserContext)
 
-  const toggleShowAllUsers = () => {
-    setShowAllUsers(!showAllUsers)
-  }
-
   useEffect(() => {
-    getAllUsers()
     updateFriends()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const updateFriends = () => {
@@ -87,20 +79,6 @@ const Friends = () => {
           console.error(error.response.headers)
         }
       })
-  }
-
-  const getAllUsers = () => {
-    fetch("/users")
-      .then((res) => {
-        if (!res.ok) throw new Error('Network response was not ok');
-        return res.json();
-      })
-      .then((userData) => {
-        setUsers(userData);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
   }
 
   const getFriendSuggestions = () => {

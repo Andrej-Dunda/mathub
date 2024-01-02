@@ -65,6 +65,7 @@ const ViewMaterials = () => {
   useEffect(() => {
     elementRefs.current = elementRefs.current.slice(0, activeMaterials.length);
     selectMaterial(0)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeMaterials]);
 
   useEffect(() => {
