@@ -6,9 +6,17 @@ import { useState, useRef, useEffect } from 'react';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import Snackbar from '../../components/snack-bar/SnackBar';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
+import { iSubject } from '../../interfaces/materials-interface';
 
 const MySubjectsWindow = () => {
-  const [mySubjectsNames, setMySubjectsNames] = useState<string[]>(['Čeština', 'Ekonomie', 'Informatika', 'Angličtina', 'Matematika'])
+  const [subjects, setSubjects] = useState<iSubject[]>([
+    {subjectName: 'Češtinaalskdjhgljkhalskdjfhlakjhdsfadflgkjhaldkjgh', subjectId: uuidv4(), materials: [{ materialId: uuidv4(), materialName: '1. Literatura 2. poloviny 20. století' }]},
+    {subjectName: 'Ekonomie', subjectId: uuidv4(), materials: []},
+    {subjectName: 'Informatika', subjectId: uuidv4(), materials: [{ materialId: uuidv4(), materialName: '1. Hardware' }]},
+    {subjectName: 'Angličtina', subjectId: uuidv4(), materials: [{ materialId: uuidv4(), materialName: '1. Schools and Education' }]},
+    {subjectName: 'Matematika', subjectId: uuidv4(), materials: [{ materialId: uuidv4(), materialName: '1. Kombinatorika a pravděpodobnost' }]},
+  ])
   const [isNewSubjectModalOpen, setIsNewSubjectModalOpen] = useState<boolean>(false)
   const [newSubjectName, setNewSubjectName] = useState<string>('')
   const [newSubjectModalError, setNewSubjectModalError] = useState<string>('')
@@ -23,7 +31,7 @@ const MySubjectsWindow = () => {
 
   const validateNewSubjectSubmit = () => {
     if (newSubjectName) {
-      setMySubjectsNames([...mySubjectsNames, newSubjectName])
+      setSubjects([...subjects, { subjectId: uuidv4(), subjectName: newSubjectName, materials: [] }]);
       setIsNewSubjectModalOpen(false)
       setNewSubjectName('')
       setNewSubjectModalError('')
@@ -64,10 +72,10 @@ const MySubjectsWindow = () => {
       <h1 className='h1'>Moje předměty</h1>
       <div className="my-subjects">
         {
-          mySubjectsNames.map((subjectName: string, index: number) => {
+          subjects.map((subject: iSubject, index: number) => {
             return (
-              <button type='button' key={index} className="subject-button" onClick={viewSubjects}>
-                {subjectName}
+              <button key={index} type='button' className="subject-button" onClick={viewSubjects}>
+                {subject.subjectName}
               </button>
             )
           })

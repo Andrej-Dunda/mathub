@@ -9,6 +9,7 @@ import Modal from '../../components/modal/Modal';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import SubjectDropdown from '../../components/subject-dropdown/SubjectDropdown';
 import { iMaterial, iSubject } from '../../interfaces/materials-interface';
+import { v4 as uuidv4 } from 'uuid';
 
 const ViewMaterials = () => {
   const [isAsideMenuOpen, setIsAsideMenuOpen] = useState<boolean>(true)
@@ -96,11 +97,10 @@ const ViewMaterials = () => {
 
   const validateNewMaterialSubmit = () => {
     if (newMaterialName) {
-      // setActiveMaterials([...activeMaterials, { materialId: `id-${newMaterialName}`, materialName: newMaterialName }])
       setSubjects(subjects => 
         subjects.map(subject => 
           subject.subjectId === activeSubjectId
-            ? { ...subject, materials: [...subject.materials, { materialId: `id-${newMaterialName}`, materialName: newMaterialName }] }
+            ? { ...subject, materials: [...subject.materials, { materialId: uuidv4(), materialName: newMaterialName }] }
             : subject
         )
       );

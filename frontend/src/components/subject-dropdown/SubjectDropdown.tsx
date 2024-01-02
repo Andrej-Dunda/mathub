@@ -6,6 +6,7 @@ import { iSubject } from '../../interfaces/materials-interface';
 import Modal from '../modal/Modal';
 import ErrorMessage from '../error-message/ErrorMessage';
 import Snackbar from '../snack-bar/SnackBar';
+import { v4 as uuidv4 } from 'uuid';
 
 type DropdownProps = {
   isSubjectDropdownOpen: boolean;
@@ -73,7 +74,7 @@ const SubjectDropdown: FC<DropdownProps> = ({
 
   const validateNewSubjectSubmit = () => {
     if (newSubjectName) {
-      setSubjects([...subjects, { subjectName: newSubjectName, subjectId: `${newSubjectName}-id`, materials: [] }])
+      setSubjects([...subjects, { subjectName: newSubjectName, subjectId: uuidv4(), materials: [] }])
       setIsNewSubjectModalOpen(false)
       setNewSubjectName('')
       setNewSubjectModalError('')
