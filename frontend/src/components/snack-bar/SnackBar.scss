@@ -1,14 +1,14 @@
 .snackbar {
   min-width: 100px;
   width: fit-content;
-  background-color: black;
+  background-color: var(--grayscale-900);
 
-  color: #fff;
+  color: var(--grayscale-100);
   text-align: center;
   font-size: 17px;
   font-weight: 500;
 
-  border: 1px solid white;
+  border: 1px solid var(--grayscale-100);
   border-radius: 8px;
 
   padding: 16px;

@@ -13,6 +13,7 @@ interface iFileUploader {
 
 const FileUploader = ({label, labelClassName, acceptAttributeValue, setFile, setFileName}: iFileUploader) => {
   const hiddenFileInputRef = useRef<HTMLInputElement>(null)
+  const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
 
   const onDrop = (event: React.DragEvent) => {
     event.preventDefault();
@@ -48,7 +49,7 @@ const FileUploader = ({label, labelClassName, acceptAttributeValue, setFile, set
         <FontAwesomeIcon
           icon={faUpload}
           className='file-upload-icon'
-          color='black'
+          color={grayscale900}
         />
         {/* <span className='drop-file-upload-label'>Přetáhněte soubor sem</span> */}
       </div>

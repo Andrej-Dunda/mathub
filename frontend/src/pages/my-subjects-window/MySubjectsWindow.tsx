@@ -25,6 +25,7 @@ const MySubjectsWindow = () => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('')
   const navigate = useNavigate();
+  const grayscale300 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-300').trim();
 
   useEffect(() => {
     newSubjectNameInputRef.current?.focus()
@@ -89,7 +90,7 @@ const MySubjectsWindow = () => {
           })
         }
         <button type='button' className="add-subject-button" onClick={openNewSubjectModal}>
-          <FontAwesomeIcon icon={faPlus} className='edit-icon' size="2x" color='grey' />
+          <FontAwesomeIcon icon={faPlus} className='edit-icon' size="2x" color={grayscale300} />
         </button>
       </div>
       <Modal

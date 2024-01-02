@@ -55,6 +55,7 @@ const ViewMaterials = () => {
     {subjectName: 'Matematika', subjectId: 'id-matematika', materials: [{ materialId: 'id-1', materialName: '1. Kombinatorika a pravděpodobnost' }]},
   ])
   const [isSubjectDropdownOpen, setIsSubjectDropdownOpen] = useState<boolean>(false)
+  const grayscale400 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-400').trim();
 
   useEffect(() => {
     let activeSubject: iSubject = subjects.find(subject => subject.subjectId === activeSubjectId) || subjects[0];
@@ -156,7 +157,7 @@ const ViewMaterials = () => {
             onChange={(subject) => console.log(subject)}
           />
           <div className="aside-button new-material-button" onClick={openNewMaterialModal}>
-            <FontAwesomeIcon icon={faPlus} color='gray' className='plus-icon' />
+            <FontAwesomeIcon icon={faPlus} color={grayscale400} className='plus-icon' />
             <span className='new-material-label'>Nový materiál</span>
           </div>
         </div>

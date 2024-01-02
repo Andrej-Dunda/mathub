@@ -15,6 +15,7 @@
     .aside-button {
       width: 300px;
       height: 50px;
+      min-height: 50px;
 
       display: flex;
       flex-direction: row;
@@ -33,11 +34,11 @@
     .new-material-button {
       gap: 8px;
       cursor: pointer;
-      color: gray;
-      border: 4px dashed gray;
+      color: var(--grayscale-400);
+      border: 4px dashed var(--grayscale-400);
 
       &:hover {
-        background-color: #F5F5F5;
+        background-color: var(--hover-white);
       }
     }
 
@@ -60,17 +61,17 @@
       scrollbar-width: none;  /* Firefox */
 
       .material-button {
-        border-bottom: 1px solid #F5F5F5;
+        border-bottom: 1px solid var(--grayscale-150);
 
         cursor: pointer;
 
         &:hover {
-          background-color: #F5F5F5;
+          background-color: var(--hover-white);
         }
 
         &.active {
-          background-color: black;
-          color: white;
+          background-color: var(--grayscale-900);
+          color: var(--grayscale-100);
         }
       }
     }
@@ -90,7 +91,7 @@
         width: 100%;
         padding: 8px;
         border-radius: 8px;
-        border: 1px solid black;
+        border: 1px solid var(--grayscale-900);
       }
   
       label {

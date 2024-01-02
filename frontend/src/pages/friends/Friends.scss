@@ -1,34 +1,34 @@
 .friends {
-  padding: 32px 0;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 
-  .friends-sections {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-
-    div div {
+  .friends-section {
+    .friends-windows {
       display: grid;
       gap: 8px;
       grid-template-columns: repeat(auto-fill, minmax(200px, 250px));
     }
   }
 
-  .users-list {
-    .show-all-users {
-      display: flex;
-      flex-direction: row;
-      gap: 6px;
-      align-items: center;
+}
 
+.users-list {
+  .show-all-users {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    align-items: center;
+
+    cursor: pointer;
+
+    span {
+      margin: 0;
+    }
+
+    input {
       cursor: pointer;
-
-      span {
-        margin: 0;
-      }
-
-      input {
-        cursor: pointer;
-      }
     }
   }
 }

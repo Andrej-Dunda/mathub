@@ -42,19 +42,19 @@
   }
 
   &.border-gray {
-    border: 1px solid grey;
+    border: 1px solid var(--grayscale-300);
   }
 
   &.border-black {
-    border: 1px solid black;
+    border: 1px solid var(--grayscale-900);
   }
 
   &.border-white {
-    border: 1px solid white;
+    border: 1px solid var(--grayscale-100);
   }
 
   &.border-hover-gray:hover {
-    border: 1px solid #dedede!important;
+    border: 1px solid var(--hover-white)!important;
     box-shadow: 0px 0px 30px 1px rgba(255,255,255,0.75);
     -webkit-box-shadow: 0px 0px 30px 1px rgba(255,255,255,0.75);
     -moz-box-shadow: 0px 0px 30px 1px rgba(255,255,255,0.75);

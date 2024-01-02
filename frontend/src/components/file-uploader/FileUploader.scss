@@ -24,7 +24,7 @@
 
     cursor: pointer;
 
-    border: 1px solid black;
+    border: 1px solid var(--grayscale-900);
     border-radius: 8px;
 
     box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
@@ -32,7 +32,7 @@
     -moz-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
 
     &:hover {
-      background-color:#F5F5F5;
+      background-color: var(--hover-white);
     }
 
     .file-upload-icon {

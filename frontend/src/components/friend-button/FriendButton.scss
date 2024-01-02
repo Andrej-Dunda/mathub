@@ -2,14 +2,14 @@
   width: 100%;
   border: none;
   border-radius: 4px;
-  color: white;
+  color: var(--grayscale-100);
   font-weight: 600;
 
   &.accept {
-    background-color: #002975;
+    background-color: var(--dark-blue);
 
     &:hover {
-      background-color: #112A5A;
+      background-color: var(--dark-blue-hover);
       box-shadow: 0px 0px 11px -4px rgba(17,42,90,0.75);
       -webkit-box-shadow: 0px 0px 11px -4px rgba(17,42,90,0.75);
       -moz-box-shadow: 0px 0px 11px -4px rgba(17,42,90,0.75);
@@ -17,10 +17,10 @@
   }
 
   &.remove-suggestion, &.remove-request, &.remove-my-request {
-    background-color: #000;
+    background-color: var(--grayscale-900);
 
     &:hover {
-      background-color: #202020;
+      background-color: var(--hover-black);
       box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
       -webkit-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
       -moz-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
@@ -28,10 +28,10 @@
   }
 
   &.request {
-    background-color: #1D6BB9;
+    background-color: var(--light-blue);
 
     &:hover {
-      background-color: #2F8EED;
+      background-color: var(--light-blue-hover);
       box-shadow: 0px 0px 11px -4px rgba(47,142,237,0.75);
       -webkit-box-shadow: 0px 0px 11px -4px rgba(47,142,237,0.75);
       -moz-box-shadow: 0px 0px 11px -4px rgba(47,142,237,0.75);
@@ -39,10 +39,10 @@
   }
 
   &.remove-friend {
-    background-color: #000;
+    background-color: var(--grayscale-900);
 
     &:hover {
-      background-color: #202020;
+      background-color: var(--hover-black);
       box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
       -webkit-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
       -moz-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);

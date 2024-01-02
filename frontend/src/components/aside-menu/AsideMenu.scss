@@ -9,8 +9,6 @@
   .aside-main {
     transition: all var(--aside-menu-transition-duration);
 
-    border-right: 1px solid #202020;
-
     overflow-y: hidden;
     overflow-x: hidden;
 
@@ -49,8 +47,6 @@
     height: 50px;
 
     border-bottom-right-radius: 8px;
-    border-bottom: 1px solid black;
-    border-right: 1px solid black;
 
     overflow: hidden;
 
@@ -62,7 +58,7 @@
       border: none;
       border-radius: 0;
       
-      background-color: black;
+      background-color: var(--grayscale-900);
 
       height: 50px;
       width: 50px;
@@ -70,7 +66,7 @@
       .toggle-side-menu-icon {
         height: 24px;
         width: auto;
-        color: white;
+        color: var(--grayscale-100);
       }
     }
   }
@@ -85,11 +81,11 @@
 
     .aside-aside {
       .toggle-side-menu-button {
-        background-color: white;
+        background-color: var(--grayscale-100);
         border-radius: 0;
 
         .toggle-side-menu-icon {
-          color: black;
+          color: var(--grayscale-900);
         }
       }
     }

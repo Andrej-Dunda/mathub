@@ -6,6 +6,10 @@ const Modal = ({ isOpen, onClose, onSubmit, children, submitContent, cancelConte
   let clickStartedInside = false; // Track where the click started
 
   useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : 'initial'
+  }, [isOpen])
+
+  useEffect(() => {
     const handleKeyPress = (event: any) => {
       switch (event.key) {
         case 'Enter':

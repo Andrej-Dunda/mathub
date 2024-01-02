@@ -32,11 +32,12 @@
         display: flex;
         justify-content: flex-end;
 
-        background-color: black;
-        color: white;
+        background-color: var(--grayscale-900);
+        color: var(--grayscale-100);
 
         border-top-left-radius: 8px;
         border-top-right-radius: 8px;
+        overflow: hidden;
       }
 
       main {
@@ -58,7 +59,7 @@
         border-bottom-right-radius: 8px;
           
         &:hover {
-          background-color: #F5F5F5;
+          background-color: var(--hover-white);
         }
 
         span {
@@ -77,10 +78,10 @@
       padding: 8px;
 
       aspect-ratio: 1/1;
-      border: 1px dashed grey;
+      border: 1px dashed var(--grayscale-300);
       border-radius: 8px;
 
-      background-color: white;
+      background-color: var(--grayscale-100);
       font-weight: 500;
 
       box-shadow: 1px 1px 8px 1px rgb(245,245,245);
@@ -88,15 +89,15 @@
       -moz-box-shadow: 1px 1px 8px 1px rgb(245,245,245);
 
       &:hover {
-        border-color: #707070;
-        background-color: #F5F5F5;
+        border-color: var(--grayscale-400);
+        background-color: var(--hover-white);
 
         box-shadow: 1px 1px 8px 1px 	rgb(211,211,211);
         -webkit-box-shadow: 1px 1px 8px 1px 	rgb(211,211,211);
         -moz-box-shadow: 1px 1px 8px 1px 	rgb(211,211,211);
 
         .edit-icon {
-          color: #707070
+          color: var(--grayscale-400)
         }
       }
     }
@@ -116,7 +117,7 @@
         width: 100%;
         padding: 8px;
         border-radius: 8px;
-        border: 1px solid black;
+        border: 1px solid var(--grayscale-900);
       }
   
       label {

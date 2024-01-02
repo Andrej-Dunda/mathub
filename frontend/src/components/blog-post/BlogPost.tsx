@@ -42,6 +42,7 @@ const BlogPost = (props: any) => {
   const commentSectionRef = useRef<HTMLDivElement>(null);
   const commentsRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>(0)
+  const grayscale100 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-100').trim();
 
   useEffect(() => {
     // Function to update height
@@ -166,7 +167,7 @@ const BlogPost = (props: any) => {
               onKeyDown={handleCommentKeyPress}
             />
             <button className='submit-comment' onClick={submitComment}>
-              <FontAwesomeIcon icon={faPaperPlane} style={{ color: "#ffffff" }} />
+              <FontAwesomeIcon className='submit-icon' icon={faPaperPlane} color={grayscale100} />
             </button>
           </div>
         </aside>

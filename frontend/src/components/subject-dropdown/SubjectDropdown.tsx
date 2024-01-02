@@ -38,6 +38,8 @@ const SubjectDropdown: FC<DropdownProps> = ({
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('')
   const [oldSubjectsLength, setOldSubjectsLength] = useState<number>(subjects.length)
+  const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
+  const grayscale400 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-400').trim();
 
   useEffect(() => {
     newSubjectNameInputRef.current?.focus()
@@ -103,10 +105,10 @@ const SubjectDropdown: FC<DropdownProps> = ({
     <div className={`subject-dropdown${isSubjectDropdownOpen ? ' dropdown-open' : ''}`}>
       <div className="dropdown-button" onClick={toggleDropdown}>
         <span title={activeSubjectName}>{activeSubjectName}</span>
-        {isSubjectDropdownOpen ? <FontAwesomeIcon icon={faChevronUp} color='black' /> : <FontAwesomeIcon icon={faChevronDown} color='black' />}
+        {isSubjectDropdownOpen ? <FontAwesomeIcon icon={faChevronUp} color={grayscale900} /> : <FontAwesomeIcon icon={faChevronDown} color={grayscale900} />}
       </div>
       <div className="aside-button new-subject-button" onClick={openNewSubjectModal}>
-        <FontAwesomeIcon icon={faPlus} color='gray' className='plus-icon' />
+        <FontAwesomeIcon icon={faPlus} color={grayscale400} className='plus-icon' />
         <span className='new-subject-label'>Nový předmět</span>
       </div>
       <div className='dropdown-options'>
@@ -115,7 +117,7 @@ const SubjectDropdown: FC<DropdownProps> = ({
             return (
               <div
                 key={index}
-                className={`dropdown-option${activeSubjectId === subject.subjectId ? ' active' : ''}`}
+                className={`dropdown-option aside-button${activeSubjectId === subject.subjectId ? ' active' : ''}`}
                 onClick={() => handleChange(subject)}
               >
                 <span>{subject.subjectName}</span>

@@ -15,7 +15,7 @@
 
     width: 14px;
     height: 14px;
-    border: 1px solid black;
+    border: 1px solid var(--grayscale-900);
     border-radius: 4px;
 
     box-sizing: content-box;
@@ -23,9 +23,12 @@
     cursor: pointer;
 
     .checkbox-icon {
+      width: 16px;
+      height: 16px;
+
       position: absolute;
       top: -1px;
-      left: 0;
+      left: -1px;
 
       cursor: pointer;
     }

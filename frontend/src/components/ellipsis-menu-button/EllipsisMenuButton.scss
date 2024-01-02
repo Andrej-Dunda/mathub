@@ -1,6 +1,6 @@
 .ellipsis-menu-button {
-  --primary-color: white;
-  --secondary-color: black;
+  --primary-color: var(--grayscale-100);
+  --secondary-color: var(--grayscale-900);
 
   .ellipsis-button {
     width: 32px;
@@ -11,6 +11,8 @@
     align-items: center;
 
     border: none;
+    border-radius: 8px;
+    overflow: hidden;
 
     color: var(--primary-color);
     background-color: var(--secondary-color);
@@ -18,6 +20,10 @@
 
   .popup-menu {
     position: absolute;
+
+    transform: translateX(calc(-50% + 16px));
+
+    min-width: 100px;
 
     border-radius: 16px;
     overflow: hidden;
@@ -34,13 +40,14 @@
       padding: 16px;
       color: var(--secondary-color);
       background-color: var(--primary-color);
+      text-align: center;
 
       z-index: 1000;
 
       cursor: pointer;
 
       &:hover {
-        background-color: #F5F5F5;
+        background-color: var(--hover-white);
       }
     }
   }

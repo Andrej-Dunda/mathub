@@ -124,88 +124,56 @@ const Friends = () => {
 
   return (
     <div className="friends">
-      <div className="container friends-sections">
-        {friendRequests.length !== 0 ?
-          <>
-            <div className="friend-requests">
-              <h3 className='h3'>Žádosti o přátelství</h3>
-              <div className="friend-requests-windows">
-                {
-                  friendRequests.map((user, index) => {
-                    return <FriendWindow key={index} userData={user} type='friend-request' updateFriends={updateFriends} />
-                  })
-                }
-              </div>
+      {friendRequests.length !== 0 ?
+        <>
+          <div className="friend-requests friends-section">
+            <h3 className='h3'>Žádosti o přátelství</h3>
+            <div className="friend-requests-windows friends-windows">
+              {
+                friendRequests.map((user, index) => {
+                  return <FriendWindow className='friend-window' key={index} userData={user} type='friend-request' updateFriends={updateFriends} />
+                })
+              }
             </div>
-            <hr />
-          </> : null}
-        {myFriendRequests.length !== 0 && (
-          <>
-            <div className="my-friend-requests">
-              <h3 className='h3'>Moje žádosti o přátelství</h3>
-              <div className="my-friend-requests-windows">
-                {
-                  myFriendRequests.map((user, index) => {
-                    return <FriendWindow key={index} userData={user} type='my-friend-request' updateFriends={updateFriends} />
-                  })
-                }
-              </div>
+          </div>
+          <hr />
+        </> : null}
+      {myFriendRequests.length !== 0 && (
+        <>
+          <div className="my-friend-requests friends-section">
+            <h3 className='h3'>Moje žádosti o přátelství</h3>
+            <div className="my-friend-requests-windows friends-windows">
+              {
+                myFriendRequests.map((user, index) => {
+                  return <FriendWindow className='friend-window' key={index} userData={user} type='my-friend-request' updateFriends={updateFriends} />
+                })
+              }
             </div>
-            <hr />
-          </>
-        )}
-        <div className="friend-suggestions">
-          <h3 className='h3'>Lidé, které možná znáte</h3>
-          {friendSuggestions.length !== 0 ? <div className="friend-suggestions-windows">
-            {
-              friendSuggestions.map((user, index) => {
-                return <FriendWindow key={index} userData={user} type='friend-suggestion' updateFriends={updateFriends} />
-              })
-            }
-          </div> : <span>Nemáte žádná doporučení</span>}
-        </div>
-        <hr />
-        <div className="friends">
-          <h3 className='h3'>Vaši přátelé</h3>
-          {friends?.length !== 0 ? <div className="friends-windows">
-            {
-              friends.map((user, index) => {
-                return <FriendWindow key={index} userData={user} type='friend' updateFriends={updateFriends} />
-              })
-            }
-          </div> : <span>Nemáte žádné přátele :(</span>}
-        </div>
+          </div>
+          <hr />
+        </>
+      )}
+      <div className="friend-suggestions friends-section">
+        <h3 className='h3'>Lidé, které možná znáte</h3>
+        {friendSuggestions.length !== 0 ? <div className="friend-suggestions-windows friends-windows">
+          {
+            friendSuggestions.map((user, index) => {
+              return <FriendWindow className='friend-window' key={index} userData={user} type='friend-suggestion' updateFriends={updateFriends} />
+            })
+          }
+        </div> : <span>Nemáte žádná doporučení</span>}
       </div>
-
-      <div className="container-fluid users-list">
-        <Checkbox checked={showAllUsers} onToggle={toggleShowAllUsers} label='Zobrazit seznam všech uživatelů'/>
-        {showAllUsers && <table className='table table-striped'>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Email</th>
-              <th>Heslo</th>
-              <th>Jméno</th>
-              <th>Příjmení</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((userData: any[], index: number) => {
-              return (
-                <tr key={index}>
-                  <td>{userData[0]}</td>
-                  <td>{userData[1]}</td>
-                  <td>{userData[2]}</td>
-                  <td>{userData[3]}</td>
-                  <td>{userData[4]}</td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-        }
+      <hr />
+      <div className="my-friends friends-section">
+        <h3 className='h3'>Vaši přátelé</h3>
+        {friends?.length !== 0 ? <div className="my-friends-windows friends-windows">
+          {
+            friends.map((user, index) => {
+              return <FriendWindow className='friend-window' key={index} userData={user} type='friend' updateFriends={updateFriends} />
+            })
+          }
+        </div> : <span>Nemáte žádné přátele :(</span>}
       </div>
-
     </div>
   )
 }

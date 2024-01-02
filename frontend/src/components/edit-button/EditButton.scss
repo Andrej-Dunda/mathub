@@ -7,25 +7,14 @@
   justify-content: center;
   cursor: pointer;
   font-weight: 600;
-  border: 2px solid black;
+  border: none;
+
+  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+  -webkit-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+  -moz-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
 
   &:hover {
-    background-color: #dedede;
-    box-shadow: 0px 0px 11px -4px rgba(222,222,222,0.75);
-    -webkit-box-shadow: 0px 0px 11px -4px rgba(222,222,222,0.75);
-    -moz-box-shadow: 0px 0px 11px -4px rgba(222,222,222,0.75);
-  }
-
-  &.active {
-    background-color: black;
-    color: white;
-
-    &:hover {
-      background-color: #202020;
-      box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
-      -webkit-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
-      -moz-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
-    }
+    background-color: var(--hover-white);
   }
 }
 
@@ -47,26 +36,26 @@
     textarea {
       padding: 8px;
       border-radius: 8px;
-      border: 1px solid black;
+      border: 1px solid var(--grayscale-900);
     }
 
     #post-image-input {
       padding: 10px;
-      background-color: white;
-      border: 1px solid black;
+      background-color: var(--grayscale-100);
+      border: 1px solid var(--grayscale-900);
       border-radius: 5px;
-      color: black;
+      color: var(--grayscale-900);
       box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
       cursor: pointer;
       transition: all 0.3s ease;
 
       &:hover {
-        background-color: #e8e8e8;
-        border-color: #c0c0c0;
+        background-color: var(--grayscale-200);
+        border-color: var(--grayscale-300);
       }
 
       &:focus {
-        border-color: #a0a0a0;
+        border-color: var(--grayscale-300);
         box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15);
       }
     }
