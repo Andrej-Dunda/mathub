@@ -13,7 +13,7 @@ const Navigation = (props: any) => {
       method: "POST",
       url: "/logout",
     })
-      .then((response) => {
+      .then(() => {
         props.removeToken()
         localStorage.removeItem('userData')
       }).catch((error) => {

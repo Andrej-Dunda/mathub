@@ -5,11 +5,9 @@ import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useUserData } from '../../contexts/UserDataProvider';
-import useToken from '../../utils/useToken';
 import { useNavigate } from 'react-router-dom';
 
-const LoginPage = () => {
-  const { setToken } = useToken();
+const LoginPage = (props: any) => {
   const navigate = useNavigate();
   const [loginForm, setLoginForm] = useState({
     email: "",
@@ -44,7 +42,7 @@ const LoginPage = () => {
       }
     })
       .then((response: any) => {
-        setToken(response.data.access_token)
+        props.setToken(response.data.access_token)
         setResponseMessage(response.data.message)
         const loggedUser = {
           id: response.data.user_id,

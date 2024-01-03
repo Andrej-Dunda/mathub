@@ -36,7 +36,6 @@ const EllipsisMenuButton: React.FC<EllipsisMenuButtonProps> = ({ menuOptions, pr
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-    console.log('ellipsis button click')
   };
 
   const onMenuItemClick = () => {

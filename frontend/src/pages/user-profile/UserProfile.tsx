@@ -130,29 +130,27 @@ const UserProfile = () => {
   }
 
   return (
-    <>
-      <div className="user-profile">
-        <div className="user-wrapper">
-          <div className="profile-picture-wrapper">
-            <ProfilePicture className='large radius-100 border-black' userId={user.id} />
-          </div>
-          <div className="user-info">
-            <h1 className='h1'>{user.first_name + ' ' + user.last_name}</h1><hr />
-            <div className="user-info-fields-wrapper">
-              <div className="user-info-field">
-                <h4 className='h4'>E-mail</h4><hr />
-                <span>{user.email}</span>
-              </div>
-              <div className="user-info-field">
-                <h4 className='h4'>Datum registrace</h4><hr />
-                <span>{registrationDate}</span>
-              </div>
+    <div className="user-profile">
+      <div className="user-wrapper">
+        <div className="profile-picture-wrapper">
+          <ProfilePicture className='large radius-100 box-shadow' userId={user.id} />
+        </div>
+        <div className="user-info">
+          <h1 className='h1'>{user.first_name + ' ' + user.last_name}</h1><hr/>
+          <div className="user-info-fields-wrapper">
+            <div className="user-info-field">
+              <span className='email-label label'>E-mail</span>
+              <span className='email'>{user.email}</span>
             </div>
-          </div>
-          <div className='account-operations'>
-            <button onClick={changeProfilePicture}>Změnit profilový obrázek</button>
-            <button onClick={openChangePasswordModal}>Změnit heslo</button>
-          </div>
+            <div className="user-info-field">
+              <span className='registration-date-label label'>Datum registrace</span>
+              <span className='registration-date'>{registrationDate}</span>
+            </div>
+          </div><hr/>
+        </div>
+        <div className='account-operations'>
+          <button onClick={changeProfilePicture}>Změnit profilový obrázek</button>
+          <button onClick={openChangePasswordModal}>Změnit heslo</button>
         </div>
       </div>
       <Modal isOpen={isPasswordModalOpen} onClose={closePasswordModal} onSubmit={changePassword} submitContent='Změnit heslo' cancelContent='Zrušit'>
@@ -170,9 +168,9 @@ const UserProfile = () => {
             <label htmlFor="new-password-again">Nové heslo znovu:</label>
             <input type={showPassword ? 'text' : 'password'} id='new-password-again' name='newPasswordAgain' value={newPasswordForm.newPasswordAgain} onChange={handleChange} />
           </div>
-          <ErrorMessage content={errorMessage}/>
+          <ErrorMessage content={errorMessage} />
           <div className='password-visibility-wrapper'>
-            <Checkbox checked={showPassword} onToggle={togglePasswordVisibility} label='Zobrazit hesla'/>
+            <Checkbox checked={showPassword} onToggle={togglePasswordVisibility} label='Zobrazit hesla' />
           </div>
         </div>
       </Modal>
@@ -188,7 +186,7 @@ const UserProfile = () => {
           <ErrorMessage content={errorMessage} />
         </div>
       </Modal>
-    </>
+    </div>
   )
 }
 export default UserProfile;

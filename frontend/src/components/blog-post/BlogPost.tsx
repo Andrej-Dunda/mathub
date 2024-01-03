@@ -115,7 +115,7 @@ const BlogPost = (props: any) => {
         <div className="blog-post-header">
           <div className="blog-info">
             <div className="user-profile-picture">
-              <ProfilePicture className='post-size radius-100 border' userId={postData.user_id} />
+              <ProfilePicture className='post-size radius-100 border box-shadow' userId={postData.user_id} />
             </div>
             <div className="user-name-and-post-time">
               <h3 className='user-name h3'>{userName}</h3>
