@@ -6,7 +6,7 @@ import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
-const Registration = (props: any) => {
+const Registration = () => {
   const [registrationForm, setRegistrationForm] = useState({
     email: "",
     password: "",
@@ -189,8 +189,8 @@ const Registration = (props: any) => {
           </div>
           <div className="form-footer">
             <div className='registration-other-options'>
-              <a href='/'>zpět na přihlášení</a>
-              <a href="/forgotten-password">zapomenuté heslo</a>
+              <span onClick={() => navigate('/')}>zpět na přihlášení</span>
+              <span onClick={() => navigate('/forgotten-password')}>zapomenuté heslo</span>
             </div>
             <ErrorMessage content={responseMessage} />
             <div className='registration-submit'>

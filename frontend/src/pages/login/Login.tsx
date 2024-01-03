@@ -6,9 +6,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useUserData } from '../../contexts/UserDataProvider';
 import useToken from '../../utils/useToken';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const { setToken } = useToken();
+  const navigate = useNavigate();
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: ""
@@ -113,8 +115,8 @@ const LoginPage = () => {
           </div>
           <div className="form-footer">
             <div className='login-other-options'>
-              <a href='/registration'>registrovat se</a>
-              <a href="/forgotten-password">zapomenuté heslo</a>
+              <span onClick={() => navigate('/registration')}>registrovat se</span>
+              <span onClick={() => navigate('/forgotten-password')}>zapomenuté heslo</span>
             </div>
             <ErrorMessage content={responseMessage} />
             <div className='login-submit'>

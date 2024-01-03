@@ -53,56 +53,49 @@ const ForgottenPassword = () => {
     event.preventDefault()
   }
 
-  const handleChange = (event: any) => {
-    setForgottenPasswordEmail(event.target.value)
-  }
+  const handleChange = (event: any) => {setForgottenPasswordEmail(event.target.value)}
 
-  const closeForgottenPasswordModal = () => {
-    setIsForgottenPasswordModalOpen(false)
-  }
+  const closeForgottenPasswordModal = () => {setIsForgottenPasswordModalOpen(false)}
 
-  const goToLogin = () => {
-    navigate('/')
-  }
+  const goToLogin = () => {navigate('/')}
 
   return (
-    <>
-      <div className="forgotten-password-page">
-        <h1 className="h1 mathub-heading">MatHub</h1>
-        <div className="forgotten-password-window">
-          <h2 className='h2'>Resetovat heslo</h2>
-          <form>
-            <div className='forgotten-password-input'>
-              <label htmlFor="email-input">E-mail:</label>
-              <input
-                type="email"
-                className='email-input'
-                id='email-input'
-                value={forgottenPasswordEmail}
-                name='email'
-                onChange={handleChange}
-              />
-            </div>
-            <ErrorMessage content={errorResponseMessage}/>
-            <div className='forgotten-password-other-options'>
-              <a href='/'>zpět na přihlášení</a>
-              <a href="/registration">registrovat se</a>
-            </div>
-            <div className='forgotten-password-submit'>
-              <button type='button' className='get-new-password-button' onClick={submitForgottenPassword}>Získat nové heslo</button>
-            </div>
-          </form>
-        </div>
+    <div className="forgotten-password-page">
+      <h1 className="h1 mathub-heading">MatHub</h1>
+      <div className="forgotten-password-window">
+        <h2 className='h2 form-heading'>Resetovat heslo</h2>
+        <form>
+          <div className='forgotten-password-input'>
+            <label htmlFor="email-input">E-mail:</label>
+            <input
+              type="email"
+              className='email-input'
+              id='email-input'
+              value={forgottenPasswordEmail}
+              name='email'
+              onChange={handleChange}
+            />
+          </div>
+          <ErrorMessage content={errorResponseMessage} />
+          <div className='forgotten-password-other-options'>
+            <span onClick={() => navigate('/')}>zpět na přihlášení</span>
+            <span onClick={() => navigate('/registration')}>registrovat se</span>
+          </div>
+          <div className='forgotten-password-submit'>
+            <button type='button' className='get-new-password-button' onClick={submitForgottenPassword}>Získat nové heslo</button>
+          </div>
+        </form>
       </div>
       <Modal isOpen={isForgottenPasswordModalOpen} onClose={closeForgottenPasswordModal} onSubmit={goToLogin} submitContent='Přihlásit se' cancelContent='Zavřít'>
         {newPassword && (
-          <>
-            <h2 className="h2">Heslo úspěšně resetováno!</h2>
-            <span>Vaše nové heslo je: <b>{newPassword}</b></span>
-          </>
+          <div className='new-password-window'>
+            <h2 className="new-password-heading">Heslo úspěšně resetováno!</h2>
+            <span className='new-password-title'>Vaše nové heslo je:</span>
+            <span className='new-password'>{newPassword}</span>
+          </div>
         )}
       </Modal>
-    </>
+    </div>
   )
 }
 export default ForgottenPassword;
