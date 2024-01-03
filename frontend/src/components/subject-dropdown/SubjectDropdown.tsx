@@ -5,8 +5,8 @@ import { faChevronDown, faChevronUp, faPlus } from '@fortawesome/free-solid-svg-
 import { iSubject } from '../../interfaces/materials-interface';
 import Modal from '../modal/Modal';
 import ErrorMessage from '../error-message/ErrorMessage';
-import Snackbar from '../snack-bar/SnackBar';
 import { v4 as uuidv4 } from 'uuid';
+import { useSnackbar } from '../../contexts/SnackbarProvider';
 
 type DropdownProps = {
   isSubjectDropdownOpen: boolean;
@@ -31,12 +31,11 @@ const SubjectDropdown: FC<DropdownProps> = ({
   setActiveSubjectId,
   onChange
 }) => {
+  const { openSnackbar } = useSnackbar();
   const [isNewSubjectModalOpen, setIsNewSubjectModalOpen] = useState<boolean>(false)
   const [newSubjectName, setNewSubjectName] = useState<string>('')
   const [newSubjectModalError, setNewSubjectModalError] = useState<string>('')
   const newSubjectNameInputRef = useRef<HTMLInputElement>(null)
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState<string>('')
   const [oldSubjectsLength, setOldSubjectsLength] = useState<number>(subjects.length)
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
   const grayscale400 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-400').trim();
@@ -53,15 +52,6 @@ const SubjectDropdown: FC<DropdownProps> = ({
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subjects])
-
-  const handleCloseSnackbar = () => {
-    setShowSnackbar(false);
-  };
-
-  const showSnackbarMessage = (message: string) => {
-    setShowSnackbar(true)
-    setSnackbarMessage(message)
-  }
 
   const handleChange = (subject: iSubject) => {
     setActiveSubjectName(subject.subjectName);
@@ -80,7 +70,7 @@ const SubjectDropdown: FC<DropdownProps> = ({
       setIsNewSubjectModalOpen(false)
       setNewSubjectName('')
       setNewSubjectModalError('')
-      showSnackbarMessage('Předmět úspěšně vytvořen!')
+      openSnackbar('Předmět úspěšně vytvořen!')
       return;
     }
     setNewSubjectModalError('Vyplňte pole Název nového předmětu!')
@@ -149,12 +139,6 @@ const SubjectDropdown: FC<DropdownProps> = ({
           <ErrorMessage content={newSubjectModalError} />
         </div>
       </Modal>
-      <Snackbar
-        message={snackbarMessage}
-        onClose={handleCloseSnackbar}
-        showSnackbar={showSnackbar}
-        setShowSnackbar={setShowSnackbar}
-      />
     </div>
   );
 };

@@ -1,16 +1,16 @@
-import { useContext, useEffect, useState } from 'react';
-import { UserContext } from '../../App';
+import { useEffect, useState } from 'react';
 import './Friends.scss'
 import React from 'react';
 import FriendWindow from '../../components/friend-window/FriendWindow';
 import axios from 'axios';
+import { useUserData } from '../../contexts/UserDataProvider';
 
 const Friends = () => {
   const [friendRequests, setFriendRequests] = useState<any[]>([])
   const [myFriendRequests, setMyFriendRequests] = useState<any[]>([])
   const [friendSuggestions, setFriendSuggestions] = useState<any[]>([])
   const [friends, setFriends] = useState<any[]>([])
-  const userInfo = useContext(UserContext)
+  const { user } = useUserData();
 
   useEffect(() => {
     updateFriends()
@@ -29,7 +29,7 @@ const Friends = () => {
       method: "POST",
       url: "/get-friends",
       data: {
-        user_id: userInfo.id
+        user_id: user.id
       }
     })
       .then((response: any) => {
@@ -48,7 +48,7 @@ const Friends = () => {
       method: "POST",
       url: "/get-friend-requests",
       data: {
-        user_id: userInfo.id
+        user_id: user.id
       }
     })
       .then((response: any) => {
@@ -67,7 +67,7 @@ const Friends = () => {
       method: "POST",
       url: "/get-my-friend-requests",
       data: {
-        user_id: userInfo.id
+        user_id: user.id
       }
     })
       .then((response: any) => {
@@ -86,7 +86,7 @@ const Friends = () => {
       method: "POST",
       url: "/get-friend-suggestions",
       data: {
-        user_id: userInfo.id
+        user_id: user.id
       }
     })
       .then((response: any) => {

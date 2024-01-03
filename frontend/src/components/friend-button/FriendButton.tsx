@@ -1,7 +1,6 @@
 import axios from 'axios';
 import './FriendButton.scss';
-import React, { useContext } from 'react';
-import { UserContext } from '../../App';
+import { useUserData } from '../../contexts/UserDataProvider';
 
 interface iFriendButtonData {
   url: string;
@@ -11,41 +10,41 @@ interface iFriendButtonData {
 }
 
 const FriendButton = (props: any) => {
-  const userInfo = useContext(UserContext)
+  const { user } = useUserData();
   const buttonUserId: number = props.userId
   const acceptFriendRequest: iFriendButtonData = {
     url: '/accept-friend-request',
     requestor_id: buttonUserId,
-    acceptor_id: userInfo.id,
+    acceptor_id: user.id,
     buttonContent: 'Potvrdit'
   }
   const removeFriendRequest: iFriendButtonData = {
     url: '/remove-friend-request',
     requestor_id: buttonUserId,
-    acceptor_id: userInfo.id,
+    acceptor_id: user.id,
     buttonContent: 'Zrušit žádost'
   }
   const removeMyFriendRequest: iFriendButtonData = {
     url: '/remove-friend-request',
-    requestor_id: userInfo.id,
+    requestor_id: user.id,
     acceptor_id: buttonUserId,
     buttonContent: 'Odebrat'
   }
   const addFriendRequest: iFriendButtonData = {
     url: '/add-friend-request',
-    requestor_id: userInfo.id,
+    requestor_id: user.id,
     acceptor_id: buttonUserId,
     buttonContent: 'Přidat přítele'
   } 
   const removeFriendSuggestion: iFriendButtonData = {
     url: '/remove-friend-suggestion',
-    requestor_id: userInfo.id,
+    requestor_id: user.id,
     acceptor_id: buttonUserId,
     buttonContent: 'Odebrat'
   }
   const removeFriend: iFriendButtonData = {
     url: '/remove-friend',
-    requestor_id: userInfo.id,
+    requestor_id: user.id,
     acceptor_id: buttonUserId,
     buttonContent: 'Odebrat přítele'
   }

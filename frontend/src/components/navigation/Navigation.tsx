@@ -1,12 +1,11 @@
-import React, { useContext } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import './Navigation.scss'
 import axios from "axios";
 import ProfilePicture from '../profile-picture/ProfilePicture';
-import { UserContext } from '../../App';
+import { useUserData } from "../../contexts/UserDataProvider";
 
 const Navigation = (props: any) => {
-  const userInfo = useContext(UserContext)
+  const { user } = useUserData();
   const navigate = useNavigate();
 
   const logout = () => {
@@ -41,7 +40,7 @@ const Navigation = (props: any) => {
         </div>
         <div className="navbar-right">
           <Link to='' className="logout" onClick={logout}>Odhlásit se</Link>
-          <ProfilePicture className='small radius-100 border-white border-hover-gray profile-badge' userId={userInfo.id} onClick={userProfile} />
+          <ProfilePicture className='small radius-100 border-white border-hover-gray profile-badge' userId={user.id} onClick={userProfile} />
         </div>
     </nav>
   )

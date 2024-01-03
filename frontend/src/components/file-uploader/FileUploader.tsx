@@ -1,19 +1,26 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './FileUploader.scss';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
 
 interface iFileUploader {
   label?: string;
   labelClassName?: string;
   acceptAttributeValue?: string;
+  file: File | null;
   setFile: React.Dispatch<React.SetStateAction<File | null>>;
-  setFileName?: React.Dispatch<React.SetStateAction<string>>;
+  width100?: boolean;
+  boxShadow?: boolean;
 }
 
-const FileUploader = ({label, labelClassName, acceptAttributeValue, setFile, setFileName}: iFileUploader) => {
+const FileUploader = ({label, labelClassName, acceptAttributeValue, file, setFile, width100, boxShadow}: iFileUploader) => {
   const hiddenFileInputRef = useRef<HTMLInputElement>(null)
+  const [fileName, setFileName] = useState<string>('')
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
+
+  useEffect(() => {
+    setFileName(file ? file.name : '')
+  }, [file])
 
   const onDrop = (event: React.DragEvent) => {
     event.preventDefault();
@@ -25,7 +32,6 @@ const FileUploader = ({label, labelClassName, acceptAttributeValue, setFile, set
   };
 
   const triggerFileInput = () => {
-    // Programmatically click the hidden file input
     hiddenFileInputRef.current?.click();
   };
 
@@ -41,7 +47,7 @@ const FileUploader = ({label, labelClassName, acceptAttributeValue, setFile, set
     <div className='file-uploader'>
       <label className={`file-upload-label ${labelClassName}`} htmlFor='hiddenFileInput'>{label}</label>
       <div
-        className="drop-file-upload"
+        className={`drop-file-upload${width100 ? ' width-100' : ''}${boxShadow ? ' box-shadow' : ''}`}
         onClick={triggerFileInput}
         onDragOver={(e) => e.preventDefault()}
         onDrop={onDrop}
@@ -51,7 +57,6 @@ const FileUploader = ({label, labelClassName, acceptAttributeValue, setFile, set
           className='file-upload-icon'
           color={grayscale900}
         />
-        {/* <span className='drop-file-upload-label'>Přetáhněte soubor sem</span> */}
       </div>
       <input
         type="file" 
@@ -61,6 +66,7 @@ const FileUploader = ({label, labelClassName, acceptAttributeValue, setFile, set
         ref={hiddenFileInputRef}
         {...(acceptAttributeValue ? { accept: acceptAttributeValue } : {})}
       />
+      {fileName && <span>{`Nahraný soubor: ${fileName}`}</span>}
     </div>
   );
 };

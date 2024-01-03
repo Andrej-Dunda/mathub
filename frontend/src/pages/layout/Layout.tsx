@@ -2,12 +2,14 @@ import { Outlet } from "react-router-dom";
 import './Layout.scss'
 import Navigation from "../../components/navigation/Navigation";
 import React from "react";
+import useToken from "../../utils/useToken";
 
-const Layout = (props: any) => {
+const Layout = () => {
+  const { removeToken } = useToken();
 
   return (
     <div className="layout">
-      <Navigation className='nav' removeToken={props.removeToken} />
+      <Navigation className='nav' removeToken={removeToken} />
       <Outlet/>
     </div>
   )

@@ -13,17 +13,37 @@
 
   padding: 16px;
   position: fixed;
-  z-index: 1;
-  right: -50px;
+  z-index: 500;
   top: 70px;
-  
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.5s;
+  right: 20px;
 
-  &.show {
-    right: 20px;
-    opacity: 1;
-    visibility: visible;
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      right: -50px;
+    }
+    to {
+      opacity: 1;
+      right: 20px;
+    }
   }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      right: 20px;
+    }
+    to {
+      opacity: 0;
+      right: -50px;
+    }
+  }
+
+  &.fade-in {
+    animation: fadeIn 0.31s;
+  }
+
+  &.fade-out {
+    animation: fadeOut 0.31s;
+  }  
 }

@@ -4,13 +4,14 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Modal from '../../components/modal/Modal';
 import { useState, useRef, useEffect } from 'react';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
-import Snackbar from '../../components/snack-bar/SnackBar';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { iSubject } from '../../interfaces/materials-interface';
 import EllipsisMenuButton from '../../components/ellipsis-menu-button/EllipsisMenuButton';
+import { useSnackbar } from '../../contexts/SnackbarProvider';
 
 const MySubjectsWindow = () => {
+  const { openSnackbar } = useSnackbar();
   const [subjects, setSubjects] = useState<iSubject[]>([
     {subjectName: 'Češtinaalskdjhgljkhalskdjfhlakjhdsfadflgkjhaldkjgh', subjectId: uuidv4(), materials: [{ materialId: uuidv4(), materialName: '1. Literatura 2. poloviny 20. století' }]},
     {subjectName: 'Ekonomie', subjectId: uuidv4(), materials: []},
@@ -22,8 +23,6 @@ const MySubjectsWindow = () => {
   const [newSubjectName, setNewSubjectName] = useState<string>('')
   const [newSubjectModalError, setNewSubjectModalError] = useState<string>('')
   const newSubjectNameInputRef = useRef<HTMLInputElement>(null)
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState<string>('')
   const navigate = useNavigate();
   const grayscale300 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-300').trim();
 
@@ -37,7 +36,7 @@ const MySubjectsWindow = () => {
       setIsNewSubjectModalOpen(false)
       setNewSubjectName('')
       setNewSubjectModalError('')
-      showSnackbarMessage('Předmět úspěšně vytvořen!')
+      openSnackbar('Předmět úspěšně vytvořen!')
       return;
     }
     setNewSubjectModalError('Vyplňte pole Název nového předmětu!')
@@ -56,15 +55,6 @@ const MySubjectsWindow = () => {
   const closeNewSubjectModal = () => {
     setIsNewSubjectModalOpen(false)
     setNewSubjectName('')
-  }
-
-  const handleCloseSnackbar = () => {
-    setShowSnackbar(false);
-  };
-
-  const showSnackbarMessage = (message: string) => {
-    setShowSnackbar(true)
-    setSnackbarMessage(message)
   }
 
   const viewSubjects = () => navigate('/view-materials')
@@ -100,8 +90,8 @@ const MySubjectsWindow = () => {
         submitContent={'Přidat předmět'}
         cancelContent={'Zrušit'}
       >
-        <h1 className='h1'>Nový předmět</h1>
         <div className="new-subject-form">
+          <h1 className='new-subject-h1'>Nový předmět</h1>
           <div className='new-subject-wrapper'>
             <label htmlFor="new-subject-name-input">Název nového předmětu:</label>
             <input
@@ -116,12 +106,6 @@ const MySubjectsWindow = () => {
           <ErrorMessage content={newSubjectModalError} />
         </div>
       </Modal>
-      <Snackbar
-        message={snackbarMessage}
-        onClose={handleCloseSnackbar}
-        showSnackbar={showSnackbar}
-        setShowSnackbar={setShowSnackbar}
-      />
     </div>
   )
 }

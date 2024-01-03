@@ -106,19 +106,12 @@
   .new-subject-form {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 16px;
   
     .new-subject-wrapper {
       display: flex;
       flex-direction: column;
       gap: 4px;
-  
-      input {
-        width: 100%;
-        padding: 8px;
-        border-radius: 8px;
-        border: 1px solid var(--grayscale-900);
-      }
   
       label {
         font-weight: 500;

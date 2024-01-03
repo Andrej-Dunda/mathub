@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import './ViewMaterials.scss'
 import AsideMenu from '../../components/aside-menu/AsideMenu';
 import MainContent from '../../components/main-content/MainContent';
-import Snackbar from '../../components/snack-bar/SnackBar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Modal from '../../components/modal/Modal';
@@ -10,11 +9,11 @@ import ErrorMessage from '../../components/error-message/ErrorMessage';
 import SubjectDropdown from '../../components/subject-dropdown/SubjectDropdown';
 import { iMaterial, iSubject } from '../../interfaces/materials-interface';
 import { v4 as uuidv4 } from 'uuid';
+import { useSnackbar } from '../../contexts/SnackbarProvider';
 
 const ViewMaterials = () => {
+  const { openSnackbar } = useSnackbar();
   const [isAsideMenuOpen, setIsAsideMenuOpen] = useState<boolean>(true)
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState<string>('')
   const [activeSubjectName, setActiveSubjectName] = useState<string>('')
   const [activeSubjectId, setActiveSubjectId] = useState<string>('')
   const [activeMaterials, setActiveMaterials] = useState<iMaterial[]>([])
@@ -109,7 +108,7 @@ const ViewMaterials = () => {
       setIsNewMaterialModalOpen(false)
       setNewMaterialName('')
       setNewMaterialModalError('')
-      showSnackbarMessage('Materiál úspěšně vytvořen!')
+      openSnackbar('Materiál úspěšně vytvořen!')
       return;
     }
     setNewMaterialModalError('Vyplňte pole Název nového materiálu!')
@@ -128,14 +127,6 @@ const ViewMaterials = () => {
   const closeNewMaterialModal = () => {
     setIsNewMaterialModalOpen(false)
     setNewMaterialName('')
-  }
-  const handleCloseSnackbar = () => {
-    setShowSnackbar(false);
-  };
-
-  const showSnackbarMessage = (message: string) => {
-    setShowSnackbar(true)
-    setSnackbarMessage(message)
   }
 
   const selectMaterial = (id: number) => {
@@ -183,12 +174,6 @@ const ViewMaterials = () => {
       <MainContent>
         main content
       </MainContent>
-      <Snackbar
-        message={snackbarMessage}
-        onClose={handleCloseSnackbar}
-        showSnackbar={showSnackbar}
-        setShowSnackbar={setShowSnackbar}
-      />
       <Modal
         isOpen={isNewMaterialModalOpen}
         onClose={closeNewMaterialModal}

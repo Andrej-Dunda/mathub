@@ -65,11 +65,21 @@
       justify-content: center;
       text-align: justify;
 
-      .post-image {
-        max-width: 100%;
-        max-height: 400px;
-        margin-bottom: 8px;
+      .blog-post-content {
+        word-wrap: break-word;
       }
+
+      .post-image-wrapper {
+        display: flex;
+        justify-content: center;
+
+        .post-image {
+          width: auto;
+          max-width: 100%;
+          max-height: 60vh;
+        }
+      }
+      
     }
   }
 

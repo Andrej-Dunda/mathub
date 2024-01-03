@@ -38,35 +38,12 @@
           textarea {
             min-width: 100%;
             max-width: 100%;
-            padding: 8px;
-            border-radius: 8px;
-            border: 1px solid var(--grayscale-200);
-          }
-
-          #post-image-input {
-            padding: 10px;
-            background-color: var(--grayscale-100);
-            border: 1px solid var(--grayscale-900);
-            border-radius: 5px;
-            color: var(--grayscale-900);
-            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            transition: all 0.3s ease;
-
-            &:hover {
-              background-color: var(--grayscale-200);
-              border-color: var(--grayscale-300);
-            }
-
-            &:focus {
-              border-color: var(--grayscale-200);
-              box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15);
-            }
           }
         }
 
         .submit-post-button {
-          border: none;
+          height: 48px;
+
           color: var(--grayscale-100);
           background-color: var(--grayscale-900);
           font-weight: 500;

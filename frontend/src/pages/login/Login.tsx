@@ -4,8 +4,11 @@ import axios from "axios";
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { useUserData } from '../../contexts/UserDataProvider';
+import useToken from '../../utils/useToken';
 
-const LoginPage = (props: any) => {
+const LoginPage = () => {
+  const { setToken } = useToken();
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: ""
@@ -14,6 +17,7 @@ const LoginPage = (props: any) => {
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const emailInputRef = useRef<HTMLInputElement>(null)
   const passwordInputRef = useRef<HTMLInputElement>(null)
+  const { setUser } = useUserData();
 
   useEffect(() => {
     const handleKeyPress = (e: any) => {
@@ -38,7 +42,7 @@ const LoginPage = (props: any) => {
       }
     })
       .then((response: any) => {
-        props.setToken(response.data.access_token)
+        setToken(response.data.access_token)
         setResponseMessage(response.data.message)
         const loggedUser = {
           id: response.data.user_id,
@@ -48,7 +52,7 @@ const LoginPage = (props: any) => {
           profile_picture: response.data.profile_picture,
           registration_date: response.data.registration_date
         }
-        props.setUser(loggedUser)
+        setUser(loggedUser)
         localStorage.setItem('userData', JSON.stringify(loggedUser));
       }).catch((error: any) => error.response && setResponseMessage(error.response.data.message))
 

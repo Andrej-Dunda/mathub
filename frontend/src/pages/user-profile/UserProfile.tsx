@@ -1,17 +1,18 @@
 import './UserProfile.scss'
-import { FormEvent, useContext, useEffect, useRef, useState } from 'react'
-import { UserContext } from '../../App';
+import { FormEvent, useEffect, useRef, useState } from 'react'
 import axios from 'axios';
 import Modal from '../../components/modal/Modal';
 import ProfilePicture from '../../components/profile-picture/ProfilePicture';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
-import Snackbar from '../../components/snack-bar/SnackBar';
 import FileUploader from '../../components/file-uploader/FileUploader';
 import Checkbox from '../../components/checkbox/Checkbox';
+import { useUserData } from '../../contexts/UserDataProvider';
+import { useSnackbar } from '../../contexts/SnackbarProvider';
 
-const UserProfile = (props: any) => {
-  const userInfo = useContext(UserContext)
-  const registrationDateRaw = new Date(userInfo.registration_date)
+const UserProfile = () => {
+  const { user, updateUser } = useUserData();
+  const { openSnackbar } = useSnackbar();
+  const registrationDateRaw = new Date(user.registration_date)
   const czechMonthNames = [
     'ledna', 'února', 'března', 'dubna', 'května', 'června',
     'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'
@@ -31,9 +32,6 @@ const UserProfile = (props: any) => {
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [newProfilePicture, setNewProfilePicture] = useState<File | null>(null);
-  const [newProfilePictureName, setNewProfilePictureName] = useState<string>('')
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState<string>('')
   const oldPasswordInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -55,15 +53,15 @@ const UserProfile = (props: any) => {
     formData.append('profile_picture', newProfilePicture);
 
     try {
-      await axios.post(`/upload-profile-picture/${userInfo.id}`, formData, {
+      await axios.post(`/upload-profile-picture/${user.id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }
       });
 
-      props.updateUser()
+      updateUser()
       closeProfilePictureModal()
-      showSnackbarMessage('Obrázek úspěšně nahrán!');
+      openSnackbar('Obrázek úspěšně nahrán!');
       setErrorMessage('')
     } catch (error) {
       setErrorMessage('Chyba při nahrávání obrázku :(');
@@ -73,7 +71,6 @@ const UserProfile = (props: any) => {
   const changeProfilePicture = () => {
     setIsProfilePictureModalOpen(true)
     setErrorMessage('')
-    setNewProfilePictureName('')
   }
 
   const openChangePasswordModal = () => {
@@ -99,7 +96,7 @@ const UserProfile = (props: any) => {
       method: 'POST',
       url: '/change-password',
       data: {
-        user_id: userInfo.id,
+        user_id: user.id,
         old_password: newPasswordForm.oldPassword,
         new_password: newPasswordForm.newPassword
       }
@@ -107,7 +104,7 @@ const UserProfile = (props: any) => {
       .then((res) => {
         if (res.data.success) {
           closePasswordModal()
-          showSnackbarMessage('Heslo úspěšně změněno!')
+          openSnackbar('Heslo úspěšně změněno!')
           setNewPasswordForm({
             oldPassword: '',
             newPassword: '',
@@ -132,28 +129,19 @@ const UserProfile = (props: any) => {
     setShowPassword(!showPassword)
   }
 
-  const handleCloseSnackbar = () => {
-    setShowSnackbar(false);
-  };
-
-  const showSnackbarMessage = (message: string) => {
-    setShowSnackbar(true)
-    setSnackbarMessage(message)
-  }
-
   return (
     <>
       <div className="user-profile">
         <div className="user-wrapper">
           <div className="profile-picture-wrapper">
-            <ProfilePicture className='large radius-100 border-black' userId={userInfo.id} />
+            <ProfilePicture className='large radius-100 border-black' userId={user.id} />
           </div>
           <div className="user-info">
-            <h1 className='h1'>{userInfo.first_name + ' ' + userInfo.last_name}</h1><hr />
+            <h1 className='h1'>{user.first_name + ' ' + user.last_name}</h1><hr />
             <div className="user-info-fields-wrapper">
               <div className="user-info-field">
                 <h4 className='h4'>E-mail</h4><hr />
-                <span>{userInfo.email}</span>
+                <span>{user.email}</span>
               </div>
               <div className="user-info-field">
                 <h4 className='h4'>Datum registrace</h4><hr />
@@ -194,21 +182,12 @@ const UserProfile = (props: any) => {
             label='Nahrát nový obrázek'
             labelClassName='profile-picture-upload-label'
             acceptAttributeValue='image/*'
+            file={newProfilePicture}
             setFile={setNewProfilePicture}
-            setFileName={setNewProfilePictureName}
           />
-          {newProfilePictureName && <span className='uploaded-image-name'>
-            {`Nahraný obrázek: ${newProfilePictureName}`}
-          </span>}
           <ErrorMessage content={errorMessage} />
         </div>
       </Modal>
-      <Snackbar
-        message={snackbarMessage}
-        onClose={handleCloseSnackbar}
-        showSnackbar={showSnackbar}
-        setShowSnackbar={setShowSnackbar}
-      />
     </>
   )
 }
