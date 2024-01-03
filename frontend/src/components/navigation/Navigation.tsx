@@ -32,7 +32,7 @@ const Navigation = (props: any) => {
     <nav className="navigation">
         <div className="navbar-left">
           <img className='mathub-logo' src="/logo" alt="" onClick={home} />
-          <h1 className="navbar-heading link" onClick={home}>MatHub</h1>
+          <h1 className="navbar-heading" onClick={home}>MatHub</h1>
           <Link to='' className="link" aria-current="page">Domů</Link>
           <Link to='friends' className="link">Přátelé</Link>
           <Link to='my-blog' className="link">Můj Blog</Link>

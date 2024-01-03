@@ -34,15 +34,19 @@
     }
 
     .navbar-heading {
-      font-size: 24px;
       font-weight: 500;
+      font-size: 24px;
       margin: 0;
       cursor: pointer;
+      text-decoration: none;
+      user-select: none;
+      color: var(--grayscale-100);
     }
 
     .link {
       color: var(--grayscale-100);
       text-decoration: none;
+      font-size: 16px;
       font-weight: 500;
 
       user-select: none;
@@ -64,6 +68,7 @@
       text-decoration: none;
       color: var(--grayscale-100);
       font-weight: 500;
+      font-size: 16px;
 
       user-select: none;
 
