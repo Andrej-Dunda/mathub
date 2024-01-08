@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './DeleteButton.scss'
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import Modal from '../modal/Modal';
+import Modal from '../../modal/Modal';
 import axios from 'axios';
 import { useState } from 'react';
 

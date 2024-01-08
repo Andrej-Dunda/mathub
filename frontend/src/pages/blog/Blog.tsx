@@ -2,7 +2,7 @@ import './Blog.scss'
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import BlogPost from "../../components/blog-post/BlogPost";
-import FileUploader from '../../components/file-uploader/FileUploader';
+import FileUploader from '../../components/buttons/file-uploader/FileUploader';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { useUserData } from '../../contexts/UserDataProvider';
 import { useSnackbar } from '../../contexts/SnackbarProvider';

@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from 'react';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { v4 as uuidv4 } from 'uuid';
 import { iSubject } from '../../interfaces/materials-interface';
-import EllipsisMenuButton from '../../components/ellipsis-menu-button/EllipsisMenuButton';
+import EllipsisMenuButton from '../../components/buttons/ellipsis-menu-button/EllipsisMenuButton';
 import { useSnackbar } from '../../contexts/SnackbarProvider';
 import { useNav } from '../../contexts/NavigationProvider';
 

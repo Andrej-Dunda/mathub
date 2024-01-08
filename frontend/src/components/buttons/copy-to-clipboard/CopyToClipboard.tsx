@@ -1,6 +1,6 @@
 import './CopyToClipboard.scss'
 import React from 'react';
-import { useSnackbar } from '../../contexts/SnackbarProvider';
+import { useSnackbar } from '../../../contexts/SnackbarProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
 

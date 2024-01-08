@@ -1,6 +1,6 @@
 import React from "react";
 import './FriendWindow.scss'
-import FriendButton from "../friend-button/FriendButton";
+import FriendButton from "../buttons/friend-button/FriendButton";
 import ProfilePicture from "../profile-picture/ProfilePicture";
 
 const FriendWindow = (props: any) => {

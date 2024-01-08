@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Modal from '../../components/modal/Modal';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
-import CopyToClipboard from '../../components/copy-to-clipboard/CopyToClipboard';
+import CopyToClipboard from '../../components/buttons/copy-to-clipboard/CopyToClipboard';
 import { useNav } from '../../contexts/NavigationProvider';
 
 const ForgottenPassword = () => {

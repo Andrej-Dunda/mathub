@@ -1,6 +1,6 @@
 import axios from 'axios';
 import './FriendButton.scss';
-import { useUserData } from '../../contexts/UserDataProvider';
+import { useUserData } from '../../../contexts/UserDataProvider';
 
 interface iFriendButtonData {
   url: string;

@@ -4,8 +4,8 @@ import axios from 'axios';
 import Modal from '../../components/modal/Modal';
 import ProfilePicture from '../../components/profile-picture/ProfilePicture';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
-import FileUploader from '../../components/file-uploader/FileUploader';
-import Checkbox from '../../components/checkbox/Checkbox';
+import FileUploader from '../../components/buttons/file-uploader/FileUploader';
+import Checkbox from '../../components/buttons/checkbox/Checkbox';
 import { useUserData } from '../../contexts/UserDataProvider';
 import { useSnackbar } from '../../contexts/SnackbarProvider';
 

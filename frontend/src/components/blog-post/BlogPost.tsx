@@ -1,14 +1,14 @@
 import './BlogPost.scss'
-import LikeButton from '../like-button/LikeButton'
+import LikeButton from '../buttons/like-button/LikeButton'
 import ProfilePicture from '../profile-picture/ProfilePicture'
 import Comment from '../comment/Comment'
 import { useEffect, useState, useRef } from 'react'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComment, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
-import CommentButton from '../comment-button/CommentButton'
-import EditButton from '../edit-button/EditButton'
-import DeleteButton from '../delete-button/DeleteButton'
+import CommentButton from '../buttons/comment-button/CommentButton'
+import EditButton from '../buttons/edit-button/EditButton'
+import DeleteButton from '../buttons/delete-button/DeleteButton'
 import { useUserData } from '../../contexts/UserDataProvider'
 
 const BlogPost = (props: any) => {

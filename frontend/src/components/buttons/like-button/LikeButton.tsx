@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
-import { useUserData } from '../../contexts/UserDataProvider'
+import { useUserData } from '../../../contexts/UserDataProvider'
 
 const LikeButton = (props: any) => {
   const { user } = useUserData();

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './ViewMaterials.scss'
-import AsideMenu from '../../components/aside-menu/AsideMenu';
-import MainContent from '../../components/main-content/MainContent';
+import AsideMenu from '../../components/layout-components/aside-menu/AsideMenu';
+import MainContent from '../../components/layout-components/main-content/MainContent';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Modal from '../../components/modal/Modal';

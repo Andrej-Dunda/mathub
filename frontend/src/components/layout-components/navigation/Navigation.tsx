@@ -1,7 +1,7 @@
 import './Navigation.scss'
-import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
-import ProfileBadge from "../profile-badge/ProfileBadge";
-import { useNav } from "../../contexts/NavigationProvider";
+import { ReactComponent as MatHubLogo } from '../../../images/mathub-logo.svg';
+import ProfileBadge from "../../profile-badge/ProfileBadge";
+import { useNav } from "../../../contexts/NavigationProvider";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFolderOpen, faHome, faPen, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 

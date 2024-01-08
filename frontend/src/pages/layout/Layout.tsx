@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import './Layout.scss'
-import Navigation from "../../components/navigation/Navigation";
+import Navigation from "../../components/layout-components/navigation/Navigation";
 
 const Layout = (props: any) => {
 

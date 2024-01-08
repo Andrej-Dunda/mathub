@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './EditButton.scss'
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
-import Modal from '../modal/Modal';
+import Modal from '../../modal/Modal';
 import { ChangeEvent, useState } from 'react';
 import axios from 'axios';
 
