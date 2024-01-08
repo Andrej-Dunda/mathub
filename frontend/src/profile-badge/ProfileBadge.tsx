@@ -60,7 +60,7 @@ const ProfileBadge = (props: any) => {
       onClick={toggleMenu}
     >
       <ProfilePicture
-        className='small radius-100 border-white border-hover-gray'
+        className='small radius-100'
         userId={user.id}
       />
       {

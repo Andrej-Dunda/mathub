@@ -12,12 +12,13 @@
   --grayscale-200: #D2D4DA;
   --grayscale-150: #e7e8eb;
   --grayscale-100: #fdfdfd;
-  --hover-white: #F5F5F5;
-  --hover-black: #202020;
+  --hover-white: var(--grayscale-150);
+  --hover-black: var(--grayscale-800);
 
   --error-red: #cc0000;
   --dark-blue: #002975;
   --dark-blue-hover: #112A5A;
+  --azure: #1877F2;
   --light-blue: #1D6BB9;
   --light-blue-hover: #2F8EED;
 }

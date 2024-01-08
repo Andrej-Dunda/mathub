@@ -6,7 +6,8 @@ const Modal = ({ isOpen, onClose, onSubmit, children, submitContent, cancelConte
   let clickStartedInside = false; // Track where the click started
 
   useEffect(() => {
-    document.body.style.overflow = isOpen ? 'hidden' : 'initial'
+    document.body.style.overflowY = isOpen ? 'hidden' : 'scroll'
+    document.body.style.overflowX = isOpen ? 'hidden' : 'initial'
   }, [isOpen])
 
   useEffect(() => {

@@ -71,7 +71,6 @@ const ViewMaterials = () => {
   useEffect(() => {
     setActiveSubjectName(subjects[1].subjectName)
     setActiveSubjectId(subjects[1].subjectId)
-    setActiveMaterialIndex(0)
     setTimeout(() => setIsAsideMenuOpen(false), 200);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -132,10 +131,12 @@ const ViewMaterials = () => {
   }
 
   const selectMaterial = (index: number) => {
-    if (index !== activeMaterialIndex) {
-      setActiveMaterialIndex(index);
-      setActiveMaterial(activeMaterials[index])
-    }
+    setActiveMaterialIndex(index);
+    setActiveMaterial(activeMaterials[index])
+  }
+
+  const onMaterialClick = (index: number) => {
+    if (index !== activeMaterialIndex) selectMaterial(index)
   }
 
   return (
@@ -166,7 +167,7 @@ const ViewMaterials = () => {
                   key={index}
                   className={`aside-button material-button ${index === activeMaterialIndex ? 'active' : ''}`}
                   title={material.materialName}
-                  onClick={() => selectMaterial(index)}
+                  onClick={() => onMaterialClick(index)}
                   ref={el => (elementRefs.current[index] = el)}
                 >
                   <span>{material.materialName}</span>

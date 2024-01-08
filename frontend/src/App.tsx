@@ -7,9 +7,9 @@ import Friends from './pages/friends/Friends';
 import LoginPage from './pages/login/Login';
 import Registration from './pages/registration/Registration';
 import ForgottenPassword from './pages/forgotten-password/ForgottenPassword';
-import MyBlog from './pages/my-blog/Blog';
+import Blog from './pages/blog/Blog';
 import Documentation from './pages/documentation/Documentation';
-import MySubjectsWindow from './pages/my-subjects-window/MySubjectsWindow';
+import SubjectsWindow from './pages/subjects-window/SubjectsWindow';
 import NewBookAnalysis from './pages/new-book-analysis/NewBookAnalysis';
 import ViewMaterials from './pages/view-materials/ViewMaterials';
 import { useToken } from './contexts/TokenProvider';
@@ -34,8 +34,8 @@ const App = () => {
               <Route index element={<Homepage />} />
               <Route path="user-profile" element={<UserProfile />} />
               <Route path="friends" element={<Friends />} />
-              <Route path="blog" element={<MyBlog />} />
-              <Route path="subjects/" element={<MySubjectsWindow />} />
+              <Route path="blog" element={<Blog />} />
+              <Route path="subjects" element={<SubjectsWindow />} />
               <Route path="view-materials" element={<ViewMaterials />} />
               <Route path="new-book-analysis" element={<NewBookAnalysis />} />
               <Route path="*" element={<Homepage />} />
