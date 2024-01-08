@@ -39,7 +39,8 @@ const ViewMaterials = () => {
     { materialId: 'id-19', materialName: '19. Sociální systém' },
     { materialId: 'id-20', materialName: '20. Vybrané ekonomické teorie' }
   ]
-  const [activeMaterialId, setActiveMaterialId] = useState<number>(0)
+  const [activeMaterialIndex, setActiveMaterialIndex] = useState<number>(0)
+  const [activeMaterial, setActiveMaterial] = useState<iMaterial | undefined>()
   const [isNewMaterialModalOpen, setIsNewMaterialModalOpen] = useState<boolean>(false);
   const [newMaterialName, setNewMaterialName] = useState<string>('')
   const [newMaterialModalError, setNewMaterialModalError] = useState<string>('')
@@ -70,7 +71,7 @@ const ViewMaterials = () => {
   useEffect(() => {
     setActiveSubjectName(subjects[1].subjectName)
     setActiveSubjectId(subjects[1].subjectId)
-    setActiveMaterialId(0)
+    setActiveMaterialIndex(0)
     setTimeout(() => setIsAsideMenuOpen(false), 200);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -81,10 +82,11 @@ const ViewMaterials = () => {
 
   useEffect(() => {
     if (oldMaterialsLength === activeMaterials.length - 1) {
-      setActiveMaterialId(activeMaterials.length - 1)
+      selectMaterial(activeMaterials.length - 1)
       scrollToElement(activeMaterials.length - 1);
     }
     setOldMaterialsLength(activeMaterials.length)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeMaterials, oldMaterialsLength])
 
   useEffect(() => {
@@ -129,8 +131,11 @@ const ViewMaterials = () => {
     setNewMaterialName('')
   }
 
-  const selectMaterial = (id: number) => {
-    id !== activeMaterialId && setActiveMaterialId(id);
+  const selectMaterial = (index: number) => {
+    if (index !== activeMaterialIndex) {
+      setActiveMaterialIndex(index);
+      setActiveMaterial(activeMaterials[index])
+    }
   }
 
   return (
@@ -155,16 +160,16 @@ const ViewMaterials = () => {
         </div>
         <div className="aside-body">
           {
-            activeMaterials.map(({materialName, materialId}: iMaterial, index) => {
+            activeMaterials.map((material: iMaterial, index) => {
               return (
                 <div
                   key={index}
-                  className={`aside-button material-button ${index === activeMaterialId ? 'active' : ''}`}
-                  title={materialName}
+                  className={`aside-button material-button ${index === activeMaterialIndex ? 'active' : ''}`}
+                  title={material.materialName}
                   onClick={() => selectMaterial(index)}
                   ref={el => (elementRefs.current[index] = el)}
                 >
-                  <span>{materialName}</span>
+                  <span>{material.materialName}</span>
                 </div>
               )
             })
@@ -172,7 +177,12 @@ const ViewMaterials = () => {
         </div>
       </AsideMenu>
       <MainContent>
-        main content
+        <div className="main-content-header">
+          <span className='material-title'>{activeMaterial?.materialName}</span>
+        </div>
+        <div className="main-content-body">
+          main content
+        </div>
       </MainContent>
       <Modal
         isOpen={isNewMaterialModalOpen}
