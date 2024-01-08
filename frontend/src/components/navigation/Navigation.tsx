@@ -1,11 +1,12 @@
-import { Link } from "react-router-dom";
 import './Navigation.scss'
 import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
 import ProfileBadge from "../../profile-badge/ProfileBadge";
 import { useNav } from "../../contexts/NavigationProvider";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFolderOpen, faHome, faPen, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 
 const Navigation = (props: any) => {
-  const { toHome } = useNav()
+  const { toHome, toFriends, toBlog, toSubjects, activeLink } = useNav()
   const grayscale100 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-100').trim();
 
   return (
@@ -17,10 +18,18 @@ const Navigation = (props: any) => {
           </div>
         </div>
         <div className="navbar-middle">
-          <Link to='' className="link" aria-current="page">Domů</Link>
-          <Link to='friends' className="link">Přátelé</Link>
-          <Link to='blog' className="link">Můj Blog</Link>
-          <Link to='subjects' className="link">Moje předměty</Link>
+          <div onClick={toHome} className={`link ${activeLink === 'home' ? 'active' : ''}`}>
+            <FontAwesomeIcon className='nav-icon' icon={faHome} color={grayscale100} />
+          </div>
+          <div onClick={toFriends} className={`link ${activeLink === 'friends' ? 'active' : ''}`}>
+            <FontAwesomeIcon className='nav-icon' icon={faUserFriends} color={grayscale100} />
+          </div>
+          <div onClick={toBlog} className={`link ${activeLink === 'blog' ? 'active' : ''}`}>
+            <FontAwesomeIcon className='nav-icon' icon={faPen} color={grayscale100} />
+          </div>
+          <div onClick={toSubjects} className={`link ${activeLink === 'subjects' ? 'active' : ''}`}>
+            <FontAwesomeIcon className='nav-icon' icon={faFolderOpen} color={grayscale100} />
+          </div>
         </div>
         <div className="navbar-right">
           <ProfileBadge removeToken={props.removeToken} />

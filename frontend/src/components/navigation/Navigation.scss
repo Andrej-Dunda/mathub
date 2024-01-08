@@ -22,7 +22,7 @@
     .logo-and-title {
       display: flex;
       flex-direction: row;
-      gap: 8px;
+      gap: 16px;
       align-items: center;
 
       .mathub-logo {
@@ -50,19 +50,41 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    gap: 20px;
     align-items: center;
+    gap: 8px;
+    padding: 4px;
 
     .link {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      min-width: fit-content;
+      width: 90px;
+      height: 100%;
+      padding: 8px;
+
       color: var(--grayscale-100);
-      text-decoration: none;
-      font-size: 16px;
+      font-size: 20px;
       font-weight: 500;
 
-      user-select: none;
+      border-radius: 8px;
 
-      &:hover {
+      user-select: none;
+      cursor: pointer;
+
+      &:hover:not(.active) {
         color: var(--hover-white);
+        background-color: var(--hover-black);
+      }
+
+      &.active {
+        border-bottom: 3px solid var(--grayscale-100);
+        border-color: var(--azure);
+
+        .nav-icon {
+          color: var(--azure);
+        }
       }
     }
   }

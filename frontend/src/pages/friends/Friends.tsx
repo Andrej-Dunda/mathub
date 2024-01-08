@@ -4,6 +4,7 @@ import React from 'react';
 import FriendWindow from '../../components/friend-window/FriendWindow';
 import axios from 'axios';
 import { useUserData } from '../../contexts/UserDataProvider';
+import { useNav } from '../../contexts/NavigationProvider';
 
 const Friends = () => {
   const [friendRequests, setFriendRequests] = useState<any[]>([])
@@ -11,8 +12,10 @@ const Friends = () => {
   const [friendSuggestions, setFriendSuggestions] = useState<any[]>([])
   const [friends, setFriends] = useState<any[]>([])
   const { user } = useUserData();
+  const { setActiveLink } = useNav();
 
   useEffect(() => {
+    setActiveLink('friends')
     updateFriends()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

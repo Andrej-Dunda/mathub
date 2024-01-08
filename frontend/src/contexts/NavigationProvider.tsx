@@ -14,6 +14,7 @@ interface iNavigationContext {
   toViewMaterials: () => void;
   toNewBookAnalysis: () => void;
   activeLink: string;
+  setActiveLink: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const NavigationContext = createContext<iNavigationContext | null>(null)
@@ -24,48 +25,48 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
 
   const toDocumentation = () => {
     navigate('/documentation');
-    setActiveLink('/documentation')
+    setActiveLink('documentation')
   }
   const toLogin = () => {
     navigate('/');
-    setActiveLink('/')
+    setActiveLink('login')
   }
   const toRegistration = () => {
     navigate('/registration');
-    setActiveLink('/registration')
+    setActiveLink('registration')
   }
   const toForgottenPassword = () => {
     navigate('/forgotten-password');
-    setActiveLink('/forgotten-password')
+    setActiveLink('forgotten-password')
   }
   
   const toHome = () => {
     navigate('/');
-    setActiveLink('/')
+    setActiveLink('home')
   }
   const toUserProfile = () => {
     navigate('/user-profile');
-    setActiveLink('/user-profile')
+    setActiveLink('user-profile')
   }
   const toFriends = () => {
     navigate('/friends');
-    setActiveLink('/friends')
+    setActiveLink('friends')
   }
   const toBlog = () => {
     navigate('/blog');
-    setActiveLink('/blog')
+    setActiveLink('blog')
   }
   const toSubjects = () => {
     navigate('/subjects');
-    setActiveLink('/subjects')
+    setActiveLink('subjects')
   }
   const toViewMaterials = () => {
     navigate('/view-materials');
-    setActiveLink('/view-materials')
+    setActiveLink('view-materials')
   }
   const toNewBookAnalysis = () => {
     navigate('/new-book-analysis');
-    setActiveLink('/new-book-analysis')
+    setActiveLink('new-book-analysis')
   }
 
   return (
@@ -81,7 +82,8 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
       toSubjects,
       toViewMaterials,
       toNewBookAnalysis,
-      activeLink
+      activeLink,
+      setActiveLink
     }}>
       {children}
     </NavigationContext.Provider>
