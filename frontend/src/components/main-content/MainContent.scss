@@ -1,12 +1,9 @@
 .main-content {
   display: flex;
   flex-direction: column;
-  gap: 32px;
 
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-
-  padding: 50px;
 
   overflow: hidden;
 }
