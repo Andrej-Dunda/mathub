@@ -1,4 +1,4 @@
-import './MySubjectsWindow.scss'
+import './SubjectsWindow.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Modal from '../../components/modal/Modal';
@@ -10,7 +10,7 @@ import EllipsisMenuButton from '../../components/ellipsis-menu-button/EllipsisMe
 import { useSnackbar } from '../../contexts/SnackbarProvider';
 import { useNav } from '../../contexts/NavigationProvider';
 
-const MySubjectsWindow = () => {
+const SubjectsWindow = () => {
   const { openSnackbar } = useSnackbar();
   const [subjects, setSubjects] = useState<iSubject[]>([
     {subjectName: 'Češtinaalskdjhgljkhalskdjfhlakjhdsfadflgkjhaldkjgh', subjectId: uuidv4(), materials: [{ materialId: uuidv4(), materialName: '1. Literatura 2. poloviny 20. století' }]},
@@ -24,7 +24,11 @@ const MySubjectsWindow = () => {
   const [newSubjectModalError, setNewSubjectModalError] = useState<string>('')
   const newSubjectNameInputRef = useRef<HTMLInputElement>(null)
   const grayscale300 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-300').trim();
-  const { toSubjects } = useNav();
+  const { toViewMaterials, setActiveLink } = useNav();
+
+  useEffect(() => {
+    setActiveLink('subjects')
+  })
 
   useEffect(() => {
     newSubjectNameInputRef.current?.focus()
@@ -58,9 +62,9 @@ const MySubjectsWindow = () => {
   }
 
   return (
-    <div className="my-subjects-window">
+    <div className="subjects-window">
       <h1 className='h1'>Moje předměty</h1>
-      <div className="my-subjects">
+      <div className="subjects">
         {
           subjects.map((subject: iSubject, index: number) => {
             return (
@@ -68,7 +72,7 @@ const MySubjectsWindow = () => {
                 <header>
                   <EllipsisMenuButton menuOptions={['option 1', 'option 2', 'option 3', 'option 4']}/>
                 </header>
-                <main onClick={toSubjects} title={subject.subjectName}>
+                <main onClick={toViewMaterials} title={subject.subjectName}>
                   <span>
                     {subject.subjectName}
                   </span>
@@ -107,4 +111,4 @@ const MySubjectsWindow = () => {
     </div>
   )
 }
-export default MySubjectsWindow;
+export default SubjectsWindow;

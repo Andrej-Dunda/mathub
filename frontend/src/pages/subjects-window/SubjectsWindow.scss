@@ -1,11 +1,11 @@
-.my-subjects-window {
+.subjects-window {
   padding: 32px;
 
   .h1 {
     text-align: center;
   }
 
-  .my-subjects {
+  .subjects {
     display: grid;
     grid-template-columns: repeat(auto-fill, 200px);
     gap: 16px;

@@ -121,9 +121,9 @@ const BlogPost = (props: any) => {
             </div>
             <div className="blog-post-buttons">
               <LikeButton postId={postData.id} />
-              {!props.myBlogFormat && <CommentButton showComments={showComments} setShowComments={setShowComments} commentsCount={comments.length} />}
-              {props.myBlogFormat && <EditButton postData={postData} getMyPosts={props.getMyPosts} />}
-              {props.myBlogFormat && <DeleteButton postId={postData.id} getMyPosts={props.getMyPosts} />}
+              {!props.blogFormat && <CommentButton showComments={showComments} setShowComments={setShowComments} commentsCount={comments.length} />}
+              {props.blogFormat && <EditButton postData={postData} getMyPosts={props.getMyPosts} />}
+              {props.blogFormat && <DeleteButton postId={postData.id} getMyPosts={props.getMyPosts} />}
             </div>
           </div>
         </div>

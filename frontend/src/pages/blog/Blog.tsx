@@ -6,8 +6,9 @@ import FileUploader from '../../components/file-uploader/FileUploader';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { useUserData } from '../../contexts/UserDataProvider';
 import { useSnackbar } from '../../contexts/SnackbarProvider';
+import { useNav } from '../../contexts/NavigationProvider';
 
-const MyBlog = () => {
+const Blog = () => {
   const { user } = useUserData();
   const { openSnackbar } = useSnackbar();
   const [posts, setPosts] = useState<any[]>([])
@@ -16,9 +17,11 @@ const MyBlog = () => {
   const [postImage, setPostImage] = useState<File | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('')
   const myPostsSectionRef = useRef<HTMLHRElement>(null);
+  const { setActiveLink } = useNav();
 
   useEffect(() => {
     getMyPosts()
+    setActiveLink('blog')
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -122,7 +125,7 @@ const MyBlog = () => {
                   key={index}
                   postData={post}
                   showComments={false}
-                  myBlogFormat={true}
+                  blogFormat={true}
                   getMyPosts={getMyPosts}
                 />
               )
@@ -135,4 +138,4 @@ const MyBlog = () => {
     </div>
   )
 }
-export default MyBlog;
+export default Blog;
