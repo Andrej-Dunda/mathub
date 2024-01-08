@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import './ProfileBadge.scss'
-import ProfilePicture from '../components/profile-picture/ProfilePicture';
-import { useUserData } from '../contexts/UserDataProvider';
+import ProfilePicture from '../profile-picture/ProfilePicture';
+import { useUserData } from '../../contexts/UserDataProvider';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOut, faUser } from '@fortawesome/free-solid-svg-icons';
-import { useNav } from '../contexts/NavigationProvider';
+import { useNav } from '../../contexts/NavigationProvider';
 
 const ProfileBadge = (props: any) => {
   const { user } = useUserData();
