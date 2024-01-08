@@ -114,11 +114,9 @@ const BlogPost = (props: any) => {
       <main className={`blog-post-main ${showComments && 'border-right-grey'}`} ref={postContentRef} >
         <div className="blog-post-header">
           <div className="blog-info">
-            <div className="user-profile-picture">
-              <ProfilePicture className='post-size radius-100 border box-shadow' userId={postData.user_id} />
-            </div>
+            <ProfilePicture className='post-size radius-100 border box-shadow' userId={postData.user_id} />
             <div className="user-name-and-post-time">
-              <h3 className='user-name h3'>{userName}</h3>
+              <h5 className='user-name'>{userName}</h5>
               <span className='blog-post-time'>{postData.time}</span>
             </div>
             <div className="blog-post-buttons">
@@ -128,10 +126,9 @@ const BlogPost = (props: any) => {
               {props.myBlogFormat && <DeleteButton postId={postData.id} getMyPosts={props.getMyPosts} />}
             </div>
           </div>
-          <hr />
-          <h4 className='h4 blog-post-heading'>{postData.title}</h4>
         </div>
         <div className="blog-post-body">
+          <h5 className='h4 blog-post-heading'>{postData.title}</h5>
           <p className='blog-post-content'>{postData.content}</p>
           {
             postData.image && 
