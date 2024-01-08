@@ -11,6 +11,8 @@
   position: sticky;
   top: 0;
 
+  z-index: 100;
+
   .navbar-left {
     display: flex;
     flex-direction: row;
@@ -63,24 +65,5 @@
     justify-content: flex-end;
     align-items: center;
     gap: 16px;
-    
-    .logout {
-      text-decoration: none;
-      color: var(--grayscale-100);
-      font-weight: 500;
-      font-size: 16px;
-
-      user-select: none;
-
-      &:hover {
-        color: var(--hover-white);
-      }
-    }
-
-    .profile-badge {
-      border-radius: 100%;
-      pointer-events: all;
-      cursor: pointer;
-    }
   }
 }
