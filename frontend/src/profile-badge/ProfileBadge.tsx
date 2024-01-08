@@ -2,17 +2,17 @@ import { useEffect, useRef, useState } from 'react';
 import './ProfileBadge.scss'
 import ProfilePicture from '../components/profile-picture/ProfilePicture';
 import { useUserData } from '../contexts/UserDataProvider';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOut, faUser } from '@fortawesome/free-solid-svg-icons';
+import { useNav } from '../contexts/NavigationProvider';
 
 const ProfileBadge = (props: any) => {
   const { user } = useUserData();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const profileBadgeRef = useRef<HTMLImageElement>(null);
-  const navigate = useNavigate();
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
+  const { toUserProfile } = useNav();
   
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -52,10 +52,6 @@ const ProfileBadge = (props: any) => {
         }
       })
   }
-  
-  const userProfile = () => {
-    navigate('/user-profile')
-  }
 
   return (
     <div
@@ -70,7 +66,7 @@ const ProfileBadge = (props: any) => {
       {
         isMenuOpen && (
           <div className="popup-menu">
-            <div className="menu-item user-profile" onClick={userProfile} >
+            <div className="menu-item user-profile" onClick={toUserProfile} >
               <FontAwesomeIcon icon={faUser} color={grayscale900} />
               {`${user.first_name} ${user.last_name}`}
             </div>

@@ -2,18 +2,18 @@ import './ForgottenPassword.scss'
 import axios from "axios";
 import { useEffect, useState } from 'react';
 import Modal from '../../components/modal/Modal';
-import { useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
 import CopyToClipboard from '../../components/copy-to-clipboard/CopyToClipboard';
+import { useNav } from '../../contexts/NavigationProvider';
 
 const ForgottenPassword = () => {
   const [forgottenPasswordEmail, setForgottenPasswordEmail] = useState<string>('')
   const [errorResponseMessage, setErrorResponseMessage] = useState<string>('')
   const [newPassword, setNewPassword] = useState<string>('')
   const [isForgottenPasswordModalOpen, setIsForgottenPasswordModalOpen] = useState<boolean>(false)
-  const navigate = useNavigate()
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
+  const { toLogin, toRegistration } = useNav();
 
   useEffect(() => {
     const handleKeyPress = (e: any) => {
@@ -60,8 +60,6 @@ const ForgottenPassword = () => {
 
   const closeForgottenPasswordModal = () => {setIsForgottenPasswordModalOpen(false)}
 
-  const goToLogin = () => {navigate('/')}
-
   return (
     <div className="forgotten-password-page">
       <div className="logo-and-title">
@@ -84,15 +82,15 @@ const ForgottenPassword = () => {
           </div>
           <ErrorMessage content={errorResponseMessage} />
           <div className='forgotten-password-other-options'>
-            <span onClick={() => navigate('/')}>zpět na přihlášení</span>
-            <span onClick={() => navigate('/registration')}>registrovat se</span>
+            <span onClick={toLogin}>zpět na přihlášení</span>
+            <span onClick={toRegistration}>registrovat se</span>
           </div>
           <div className='forgotten-password-submit'>
             <button type='button' className='get-new-password-button' onClick={submitForgottenPassword}>Získat nové heslo</button>
           </div>
         </form>
       </div>
-      <Modal isOpen={isForgottenPasswordModalOpen} onClose={closeForgottenPasswordModal} onSubmit={goToLogin} submitContent='Přihlásit se' cancelContent='Zavřít'>
+      <Modal isOpen={isForgottenPasswordModalOpen} onClose={closeForgottenPasswordModal} onSubmit={toLogin} submitContent='Přihlásit se' cancelContent='Zavřít'>
         {newPassword && (
           <div className='new-password-window'>
             <h2 className="new-password-heading">Heslo úspěšně resetováno!</h2>

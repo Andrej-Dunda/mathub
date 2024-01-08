@@ -5,11 +5,10 @@ import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useUserData } from '../../contexts/UserDataProvider';
-import { useNavigate } from 'react-router-dom';
 import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
+import { useNav } from '../../contexts/NavigationProvider';
 
 const LoginPage = (props: any) => {
-  const navigate = useNavigate();
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: ""
@@ -20,6 +19,7 @@ const LoginPage = (props: any) => {
   const passwordInputRef = useRef<HTMLInputElement>(null)
   const { setUser } = useUserData();
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
+  const { toRegistration, toForgottenPassword } = useNav();
 
   useEffect(() => {
     const handleKeyPress = (e: any) => {
@@ -118,8 +118,8 @@ const LoginPage = (props: any) => {
           </div>
           <div className="form-footer">
             <div className='login-other-options'>
-              <span onClick={() => navigate('/registration')}>registrovat se</span>
-              <span onClick={() => navigate('/forgotten-password')}>zapomenuté heslo</span>
+              <span onClick={toRegistration}>registrovat se</span>
+              <span onClick={toForgottenPassword}>zapomenuté heslo</span>
             </div>
             <ErrorMessage content={responseMessage} />
             <div className='login-submit'>

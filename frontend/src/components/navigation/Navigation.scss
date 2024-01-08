@@ -1,7 +1,6 @@
 .navigation {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
 
   height: var(--navigation-menu-height);
   max-height: var(--navigation-menu-height);
@@ -44,6 +43,15 @@
         color: var(--grayscale-100);
       }
     }
+  }
+
+  .navbar-middle {
+    justify-self: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 20px;
+    align-items: center;
 
     .link {
       color: var(--grayscale-100);
@@ -60,6 +68,7 @@
   }
 
   .navbar-right {
+    justify-self: right;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;

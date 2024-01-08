@@ -4,11 +4,11 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Modal from '../../components/modal/Modal';
 import { useState, useRef, useEffect } from 'react';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
-import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { iSubject } from '../../interfaces/materials-interface';
 import EllipsisMenuButton from '../../components/ellipsis-menu-button/EllipsisMenuButton';
 import { useSnackbar } from '../../contexts/SnackbarProvider';
+import { useNav } from '../../contexts/NavigationProvider';
 
 const MySubjectsWindow = () => {
   const { openSnackbar } = useSnackbar();
@@ -23,8 +23,8 @@ const MySubjectsWindow = () => {
   const [newSubjectName, setNewSubjectName] = useState<string>('')
   const [newSubjectModalError, setNewSubjectModalError] = useState<string>('')
   const newSubjectNameInputRef = useRef<HTMLInputElement>(null)
-  const navigate = useNavigate();
   const grayscale300 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-300').trim();
+  const { toSubjects } = useNav();
 
   useEffect(() => {
     newSubjectNameInputRef.current?.focus()
@@ -57,8 +57,6 @@ const MySubjectsWindow = () => {
     setNewSubjectName('')
   }
 
-  const viewSubjects = () => navigate('/view-materials')
-
   return (
     <div className="my-subjects-window">
       <h1 className='h1'>Moje předměty</h1>
@@ -70,7 +68,7 @@ const MySubjectsWindow = () => {
                 <header>
                   <EllipsisMenuButton menuOptions={['option 1', 'option 2', 'option 3', 'option 4']}/>
                 </header>
-                <main onClick={viewSubjects} title={subject.subjectName}>
+                <main onClick={toSubjects} title={subject.subjectName}>
                   <span>
                     {subject.subjectName}
                   </span>
