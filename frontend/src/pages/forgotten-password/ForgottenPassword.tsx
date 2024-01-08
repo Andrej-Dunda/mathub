@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Modal from '../../components/modal/Modal';
 import { useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
+import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
+import CopyToClipboard from '../../components/copy-to-clipboard/CopyToClipboard';
 
 const ForgottenPassword = () => {
   const [forgottenPasswordEmail, setForgottenPasswordEmail] = useState<string>('')
@@ -11,6 +13,7 @@ const ForgottenPassword = () => {
   const [newPassword, setNewPassword] = useState<string>('')
   const [isForgottenPasswordModalOpen, setIsForgottenPasswordModalOpen] = useState<boolean>(false)
   const navigate = useNavigate()
+  const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
 
   useEffect(() => {
     const handleKeyPress = (e: any) => {
@@ -61,7 +64,10 @@ const ForgottenPassword = () => {
 
   return (
     <div className="forgotten-password-page">
-      <h1 className="h1 mathub-heading">MatHub</h1>
+      <div className="logo-and-title">
+        <MatHubLogo color={grayscale900} className='mathub-logo' />
+        <h1 className="mathub-title">MatHub</h1>
+      </div>
       <div className="forgotten-password-window">
         <h2 className='h2 form-heading'>Resetovat heslo</h2>
         <form>
@@ -91,7 +97,7 @@ const ForgottenPassword = () => {
           <div className='new-password-window'>
             <h2 className="new-password-heading">Heslo úspěšně resetováno!</h2>
             <span className='new-password-title'>Vaše nové heslo je:</span>
-            <span className='new-password'>{newPassword}</span>
+            <CopyToClipboard textToCopy={newPassword} label={newPassword} labelClassName='new-password' />
           </div>
         )}
       </Modal>

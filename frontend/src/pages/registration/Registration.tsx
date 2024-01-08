@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom"
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
 
 const Registration = () => {
   const [registrationForm, setRegistrationForm] = useState({
@@ -22,6 +23,7 @@ const Registration = () => {
   const passwordInputRef = useRef<HTMLInputElement>(null)
   const passwordAgainInputRef = useRef<HTMLInputElement>(null)
   const [showPassword, setShowPassword] = useState(false)
+  const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
 
   useEffect(() => {
     const handleKeyPress = (e: any) => {
@@ -114,7 +116,10 @@ const Registration = () => {
 
   return (
     <div className="registration-page">
-      <h1 className="h1 mathub-heading">MatHub</h1>
+      <div className="logo-and-title">
+        <MatHubLogo color={grayscale900} className='mathub-logo' />
+        <h1 className="mathub-title">MatHub</h1>
+      </div>
       <div className="registration-window">
         <h2 className='h2 form-heading'>Registrace</h2>
         <form>

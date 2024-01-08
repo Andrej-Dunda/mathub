@@ -7,9 +7,24 @@
   align-items: center;
   gap: 32px;
 
-  .mathub-heading {
-    font-size: 64px;
-    margin-top: 48px;
+  .logo-and-title {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: flex-end;
+    margin-top: 24px;
+
+    .mathub-title {
+      font-size: 64px;
+    }
+
+    .mathub-logo {
+      height: 90px;
+      width: auto;
+
+      pointer-events: all;
+      cursor: pointer;
+    }
   }
 
   .login-window {

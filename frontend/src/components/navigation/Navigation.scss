@@ -18,29 +18,29 @@
     gap: 20px;
     align-items: center;
 
-    .mathub-logo {
-      height: 40px;
-      width: 40px;
-      border-radius: 100%;
+    .logo-and-title {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+      align-items: center;
 
-      pointer-events: all;
-      cursor: pointer;
-
-      &:hover {
-        box-shadow: 0px 0px 30px 1px rgba(255,255,255,0.75);
-        -webkit-box-shadow: 0px 0px 30px 1px rgba(255,255,255,0.75);
-        -moz-box-shadow: 0px 0px 30px 1px rgba(255,255,255,0.75);
+      .mathub-logo {
+        height: 35px;
+        width: auto;
+  
+        pointer-events: all;
+        cursor: pointer;
       }
-    }
-
-    .navbar-heading {
-      font-weight: 500;
-      font-size: 24px;
-      margin: 0;
-      cursor: pointer;
-      text-decoration: none;
-      user-select: none;
-      color: var(--grayscale-100);
+  
+      .mathub-title {
+        font-weight: 700;
+        font-size: 27px;
+        margin: 0;
+        cursor: pointer;
+        text-decoration: none;
+        user-select: none;
+        color: var(--grayscale-100);
+      }
     }
 
     .link {

@@ -3,6 +3,7 @@ import './Navigation.scss'
 import axios from "axios";
 import ProfilePicture from '../profile-picture/ProfilePicture';
 import { useUserData } from "../../contexts/UserDataProvider";
+import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
 
 const Navigation = (props: any) => {
   const { user } = useUserData();
@@ -27,12 +28,15 @@ const Navigation = (props: any) => {
 
   const home = () => navigate('/')
   const userProfile = () => navigate('/user-profile')
+  const grayscale100 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-100').trim();
 
   return (
     <nav className="navigation">
         <div className="navbar-left">
-          <img className='mathub-logo' src="/logo" alt="" onClick={home} />
-          <h1 className="navbar-heading" onClick={home}>MatHub</h1>
+          <div className="logo-and-title">
+            <MatHubLogo color={grayscale100} onClick={home} className='mathub-logo' />
+            <h1 className="mathub-title" onClick={home}>MatHub</h1>
+          </div>
           <Link to='' className="link" aria-current="page">Domů</Link>
           <Link to='friends' className="link">Přátelé</Link>
           <Link to='my-blog' className="link">Můj Blog</Link>

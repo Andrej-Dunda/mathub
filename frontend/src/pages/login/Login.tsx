@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useUserData } from '../../contexts/UserDataProvider';
 import { useNavigate } from 'react-router-dom';
+import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
 
 const LoginPage = (props: any) => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const LoginPage = (props: any) => {
   const emailInputRef = useRef<HTMLInputElement>(null)
   const passwordInputRef = useRef<HTMLInputElement>(null)
   const { setUser } = useUserData();
+  const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
 
   useEffect(() => {
     const handleKeyPress = (e: any) => {
@@ -78,7 +80,10 @@ const LoginPage = (props: any) => {
 
   return (
     <div className="login-page">
-      <h1 className="h1 mathub-heading">MatHub</h1>
+      <div className="logo-and-title">
+        <MatHubLogo color={grayscale900} className='mathub-logo' />
+        <h1 className="mathub-title">MatHub</h1>
+      </div>
       <div className="login-window">
         <h2 className='h2 form-heading'>Přihlášení</h2>
         <form>
