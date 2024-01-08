@@ -1,4 +1,4 @@
-import './MyBlog.scss'
+import './Blog.scss'
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import BlogPost from "../../components/blog-post/BlogPost";
@@ -73,7 +73,7 @@ const MyBlog = () => {
   }
 
   return (
-    <div className="my-blog">
+    <div className="blog">
       <div className="my-posts">
         <h2 className="h2">Nový Příspěvek</h2>
         <div className="new-post-wrapper">
