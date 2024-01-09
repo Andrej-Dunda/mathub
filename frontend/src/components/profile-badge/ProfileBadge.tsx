@@ -59,10 +59,12 @@ const ProfileBadge = (props: any) => {
       ref={profileBadgeRef}
       onClick={toggleMenu}
     >
-      <ProfilePicture
-        className='small radius-100'
-        userId={user.id}
-      />
+      <div className="profile-picture-wrapper">
+        <ProfilePicture
+          className='small radius-100'
+          userId={user.id}
+        />
+      </div>
       {
         isMenuOpen && (
           <div className="popup-menu">

@@ -63,9 +63,11 @@
     -moz-box-shadow: 1px 1px 8px 1px rgba(255, 255, 255, 0.31);
   }
 
-  &.box-shadow-hover:hover {
-    box-shadow: 1px 1px 8px 1px rgba(255, 255, 255, 0.31);
-    -webkit-box-shadow: 1px 1px 8px 1px rgba(255, 255, 255, 0.31);
-    -moz-box-shadow: 1px 1px 8px 1px rgba(255, 255, 255, 0.31);
+  &.box-shadow-hover {
+    &:hover {
+      box-shadow: 1px 1px 8px 1px rgba(255, 255, 255, 0.31);
+      -webkit-box-shadow: 1px 1px 8px 1px rgba(255, 255, 255, 0.31);
+      -moz-box-shadow: 1px 1px 8px 1px rgba(255, 255, 255, 0.31);
+    }
   }
 }
