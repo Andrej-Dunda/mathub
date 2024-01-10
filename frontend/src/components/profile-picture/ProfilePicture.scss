@@ -1,0 +1,79 @@
+.profile-picture {
+  &.radius-100 {
+    border-radius: 100%;
+  }
+
+  &.radius-50 {
+    border-radius: 50%;
+  }
+
+  &.radius-25 {
+    border-radius: 25%;
+  }
+
+  &.xsmall {
+    width: 20px;
+    height: 20px;
+  }
+
+  &.small {
+    width: 40px;
+    height: 40px;
+  }
+
+  &.medium {
+    width: 100px;
+    height: 100px;
+  }
+
+  &.large {
+    width: 250px;
+    height: 250px;
+  }
+
+  &.xlarge {
+    width: 500px;
+    height: 500px;
+  }
+
+  &.post-size {
+    width: 45px;
+    height: 45px;
+  }
+
+  &.border-gray {
+    border: 1px solid var(--grayscale-300);
+  }
+
+  &.border-black {
+    border: 1px solid var(--grayscale-900);
+  }
+
+  &.border-white {
+    border: 1px solid var(--grayscale-100);
+  }
+
+  &.border-hover-gray:hover {
+    border: 1px solid var(--hover-white)!important;
+  }
+
+  &.box-shadow {
+    box-shadow: 1px 1px 8px 1px rgba(255, 255, 255, 0.31);
+    -webkit-box-shadow: 1px 1px 8px 1px rgba(255, 255, 255, 0.31);
+    -moz-box-shadow: 1px 1px 8px 1px rgba(255, 255, 255, 0.31);
+  }
+
+  &.box-shadow-dark {
+    box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+    -webkit-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+    -moz-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+  }
+
+  &.box-shadow-hover {
+    &:hover {
+      box-shadow: 1px 1px 8px 1px rgba(255, 255, 255, 0.31);
+      -webkit-box-shadow: 1px 1px 8px 1px rgba(255, 255, 255, 0.31);
+      -moz-box-shadow: 1px 1px 8px 1px rgba(255, 255, 255, 0.31);
+    }
+  }
+}

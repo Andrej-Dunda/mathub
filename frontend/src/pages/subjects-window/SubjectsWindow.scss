@@ -1,0 +1,121 @@
+.subjects-window {
+  padding: 32px;
+
+  .h1 {
+    text-align: center;
+  }
+
+  .subjects {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 200px);
+    gap: 16px;
+
+    padding: 16px;
+
+    justify-content: center;
+
+    .subject-button {
+      display: flex;
+      flex-direction: column;
+
+      aspect-ratio: 1/1;
+      border-radius: 8px;
+
+      box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+      -webkit-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+      -moz-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+
+      header {
+        height: 32px;
+        width: 100%;
+
+        display: flex;
+        justify-content: flex-end;
+
+        background-color: var(--grayscale-900);
+        color: var(--grayscale-100);
+
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        overflow: hidden;
+      }
+
+      main {
+        height: calc(100% - 32px);
+        max-height: calc(100% - 32px);
+        width: 100%;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        padding: 8px;
+
+        font-weight: 500;
+
+        cursor: pointer;
+
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+          
+        &:hover {
+          background-color: var(--hover-white);
+        }
+
+        span {
+          text-wrap: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+
+    .add-subject-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      padding: 8px;
+
+      aspect-ratio: 1/1;
+      border: 1px dashed var(--grayscale-300);
+      border-radius: 8px;
+
+      background-color: var(--grayscale-100);
+      font-weight: 500;
+
+      box-shadow: 1px 1px 8px 1px rgb(245,245,245);
+      -webkit-box-shadow: 1px 1px 8px 1px rgb(245,245,245);
+      -moz-box-shadow: 1px 1px 8px 1px rgb(245,245,245);
+
+      &:hover {
+        border-color: var(--grayscale-400);
+        background-color: var(--hover-white);
+
+        box-shadow: 1px 1px 8px 1px 	rgb(211,211,211);
+        -webkit-box-shadow: 1px 1px 8px 1px 	rgb(211,211,211);
+        -moz-box-shadow: 1px 1px 8px 1px 	rgb(211,211,211);
+
+        .edit-icon {
+          color: var(--grayscale-400)
+        }
+      }
+    }
+  }
+
+  .new-subject-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  
+    .new-subject-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+  
+      label {
+        font-weight: 500;
+      }
+    }
+  }
+}

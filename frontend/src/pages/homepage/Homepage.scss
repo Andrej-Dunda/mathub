@@ -1,0 +1,11 @@
+.homepage {
+  padding: 32px;
+
+  .homepage-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    align-items: center;
+  }
+}

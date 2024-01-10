@@ -1,379 +1,138 @@
+:root {
+  --aside-menu-transition-duration: 0.5s;
+  --navigation-menu-height: 56px;
+
+  --grayscale-900: #101223;
+  --grayscale-800: #282A3A;
+  --grayscale-700: #404252;
+  --grayscale-600: #5B5D6B;
+  --grayscale-500: #777986;
+  --grayscale-400: #9496A1;
+  --grayscale-300: #B3B5BD;
+  --grayscale-200: #D2D4DA;
+  --grayscale-150: #e7e8eb;
+  --grayscale-100: #fdfdfd;
+  --hover-white: var(--grayscale-150);
+  --hover-black: var(--grayscale-800);
+
+  --error-red: #cc0000;
+  --dark-blue: #002975;
+  --dark-blue-hover: #112A5A;
+  --azure: #1877F2;
+  --light-blue: #1D6BB9;
+  --light-blue-hover: #2F8EED;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: inherit;
+  background-color: inherit;
+}
+
 body {
   margin: 0;
+
+  font-family: 'Quicksand', sans-serif;
+  font-size: 15px;
+  line-height: 1.42857143;
+
+  color: var(--grayscale-900);
+  background-color: var(--grayscale-100);
+
+  overflow: hidden;
+
+  /* Scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--grayscale-300) var(--grayscale-150);
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    background-color: var(--grayscale-150);
+    height: 8px;
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--grayscale-300);
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--grayscale-400);
+  }
 }
 
-/* Disabled */
-.disabled {
-    cursor: not-allowed;
-}
-
-/* FONTS */
-/* Jakarta12 */
-.font-12 {
-    font-family: "Plus Jakarta Sans";
-    font-size: 12px;
-    line-height: 16px;
-    font-weight: 400;
-}
-
-/* Jakarta14 */
-.font-14 {
-    font-family: "Plus Jakarta Sans";
-    font-size: 14px;
-    line-height: 18.9px;
-    font-weight: 400;
-}
-
-.font-14-b {
-    font-family: "Plus Jakarta Sans";
-    font-size: 14px;
-    line-height: 18.9px;
-    font-weight: 600;
-}
-
-/* Jakarta16 */
-.font-16 {
-    font-family: "Plus Jakarta Sans";
-    font-size: 16px;
-    line-height: 21.6px;
-    font-weight: 400;
-}
-
-.font-16-b {
-    font-family: "Plus Jakarta Sans";
-    font-size: 16px;
-    line-height: 21.6px;
-    font-weight: 600;
-}
-
-/* Jakarta20 */
-.font-20 {
-    font-family: "Plus Jakarta Sans";
-    font-size: 20px;
-    line-height: 27px;
-    font-weight: 400;
-}
-
-.font-20-b {
-    font-family: "Plus Jakarta Sans";
-    font-size: 20px;
-    line-height: 27px;
-    font-weight: 600;
-}
-
-/* Jakarta24 */
-.font-24 {
-    font-family: "Plus Jakarta Sans";
-    font-size: 24px;
-    line-height: 32.4px;
-    font-weight: 400;
-}
-
-.font-24-b {
-    font-family: "Plus Jakarta Sans";
-    font-size: 24px;
-    line-height: 32.4px;
-    font-weight: 600;
-}
-
-/* Jakarta32 */
-.font-32 {
-    font-family: "Plus Jakarta Sans";
-    font-size: 32px;
-    line-height: 37.5px;
-    font-weight: 400;
-}
-
-.font-32-b {
-    font-family: "Plus Jakarta Sans";
-    font-size: 32px;
-    line-height: 37.5px;
-    font-weight: 600;
-}
-
-/* Jakarta36 */
-.font-36 {
-    font-family: "Plus Jakarta Sans";
-    font-size: 36px;
-    line-height: 48.6px;
-    font-weight: 400;
-}
-
-.font-36-b {
-    font-family: "Plus Jakarta Sans";
-    font-size: 36px;
-    line-height: 48.6px;
-    font-weight: 600;
-}
-
-/* COLORS */
-/* Primary blue */
-.p-blue {
-    color: #002975 !important;
-}
-
-/* Hoverable color */
-.p-blue-h {
-    color: #002975 !important;
-
-    &:hover {
-      color: #112A5A !important;
-    }
-}
-
-/* Background color */
-.p-blue-bg {
-    background-color: #002975 !important;
-}
-
-/* Hoverable background-color */
-.p-blue-bg-h {
-    background-color: #002975 !important;
-
-    &:hover {
-        background-color: #112A5A !important;
-    }
-}
-
-/* Secondary blue */
-.s-blue {
-    color: #2F8EED !important;
-}
-
-.s-blue-h {
-    color: #2F8EED !important;
-
-    &:hover {
-        color: #1D6BB9 !important;
-    }
-}
-
-.s-blue-bg {
-    background-color: #2F8EED !important;
-}
-
-.s-blue-bg-h {
-    background-color: #2F8EED !important;
-
-    &:hover {
-        background-color: #1D6BB9 !important;
-    }
-}
-
-/* Light blue */
-.l-blue {
-    color: #D7EBFF !important;
-}
-
-.l-blue-bg {
-    background-color: #D7EBFF !important;
-}
-
-.l-blue-bg-h {
-    background-color: #D7EBFF !important;
-
-    &:hover {
-        color: #D7EBFF!important;
-        background-color: #1D6BB9 !important;
-
-    }
-}
-
-/* Primary green */
-.p-green {
-    color: #388883 !important;
-}
-
-.p-green-h {
-    color: #388883 !important;
-
-    &:hover {
-      color: #2B5F5C !important;
-    }
-}
-
-.p-green-bg {
-    background-color: #388883 !important;
-}
-
-.p-green-bg-h {
-    background-color: #388883 !important;
-
-    &:hover {
-        background-color: #2B5F5C !important; 
-    }
-}
-
-/* Secondary green */
-.s-green {
-    color: #E6F4F1 !important;
-}
-
-.s-green-h {
-    color: #E6F4F1 !important;
-
-    &:hover {
-        color: #D4E2DF !important;
-    }
-}
-
-.s-green-bg {
-    background-color: #E6F4F1 !important;
-}
-
-.s-green-bg-h {
-    background-color: #E6F4F1 !important;
-
-    &:hover {
-        background-color: #D4E2DF !important;
-    }
-}
-
-/* Light green */
-.l-green {
-    color: #F2F9F8 !important;
-}
-
-.l-green-h {
-    color: #F2F9F8 !important;
-
-    &:hover {
-        color: #D4E2DF !important;
-    }
-}
-
-.l-green-bg {
-    background-color: #F2F9F8 !important;
-}
-
-.l-green-bg-h {
-    background-color: #F2F9F8 !important;
-
-    &:hover {
-        background-color: #D4E2DF !important;
-    }
-}
-
-/* Primary purple */
-.p-purple {
-    color: #8007AA !important;
-}
-
-.p-purple-h {
-    color: #8007AA !important;
-
-    &:hover {
-      color: #510283 !important;
-    }
-}
-
-.p-purple-bg {
-    background-color: #8007AA !important;
-}
-
-.p-purple-bg-h {
-    background-color: #8007AA !important;
-
-    &:hover {
-        background-color: #510283 !important;
-    }
-}
-
-/* Secondary purple */
-.s-purple {
-    color: #C68FD9 !important;
-}
-
-.s-purple-h {
-    color: #C68FD9 !important;
-
-    &:hover {
-        color: #DDC8E4 !important;
-    }
-}
-
-.s-purple-bg {
-    background-color: #C68FD9 !important;
-}
-
-.s-purple-bg-h {
-    background-color: #C68FD9 !important;
-
-    &:hover {
-        background-color: #DDC8E4 !important;
-    }
-}
-
-/* Light purple */
-.l-purple {
-    color: #ECDAF2 !important;
-}
-
-.l-purple-bg {
-    background-color: #ECDAF2 !important;
-}
-
-.l-purple-bg-h {
-    background-color: #ECDAF2 !important;
-    
-    &:hover {
-        background-color: #DDC8E4 !important;
-    }
-}
-
-/* Primary gray */
-.p-gray {
-    color: #9A9A9A !important;
-}
-
-.p-gray-bg {
-    background-color: #9A9A9A !important;
-}
-
-/* Secondary gray */
-.s-gray {
-    color: #E5E5E5 !important;
-}
-
-.s-gray-bg {
-    background-color: #E5E5E5 !important;
-}
-
-/* Light Red */
-.l-red-bg {
-    background-color: #FCE8E8!important;
-}
-
-.l-red-bg-h {
-    background-color: #FCE8E8!important;
-
-    &:hover {
-        background-color: #F8C9C9!important;
-    }
-}
-
-body {
-    /* Scrollbar */
-    scrollbar-width: thin;
-    scrollbar-color: #AFAFAF #EFEFEF;
-    &::-webkit-scrollbar {
-        width: 8px;
-        background-color: #EFEFEF;
-        height: 8px;
-        border-radius: 5px;
-    }
-    &::-webkit-scrollbar-track {
-        border-radius: 6px;
-    }
-    &::-webkit-scrollbar-thumb {
-        background: #AFAFAF;
-        border-radius: 3px;
-    }
-    &::-webkit-scrollbar-thumb:hover {
-        background: #909090;
-    }
-}
-
-button:focus {
+button {
+  border: none;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  background-color: var(--grayscale-100);
+  text-transform: none;
+
+  &:focus {
     outline: none !important;
+  }
+}
+
+img {
+  user-select: none;
+  pointer-events: none;
+}
+
+input, textarea {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--grayscale-200);
+  
+  &:focus-visible {
+    outline: none;
+    border: 1px solid var(--grayscale-600);
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: inherit;
+  font-weight: 600;
+
+  margin: 0;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: calc(1.375rem + 1.5vw);
+}
+
+h2 {
+  font-size: calc(1.325rem + .9vw);
+}
+
+h3 {
+  font-size: calc(1.3rem + .6vw);
+}
+
+h4 {
+  font-size: calc(1.275rem + .3vw);
+}
+
+h5 {
+  font-size: 1.25rem;
+}
+
+h6 {
+  font-size: 1rem;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.disabled {
+  cursor: not-allowed;
 }

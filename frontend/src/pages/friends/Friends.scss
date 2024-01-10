@@ -1,0 +1,38 @@
+.friends {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
+  .friends-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .friends-windows {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 250px));
+    }
+  }
+
+}
+
+.users-list {
+  .show-all-users {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    align-items: center;
+
+    cursor: pointer;
+
+    span {
+      margin: 0;
+    }
+
+    input {
+      cursor: pointer;
+    }
+  }
+}

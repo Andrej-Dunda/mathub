@@ -1,0 +1,100 @@
+.navigation {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+
+  height: var(--navigation-menu-height);
+  max-height: var(--navigation-menu-height);
+  background-color: var(--grayscale-900);
+
+  padding: 0 16px;
+  position: sticky;
+  top: 0;
+
+  z-index: 100;
+
+  .navbar-left {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 20px;
+    align-items: center;
+
+    .logo-and-title {
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      align-items: center;
+
+      .mathub-logo {
+        height: 35px;
+        width: auto;
+  
+        pointer-events: all;
+        cursor: pointer;
+      }
+  
+      .mathub-title {
+        font-weight: 700;
+        font-size: 27px;
+        margin: 0;
+        cursor: pointer;
+        text-decoration: none;
+        user-select: none;
+        color: var(--grayscale-100);
+      }
+    }
+  }
+
+  .navbar-middle {
+    justify-self: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    padding: 4px;
+
+    .link {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      min-width: fit-content;
+      width: 90px;
+      height: 100%;
+      padding: 8px;
+
+      color: var(--grayscale-100);
+      font-size: 20px;
+      font-weight: 500;
+
+      border-radius: 8px;
+
+      user-select: none;
+      cursor: pointer;
+
+      &:hover:not(.active) {
+        color: var(--hover-white);
+        background-color: var(--hover-black);
+      }
+
+      &.active {
+        border-bottom: 3px solid var(--grayscale-100);
+        border-color: var(--azure);
+
+        .nav-icon {
+          color: var(--azure);
+        }
+      }
+    }
+  }
+
+  .navbar-right {
+    justify-self: right;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
+  }
+}

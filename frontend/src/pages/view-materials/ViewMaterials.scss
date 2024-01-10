@@ -1,0 +1,126 @@
+.view-materials {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+
+  transition: all var(--aside-menu-transition-duration);
+
+  &.aside-menu-open {
+    grid-template-columns: 0 1fr;
+  }
+
+  .aside-main-container {
+    max-height: calc(100vh - var(--navigation-menu-height));
+    overflow: hidden;
+
+    .aside-button {
+      width: 300px;
+      height: 50px;
+      min-height: 50px;
+
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+
+      padding: 10px;
+
+      span {
+        text-wrap: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .new-material-button {
+      gap: 8px;
+      cursor: pointer;
+      color: var(--grayscale-400);
+      border: 4px dashed var(--grayscale-400);
+
+      &:hover {
+        background-color: var(--hover-white);
+      }
+    }
+
+    .aside-body {
+      height: calc(100vh - var(--navigation-menu-height) - 100px);
+      padding-bottom: calc((100vh - var(--navigation-menu-height) - 100px) * 0.5);
+
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+
+      .material-button {
+        border-bottom: 1px solid var(--grayscale-150);
+
+        cursor: pointer;
+
+        &:hover {
+          background-color: var(--hover-white);
+        }
+
+        &.active {
+          background-color: var(--grayscale-900);
+          color: var(--grayscale-100);
+        }
+      }
+    }
+  }
+
+  .main-content {
+    .main-content-header {
+      width: 100%;
+      height: 50px;
+
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+
+      z-index: 10;
+
+      box-shadow: 1px 1px 16px 5px rgba(0, 0, 0, 0.31);
+      -webkit-box-shadow: 1px 1px 16px 5px rgba(0, 0, 0, 0.31);
+      -moz-box-shadow: 1px 1px 16px 5px rgba(0, 0, 0, 0.31);
+
+      .material-title {
+        font-size: 18px;
+        font-weight: 500;
+      }
+    }
+
+    .main-content-body {
+      width: 100%;
+      flex-grow: 1;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+
+.new-material-form {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+
+  .new-material-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+}

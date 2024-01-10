@@ -1,0 +1,9 @@
+.new-subject-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  label {
+    font-weight: 500;
+  }
+}
