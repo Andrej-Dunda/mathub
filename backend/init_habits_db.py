@@ -38,7 +38,7 @@ users = [
     {"user_email": "john.doe@example.com", "user_password": "johndoe1", "first_name": "John", "last_name": "Doe", "profile_picture": "pp8.png"},
     {"user_email": "michael.lewis@example.com", "user_password": "michaelL123", "first_name": "Michael", "last_name": "Lewis", "profile_picture": "profile-picture-default.png"},
     {"user_email": "susan.green@example.com", "user_password": "susanG2023", "first_name": "Susan", "last_name": "Green", "profile_picture": "pp10.png"},
-    {"user_email": "prezidentpavel@gmail.com", "user_password": "petrpavel", "first_name": "Petr", "last_name": "Pavel", "profile_picture": "pp12.jpeg"},
+    {"user_email": "prezidentpavel@gmail.com", "user_password": "petrpavel", "first_name": "Petr", "last_name": "Pavel", "profile_picture": "pp12.jpg"},
     {"user_email": "jane.wilson@example.com", "user_password": "janew2023", "first_name": "Jane", "last_name": "Wilson", "profile_picture": "pp7.png"},
     {"user_email": "robert.miller@example.com", "user_password": "robertm", "first_name": "Robert", "last_name": "Miller", "profile_picture": "pp11.png"},
     {"user_email": "karen.hall@example.com", "user_password": "karenH2023", "first_name": "Karen", "last_name": "Hall", "profile_picture": "profile-picture-default.png"},

@@ -2,10 +2,10 @@ venv/
 
 habits.db
 
-media/post-images/
+# media/post-images/
 
-# Ignore everything in the media/profile-pictures directory
-media/profile-pictures/*
+# # Ignore everything in the media/profile-pictures directory
+# media/profile-pictures/*
 
-# re-include the file profile-picture-default.png
-!media/profile-pictures/profile-picture-default.png
+# # re-include the file profile-picture-default.png
+# !media/profile-pictures/profile-picture-default.png
