@@ -3,7 +3,7 @@ import './EditButton.scss'
 import { useModal } from '../../../contexts/ModalProvider';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 
-import { ChangeEvent, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useSnackbar } from '../../../contexts/SnackbarProvider';
 import ErrorMessage from '../../error-message/ErrorMessage';
@@ -32,13 +32,6 @@ const EditPostModalContent = (props: any) => {
   const handlePostTitleChange = (e: any) => {
     setPostTitle(e.target.value)
   }
-
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      setPostImage(files[0]);
-    }
-  };
 
   const editPost = async () => {
     if (!postTitle.trim()) return setErrorMessage('Titulek příspěvku nesmí být prázdný!')
