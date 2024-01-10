@@ -1,17 +1,15 @@
 import './SubjectsWindow.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import Modal from '../../components/modal/Modal';
 import { useState, useRef, useEffect } from 'react';
-import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { v4 as uuidv4 } from 'uuid';
 import { iSubject } from '../../interfaces/materials-interface';
 import EllipsisMenuButton from '../../components/buttons/ellipsis-menu-button/EllipsisMenuButton';
-import { useSnackbar } from '../../contexts/SnackbarProvider';
 import { useNav } from '../../contexts/NavigationProvider';
+import { useModal } from '../../contexts/ModalProvider';
+import NewSubjectModalContent from '../../components/modal/modal-contents/NewSubjectModalContent';
 
 const SubjectsWindow = () => {
-  const { openSnackbar } = useSnackbar();
   const [subjects, setSubjects] = useState<iSubject[]>([
     {subjectName: 'Češtinaalskdjhgljkhalskdjfhlakjhdsfadflgkjhaldkjgh', subjectId: uuidv4(), materials: [{ materialId: uuidv4(), materialName: '1. Literatura 2. poloviny 20. století' }]},
     {subjectName: 'Ekonomie', subjectId: uuidv4(), materials: []},
@@ -19,12 +17,10 @@ const SubjectsWindow = () => {
     {subjectName: 'Angličtina', subjectId: uuidv4(), materials: [{ materialId: uuidv4(), materialName: '1. Schools and Education' }]},
     {subjectName: 'Matematika', subjectId: uuidv4(), materials: [{ materialId: uuidv4(), materialName: '1. Kombinatorika a pravděpodobnost' }]},
   ])
-  const [isNewSubjectModalOpen, setIsNewSubjectModalOpen] = useState<boolean>(false)
-  const [newSubjectName, setNewSubjectName] = useState<string>('')
-  const [newSubjectModalError, setNewSubjectModalError] = useState<string>('')
   const newSubjectNameInputRef = useRef<HTMLInputElement>(null)
   const grayscale300 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-300').trim();
   const { toViewMaterials, setActiveLink } = useNav();
+  const { showModal, modalOpen } = useModal();
 
   useEffect(() => {
     setActiveLink('subjects')
@@ -32,33 +28,10 @@ const SubjectsWindow = () => {
 
   useEffect(() => {
     newSubjectNameInputRef.current?.focus()
-  }, [isNewSubjectModalOpen])
-
-  const validateNewSubjectSubmit = () => {
-    if (newSubjectName) {
-      setSubjects([...subjects, { subjectId: uuidv4(), subjectName: newSubjectName, materials: [] }]);
-      setIsNewSubjectModalOpen(false)
-      setNewSubjectName('')
-      setNewSubjectModalError('')
-      openSnackbar('Předmět úspěšně vytvořen!')
-      return;
-    }
-    setNewSubjectModalError('Vyplňte pole Název nového předmětu!')
-    newSubjectNameInputRef.current?.focus()
-  }
-
-  const onNewSubjectNameInputChange = (e: any) => {
-    setNewSubjectName(e.target.value)
-  }
+  }, [modalOpen])
 
   const openNewSubjectModal = () => {
-    setIsNewSubjectModalOpen(true)
-    setNewSubjectModalError('')
-  }
-
-  const closeNewSubjectModal = () => {
-    setIsNewSubjectModalOpen(false)
-    setNewSubjectName('')
+    showModal(<NewSubjectModalContent subjects={subjects} setSubjects={setSubjects} />)
   }
 
   return (
@@ -85,29 +58,6 @@ const SubjectsWindow = () => {
           <FontAwesomeIcon icon={faPlus} className='edit-icon' size="2x" color={grayscale300} />
         </button>
       </div>
-      <Modal
-        isOpen={isNewSubjectModalOpen}
-        onClose={closeNewSubjectModal}
-        onSubmit={validateNewSubjectSubmit}
-        submitContent={'Přidat předmět'}
-        cancelContent={'Zrušit'}
-      >
-        <div className="new-subject-form">
-          <h1 className='new-subject-h1'>Nový předmět</h1>
-          <div className='new-subject-wrapper'>
-            <label htmlFor="new-subject-name-input">Název nového předmětu:</label>
-            <input
-              type='text'
-              id='new-subject-name-input'
-              name='new-subject-name-input'
-              value={newSubjectName}
-              onChange={onNewSubjectNameInputChange}
-              ref={newSubjectNameInputRef}
-            />
-          </div>
-          <ErrorMessage content={newSubjectModalError} />
-        </div>
-      </Modal>
     </div>
   )
 }

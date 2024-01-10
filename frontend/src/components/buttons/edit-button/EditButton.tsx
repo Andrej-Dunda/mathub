@@ -1,16 +1,30 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './EditButton.scss'
+import { useModal } from '../../../contexts/ModalProvider';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
-import Modal from '../../modal/Modal';
-import { ChangeEvent, useState } from 'react';
-import axios from 'axios';
 
-const EditButton = (props: any) => {
-  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false)
+import { ChangeEvent, useState, useEffect } from 'react';
+import axios from 'axios';
+import { useSnackbar } from '../../../contexts/SnackbarProvider';
+import ErrorMessage from '../../error-message/ErrorMessage';
+import ModalFooter from '../../modal/modal-footer/ModalFooter';
+
+const EditPostModalContent = (props: any) => {
   const [postTitle, setPostTitle] = useState(props.postData.title)
   const [postDescription, setPostDescription] = useState(props.postData.content)
   const [postImage, setPostImage] = useState<File | null>(null);
   const [inputKey, setInputKey] = useState(Date.now());
+  const { openSnackbar } = useSnackbar();
+  const [errorMessage, setErrorMessage] = useState<string>('')
+  const { closeModal } = useModal();
+
+  useEffect(() => {
+    setPostDescription(props.postData.content)
+    setPostTitle(props.postData.title)
+    setInputKey(Date.now());
+    setErrorMessage('')
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handlePostDescChange = (e: any) => {
     setPostDescription(e.target.value)
@@ -27,22 +41,9 @@ const EditButton = (props: any) => {
     }
   };
 
-  const closeEditModal = () => {
-    setIsEditModalOpen(false)
-  }
-
-  const openEditModal = () => {
-    setIsEditModalOpen(true)
-    setPostDescription(props.postData.content)
-    setPostTitle(props.postData.title)
-    setInputKey(Date.now());
-  }
-
-  const editPost = async (e: any) => {
-    e.preventDefault()
-
-    if (!postTitle.trim()) return alert('Titulek příspěvku nesmí být prázdný!')
-    if (!postDescription.trim()) return alert('Popisek příspěvku nesmí být prázdný!')
+  const editPost = async () => {
+    if (!postTitle.trim()) return setErrorMessage('Titulek příspěvku nesmí být prázdný!')
+    if (!postDescription.trim()) return setErrorMessage('Popisek příspěvku nesmí být prázdný!')
 
     const formData = new FormData()
 
@@ -58,46 +59,56 @@ const EditButton = (props: any) => {
     })
       .then(() => {
         props.getMyPosts()
-        setIsEditModalOpen(false)
-        alert("Příspěvek úspěšně upraven :)")
+        openSnackbar("Příspěvek úspěšně uložen!")
+        setErrorMessage('')
+        closeModal();
       })
       .catch(err => console.error(err))
   }
 
   return (
-    <>
-      <button className="edit-button" onClick={openEditModal}>
-        <FontAwesomeIcon icon={faEdit} className='edit-icon' />
-      </button>
-      <Modal isOpen={isEditModalOpen} onClose={closeEditModal} onSubmit={editPost} submitContent='Uložit' cancelContent='Zahodit změny'>
-        <div className="edit-blog-post">
-          <div className="edit-post-input">
-            <label htmlFor="post-title">Titulek:</label>
-            <input
-              type="text"
-              id='post-title'
-              value={postTitle}
-              onChange={handlePostTitleChange}
-            />
-          </div>
-          <div className="edit-post-input">
-            <label htmlFor="post-description">Popisek:</label>
-            <textarea
-              value={postDescription}
-              onChange={handlePostDescChange}
-              name="post-description"
-              id="post-description"
-              cols={30}
-              rows={10}
-            />
-          </div>
-          <div className="edit-post-input">
-            <label htmlFor="post-image-input">Obrázek k příspěvku:</label>
-            <input id='post-image-input' type="file" accept="image/*" key={inputKey} onChange={handleImageChange} />
-          </div>
-        </div>
-      </Modal>
-    </>
+  <div className="edit-blog-post">
+    <div className="edit-post-input">
+      <label htmlFor="post-title">Titulek:</label>
+      <input
+        type="text"
+        id='post-title'
+        value={postTitle}
+        onChange={handlePostTitleChange}
+      />
+    </div>
+    <div className="edit-post-input">
+      <label htmlFor="post-description">Popisek:</label>
+      <textarea
+        value={postDescription}
+        onChange={handlePostDescChange}
+        name="post-description"
+        id="post-description"
+        cols={30}
+        rows={10}
+      />
+    </div>
+    <div className="edit-post-input">
+      <label htmlFor="post-image-input">Obrázek k příspěvku:</label>
+      <input id='post-image-input' type="file" accept="image/*" key={inputKey} onChange={handleImageChange} />
+    </div>
+    <ErrorMessage content={errorMessage} />
+    <ModalFooter onSubmit={editPost} submitButtonLabel='Uložit' cancelButtonLabel='Zahodit změny'/>
+  </div>
+  )
+}
+
+const EditButton = (props: any) => {
+  const { showModal } = useModal();
+
+  const openEditModal = () => {
+    showModal(<EditPostModalContent getMyPosts={props.getMyPosts} postData={props.postData} />)
+  }
+
+  return (
+    <button className="edit-button" onClick={openEditModal}>
+      <FontAwesomeIcon icon={faEdit} className='edit-icon' />
+    </button>
   )
 }
 export default EditButton;

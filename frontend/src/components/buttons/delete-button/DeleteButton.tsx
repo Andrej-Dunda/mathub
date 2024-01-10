@@ -1,41 +1,45 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './DeleteButton.scss'
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import Modal from '../../modal/Modal';
 import axios from 'axios';
-import { useState } from 'react';
+import { useSnackbar } from '../../../contexts/SnackbarProvider';
+import { useModal } from '../../../contexts/ModalProvider';
+import ModalFooter from '../../modal/modal-footer/ModalFooter';
 
-const DeleteButton = (props: any) => {
-  const [isDeleteBlogPostModalOpen, setIsDeleteBlogPostModalOpen] = useState<boolean>(false)
-
-  const closeDeleteBlogPostModal = () => {
-    setIsDeleteBlogPostModalOpen(false)
-  }
-
-  const openDeleteBlogPostModal = () => {
-    setIsDeleteBlogPostModalOpen(true)
-  }
+const DeleteBlogPostModalContent = (props: any) => {
+  const { openSnackbar } = useSnackbar();
+  const { closeModal } = useModal();
 
   const deleteBlogPost = () => {
     axios.post(`/delete-blog-post/${props.postId}`)
     .then(() => {
-      setIsDeleteBlogPostModalOpen(false)
       props.getMyPosts()
-      alert('Příspěvek úspěšně smazán.')
+      openSnackbar('Příspěvek úspěšně smazán!')
+      closeModal();
     })
     .catch(err => console.error(err))
   }
 
   return (
-    <>
-      <button onClick={openDeleteBlogPostModal} className="delete-button">
-        <FontAwesomeIcon icon={faTrash} className='delete-icon' />
-      </button>
-      <Modal isOpen={isDeleteBlogPostModalOpen} onClose={closeDeleteBlogPostModal} onSubmit={deleteBlogPost} submitContent='Smazat' cancelContent='Zrušit'>
-        <h2 className="h2">Přejete si opravdu smazat tento příspěvek?</h2>
-        <span>Tuto akci již nelze vrátit zpět!</span>
-      </Modal>
-    </>
+    <div className="delete-blog-post">
+      <h2 className="h2">Přejete si opravdu smazat tento příspěvek?</h2>
+      <span>Tuto akci již nelze vrátit zpět!</span>
+      <ModalFooter onSubmit={deleteBlogPost} submitButtonLabel='Smazat' cancelButtonLabel='Zrušit'/>
+    </div>
+  )
+}
+
+const DeleteButton = (props: any) => {
+  const { showModal } = useModal();
+
+  const openDeleteBlogPostModal = () => {
+    showModal(<DeleteBlogPostModalContent getMyPosts={props.getMyPosts} postId={props.postId} />)
+  }
+
+  return (
+    <button onClick={openDeleteBlogPostModal} className="delete-button">
+      <FontAwesomeIcon icon={faTrash} className='delete-icon' />
+    </button>
   )
 }
 export default DeleteButton;

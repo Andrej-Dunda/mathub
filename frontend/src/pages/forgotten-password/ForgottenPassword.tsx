@@ -1,19 +1,36 @@
 import './ForgottenPassword.scss'
 import axios from "axios";
 import { useEffect, useState } from 'react';
-import Modal from '../../components/modal/Modal';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
 import CopyToClipboard from '../../components/buttons/copy-to-clipboard/CopyToClipboard';
 import { useNav } from '../../contexts/NavigationProvider';
+import { useModal } from '../../contexts/ModalProvider';
+import ModalFooter from '../../components/modal/modal-footer/ModalFooter';
+
+interface iForgottenPasswordModalContent {
+  newPassword: string;
+  modalSubmit: () => void;
+}
+
+const ForgottenPasswordModalContent: React.FC<iForgottenPasswordModalContent> = ({ newPassword, modalSubmit }) => {
+  return (
+    <div className='new-password-window'>
+      <h2 className="new-password-heading">Heslo úspěšně resetováno!</h2>
+      <span className='new-password-title'>Vaše nové heslo je:</span>
+      <CopyToClipboard textToCopy={newPassword} label={newPassword} labelClassName='new-password' />
+      <ModalFooter onSubmit={modalSubmit} submitButtonLabel='Na přihlášení' cancelButtonLabel='Zavřít'/>
+    </div>
+  )
+}
 
 const ForgottenPassword = () => {
   const [forgottenPasswordEmail, setForgottenPasswordEmail] = useState<string>('')
   const [errorResponseMessage, setErrorResponseMessage] = useState<string>('')
   const [newPassword, setNewPassword] = useState<string>('')
-  const [isForgottenPasswordModalOpen, setIsForgottenPasswordModalOpen] = useState<boolean>(false)
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
   const { toLogin, toRegistration } = useNav();
+  const { showModal, closeModal } = useModal();
 
   useEffect(() => {
     const handleKeyPress = (e: any) => {
@@ -42,7 +59,7 @@ const ForgottenPassword = () => {
       .then((response: any) => {
         setNewPassword(response.data.new_password)
         setErrorResponseMessage('')
-        response.data.result ? setIsForgottenPasswordModalOpen(true) : setErrorResponseMessage(response.data.response_message)
+        response.data.result ? openForgottenPasswordModal() : setErrorResponseMessage(response.data.response_message)
       }).catch((error: any) => {
         if (error.response) {
           console.error(error.response)
@@ -58,7 +75,14 @@ const ForgottenPassword = () => {
 
   const handleChange = (event: any) => {setForgottenPasswordEmail(event.target.value)}
 
-  const closeForgottenPasswordModal = () => {setIsForgottenPasswordModalOpen(false)}
+  const modalSubmit = () => {
+    closeModal();
+    toLogin();
+  }
+
+  const openForgottenPasswordModal = () => {
+    showModal(<ForgottenPasswordModalContent newPassword={newPassword} modalSubmit={modalSubmit} />)
+  }
 
   return (
     <div className="forgotten-password-page">
@@ -90,15 +114,6 @@ const ForgottenPassword = () => {
           </div>
         </form>
       </div>
-      <Modal isOpen={isForgottenPasswordModalOpen} onClose={closeForgottenPasswordModal} onSubmit={toLogin} submitContent='Přihlásit se' cancelContent='Zavřít'>
-        {newPassword && (
-          <div className='new-password-window'>
-            <h2 className="new-password-heading">Heslo úspěšně resetováno!</h2>
-            <span className='new-password-title'>Vaše nové heslo je:</span>
-            <CopyToClipboard textToCopy={newPassword} label={newPassword} labelClassName='new-password' />
-          </div>
-        )}
-      </Modal>
     </div>
   )
 }

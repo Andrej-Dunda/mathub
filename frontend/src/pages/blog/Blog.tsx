@@ -61,7 +61,8 @@ const Blog = () => {
         setPostDescription('')
         setPostTitle('')
         setPostImage(null)
-        openSnackbar("Příspěvek úspěšně zveřejněn")
+        openSnackbar("Příspěvek úspěšně zveřejněn!")
+        setErrorMessage('')
         myPostsSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
       })
       .catch(err => console.error(err))

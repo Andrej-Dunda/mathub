@@ -1,17 +1,13 @@
 import './UserProfile.scss'
-import { FormEvent, useEffect, useRef, useState } from 'react'
-import axios from 'axios';
-import Modal from '../../components/modal/Modal';
 import ProfilePicture from '../../components/profile-picture/ProfilePicture';
-import ErrorMessage from '../../components/error-message/ErrorMessage';
-import FileUploader from '../../components/buttons/file-uploader/FileUploader';
-import Checkbox from '../../components/buttons/checkbox/Checkbox';
 import { useUserData } from '../../contexts/UserDataProvider';
-import { useSnackbar } from '../../contexts/SnackbarProvider';
+import { useModal } from '../../contexts/ModalProvider';
+import ChangePasswordModalContent from '../../components/modal/modal-contents/ChangePasswordModalContent';
+import ChangeProfilePictureModalContent from '../../components/modal/modal-contents/ChangeProfilePictureModalContent';
 
 const UserProfile = () => {
-  const { user, updateUser } = useUserData();
-  const { openSnackbar } = useSnackbar();
+  const { user } = useUserData();
+  const { showModal } = useModal();
   const registrationDateRaw = new Date(user.registration_date)
   const czechMonthNames = [
     'ledna', 'února', 'března', 'dubna', 'května', 'června',
@@ -22,111 +18,13 @@ const UserProfile = () => {
   const monthName = czechMonthNames[registrationDateRaw.getMonth()];
   const year = registrationDateRaw.getFullYear();
   const registrationDate = `${dayOfMonth}. ${monthName} ${year}`;
-  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState<boolean>(false)
-  const [isProfilePictureModalOpen, setIsProfilePictureModalOpen] = useState<boolean>(false)
-  const [newPasswordForm, setNewPasswordForm] = useState({
-    oldPassword: '',
-    newPassword: '',
-    newPasswordAgain: ''
-  })
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [errorMessage, setErrorMessage] = useState<string>('')
-  const [newProfilePicture, setNewProfilePicture] = useState<File | null>(null);
-  const oldPasswordInputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    newProfilePicture && setErrorMessage('')
-  }, [newProfilePicture])
-
-  useEffect(() => {
-    oldPasswordInputRef.current?.focus()
-  }, [isPasswordModalOpen])
-
-  const handleNewProfilePictureSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!newProfilePicture) {
-      setErrorMessage('Žádný zvolený obrázek!');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('profile_picture', newProfilePicture);
-
-    try {
-      await axios.post(`/upload-profile-picture/${user.id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        }
-      });
-
-      updateUser()
-      closeProfilePictureModal()
-      openSnackbar('Obrázek úspěšně nahrán!');
-      setErrorMessage('')
-    } catch (error) {
-      setErrorMessage('Chyba při nahrávání obrázku :(');
-    }
-  };
-
-  const changeProfilePicture = () => {
-    setIsProfilePictureModalOpen(true)
-    setErrorMessage('')
-  }
 
   const openChangePasswordModal = () => {
-    setShowPassword(false)
-    setIsPasswordModalOpen(true)
-    setErrorMessage('')
+    showModal(<ChangePasswordModalContent />)
   }
 
-  const closePasswordModal = () => {
-    setIsPasswordModalOpen(false);
-    setErrorMessage('')
-  }
-
-  const closeProfilePictureModal = () => {
-    setIsProfilePictureModalOpen(false)
-  }
-
-  const changePassword = () => {
-    setErrorMessage('')
-    if (!newPasswordForm.newPassword || !newPasswordForm.newPasswordAgain || !newPasswordForm.oldPassword) return setErrorMessage('Vyplňte všechna pole!')
-    if (newPasswordForm.newPassword !== newPasswordForm.newPasswordAgain) return setErrorMessage('Nová hesla se musí shodovat!')
-    axios({
-      method: 'POST',
-      url: '/change-password',
-      data: {
-        user_id: user.id,
-        old_password: newPasswordForm.oldPassword,
-        new_password: newPasswordForm.newPassword
-      }
-    })
-      .then((res) => {
-        if (res.data.success) {
-          closePasswordModal()
-          openSnackbar('Heslo úspěšně změněno!')
-          setNewPasswordForm({
-            oldPassword: '',
-            newPassword: '',
-            newPasswordAgain: ''
-          })
-        } else {
-          setErrorMessage('Chybně zadané staré heslo!')
-        }
-      })
-      .catch(() => setErrorMessage('Někde se stala chyba :('))
-  }
-
-  const handleChange = (event: any) => {
-    const { value, name } = event.target
-    setNewPasswordForm((prevNote: any) => ({
-      ...prevNote, [name]: value
-    })
-    )
-  }
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword)
+  const changeProfilePicture = () => {
+    showModal(<ChangeProfilePictureModalContent />)
   }
 
   return (
@@ -153,39 +51,6 @@ const UserProfile = () => {
           <button onClick={openChangePasswordModal}>Změnit heslo</button>
         </div>
       </div>
-      <Modal isOpen={isPasswordModalOpen} onClose={closePasswordModal} onSubmit={changePassword} submitContent='Změnit heslo' cancelContent='Zrušit'>
-        <h1 className='h1'>Změnit heslo</h1>
-        <div className="new-password-form">
-          <div className='password-input-wrapper'>
-            <label htmlFor="old-password">Staré heslo:</label>
-            <input type={showPassword ? 'text' : 'password'} id='old-password' name='oldPassword' value={newPasswordForm.oldPassword} onChange={handleChange} ref={oldPasswordInputRef} />
-          </div>
-          <div className='password-input-wrapper'>
-            <label htmlFor="new-password">Nové heslo:</label>
-            <input type={showPassword ? 'text' : 'password'} id='new-password' name='newPassword' value={newPasswordForm.newPassword} onChange={handleChange} />
-          </div>
-          <div className='password-input-wrapper'>
-            <label htmlFor="new-password-again">Nové heslo znovu:</label>
-            <input type={showPassword ? 'text' : 'password'} id='new-password-again' name='newPasswordAgain' value={newPasswordForm.newPasswordAgain} onChange={handleChange} />
-          </div>
-          <ErrorMessage content={errorMessage} />
-          <div className='password-visibility-wrapper'>
-            <Checkbox checked={showPassword} onToggle={togglePasswordVisibility} label='Zobrazit hesla' />
-          </div>
-        </div>
-      </Modal>
-      <Modal isOpen={isProfilePictureModalOpen} onClose={closeProfilePictureModal} onSubmit={handleNewProfilePictureSubmit} submitContent='Nahrát' cancelContent='Zrušit' >
-        <div className="new-profile-picture">
-          <FileUploader
-            label='Nahrát nový obrázek'
-            labelClassName='profile-picture-upload-label'
-            acceptAttributeValue='image/*'
-            file={newProfilePicture}
-            setFile={setNewProfilePicture}
-          />
-          <ErrorMessage content={errorMessage} />
-        </div>
-      </Modal>
     </div>
   )
 }

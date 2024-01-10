@@ -1,45 +1,34 @@
+import { useModal } from '../../contexts/ModalProvider';
 import './Modal.scss';
-import { useEffect, useRef } from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
 
-const Modal = ({ isOpen, onClose, onSubmit, children, submitContent, cancelContent }: any) => {
+interface iModal {
+  children: ReactNode;
+}
+
+const Modal: React.FC<iModal> = ({ children }) => {
   const modalRef = useRef<HTMLDivElement>(null); // Refer to the modal content
+  const { closeModal } = useModal();
   let clickStartedInside = false; // Track where the click started
 
   useEffect(() => {
-    document.body.style.overflowY = isOpen ? 'hidden' : 'scroll'
-    document.body.style.overflowX = isOpen ? 'hidden' : 'initial'
-  }, [isOpen])
-
-  useEffect(() => {
-    const handleKeyPress = (event: any) => {
-      switch (event.key) {
-        case 'Enter':
-          onSubmit();
-          break;
-        case 'Escape':
-          onClose();
-          break;
-        default:
-          break;
-      }
+    const preventScroll = (e: WheelEvent) => {
+      e.preventDefault();
     };
 
-    if (isOpen) {
-      document.addEventListener('keydown', handleKeyPress);
-    } else {
-      document.removeEventListener('keydown', handleKeyPress);
-    }
+    document.body.addEventListener('wheel', preventScroll, { passive: false });
+    document.body.style.overflowY = 'hidden'
 
-    // Cleanup function to remove the event listener
     return () => {
-      document.removeEventListener('keydown', handleKeyPress);
+      document.body.removeEventListener('wheel', preventScroll);
+      document.body.style.overflowY = 'initial'
     };
-  }, [isOpen, onClose, onSubmit]); // Depend on the isOpen state
+  }, []);
 
   const handleOverlayClick = (event: any) => {
     // Close only if clicked directly on overlay and the click didn't start inside the modal
     if (event.target.id === "overlay" && !clickStartedInside) {
-      onClose();
+      closeModal()
     }
     clickStartedInside = false; // Reset the flag
   };
@@ -48,36 +37,23 @@ const Modal = ({ isOpen, onClose, onSubmit, children, submitContent, cancelConte
     // Indicate the click started inside the modal
     clickStartedInside = true;
   };
-  
+
   return (
-    <>
-      {
-        isOpen &&
-        <div
-          className='modal modal-overlay'
-          id='overlay'
-          onClick={handleOverlayClick}
-        >
-          <div
-            className="modal-content"
-            ref={modalRef}
-            onMouseDown={handleModalMouseDown}
-          >
-            <div className="modal-body">
-              {children}
-            </div>
-            <div className="modal-footer">
-              <div>
-                <button type='button' className='modal-button cancel-button' onClick={onClose}>{cancelContent}</button>
-              </div>
-              <div>
-                <button type='button' className='modal-button submit-button' onClick={onSubmit}>{submitContent}</button>
-              </div>
-            </div>
-          </div>
+    <div
+      className='modal modal-overlay'
+      id='overlay'
+      onClick={handleOverlayClick}
+    >
+      <div
+        className="modal-content"
+        ref={modalRef}
+        onMouseDown={handleModalMouseDown}
+      >
+        <div className="modal-body">
+          {children}
         </div>
-      }
-    </>
+      </div>
+    </div>
   )
 }
 export default Modal;

@@ -4,15 +4,78 @@ import AsideMenu from '../../components/layout-components/aside-menu/AsideMenu';
 import MainContent from '../../components/layout-components/main-content/MainContent';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import Modal from '../../components/modal/Modal';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import SubjectDropdown from '../../components/subject-dropdown/SubjectDropdown';
 import { iMaterial, iSubject } from '../../interfaces/materials-interface';
 import { v4 as uuidv4 } from 'uuid';
 import { useSnackbar } from '../../contexts/SnackbarProvider';
+import { useModal } from '../../contexts/ModalProvider';
+import ModalFooter from '../../components/modal/modal-footer/ModalFooter';
+
+interface iNewMaterialModalContent {
+  setSubjects: React.Dispatch<React.SetStateAction<iSubject[]>>;
+  activeSubjectId: string;
+}
+
+const NewMaterialModalContent: React.FC<iNewMaterialModalContent> = ({ setSubjects, activeSubjectId }) => {
+  const [newMaterialName, setNewMaterialName] = useState<string>('')
+  const [newMaterialModalError, setNewMaterialModalError] = useState<string>('')
+  const { openSnackbar } = useSnackbar();
+  const { closeModal, modalOpen } = useModal();
+  const newMaterialNameInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    setNewMaterialModalError('')
+  }, [])
+
+  useEffect(() => {
+    newMaterialNameInputRef.current?.focus()
+  }, [modalOpen])
+
+  const validateNewMaterialSubmit = () => {
+    if (newMaterialName) {
+      setSubjects(subjects => 
+        subjects.map(subject => 
+          subject.subjectId === activeSubjectId
+            ? { ...subject, materials: [...subject.materials, { materialId: uuidv4(), materialName: newMaterialName }] }
+            : subject
+        )
+      );
+      setNewMaterialName('')
+      setNewMaterialModalError('')
+      openSnackbar('Materiál úspěšně vytvořen!')
+      closeModal()
+      return;
+    }
+    setNewMaterialModalError('Vyplňte pole Název nového materiálu!')
+    newMaterialNameInputRef.current?.focus()
+  }
+
+  const onNewMaterialNameInputChange = (e: any) => {
+    setNewMaterialName(e.target.value)
+  }
+
+  return (
+    <div className="new-material-form">
+      <h1 className='h1'>Nový materiál</h1>
+      <div className='new-material-wrapper'>
+        <label htmlFor="new-material-name-input">Název nového materiálu:</label>
+        <input
+          type='text'
+          id='new-material-name-input'
+          name='new-material-name-input'
+          value={newMaterialName}
+          onChange={onNewMaterialNameInputChange}
+          ref={newMaterialNameInputRef}
+        />
+      </div>
+      <ErrorMessage content={newMaterialModalError} />
+      <ModalFooter onSubmit={validateNewMaterialSubmit} submitButtonLabel='Přidat materiál' cancelButtonLabel='Zrušit'/>
+    </div>
+  )
+}
 
 const ViewMaterials = () => {
-  const { openSnackbar } = useSnackbar();
   const [isAsideMenuOpen, setIsAsideMenuOpen] = useState<boolean>(true)
   const [activeSubjectName, setActiveSubjectName] = useState<string>('')
   const [activeSubjectId, setActiveSubjectId] = useState<string>('')
@@ -41,11 +104,6 @@ const ViewMaterials = () => {
   ]
   const [activeMaterialIndex, setActiveMaterialIndex] = useState<number>(0)
   const [activeMaterial, setActiveMaterial] = useState<iMaterial | undefined>()
-  const [isNewMaterialModalOpen, setIsNewMaterialModalOpen] = useState<boolean>(false);
-  const [newMaterialName, setNewMaterialName] = useState<string>('')
-  const [newMaterialModalError, setNewMaterialModalError] = useState<string>('')
-  const newMaterialNameInputRef = useRef<HTMLInputElement>(null)
-  const [oldMaterialsLength, setOldMaterialsLength] = useState<number>(activeMaterials.length)
   const elementRefs = useRef<Array<HTMLElement | null>>([]);
   const [subjects, setSubjects] = useState<iSubject[]>([
     {subjectName: 'Češtinaalskdjhgljkhalskdjfhlakjhdsfadflgkjhaldkjgh', subjectId: 'id-cestina', materials: [{ materialId: 'id-1', materialName: '1. Literatura 2. poloviny 20. století' }]},
@@ -56,6 +114,15 @@ const ViewMaterials = () => {
   ])
   const [isSubjectDropdownOpen, setIsSubjectDropdownOpen] = useState<boolean>(false)
   const grayscale400 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-400').trim();
+  const { showModal } = useModal();
+  const [oldMaterialsLength, setOldMaterialsLength] = useState<number>(activeMaterials.length)
+
+  useEffect(() => {
+    setActiveSubjectName(subjects[1].subjectName)
+    setActiveSubjectId(subjects[1].subjectId)
+    setTimeout(() => setIsAsideMenuOpen(false), 200);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     let activeSubject: iSubject = subjects.find(subject => subject.subjectId === activeSubjectId) || subjects[0];
@@ -67,17 +134,6 @@ const ViewMaterials = () => {
     selectMaterial(0)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeMaterials]);
-
-  useEffect(() => {
-    setActiveSubjectName(subjects[1].subjectName)
-    setActiveSubjectId(subjects[1].subjectId)
-    setTimeout(() => setIsAsideMenuOpen(false), 200);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    newMaterialNameInputRef.current?.focus()
-  }, [isNewMaterialModalOpen])
 
   useEffect(() => {
     if (oldMaterialsLength === activeMaterials.length - 1) {
@@ -92,44 +148,6 @@ const ViewMaterials = () => {
     isAsideMenuOpen && setTimeout(() => setIsSubjectDropdownOpen(false), 350)
   }, [isAsideMenuOpen])
 
-  const scrollToElement = (index: number) => {
-    const element = elementRefs.current[index];
-    element?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const validateNewMaterialSubmit = () => {
-    if (newMaterialName) {
-      setSubjects(subjects => 
-        subjects.map(subject => 
-          subject.subjectId === activeSubjectId
-            ? { ...subject, materials: [...subject.materials, { materialId: uuidv4(), materialName: newMaterialName }] }
-            : subject
-        )
-      );
-      setIsNewMaterialModalOpen(false)
-      setNewMaterialName('')
-      setNewMaterialModalError('')
-      openSnackbar('Materiál úspěšně vytvořen!')
-      return;
-    }
-    setNewMaterialModalError('Vyplňte pole Název nového materiálu!')
-    newMaterialNameInputRef.current?.focus()
-  }
-
-  const onNewMaterialNameInputChange = (e: any) => {
-    setNewMaterialName(e.target.value)
-  }
-
-  const openNewMaterialModal = () => {
-    setIsNewMaterialModalOpen(true)
-    setNewMaterialModalError('')
-  }
-
-  const closeNewMaterialModal = () => {
-    setIsNewMaterialModalOpen(false)
-    setNewMaterialName('')
-  }
-
   const selectMaterial = (index: number) => {
     setActiveMaterialIndex(index);
     setActiveMaterial(activeMaterials[index])
@@ -137,6 +155,15 @@ const ViewMaterials = () => {
 
   const onMaterialClick = (index: number) => {
     if (index !== activeMaterialIndex) selectMaterial(index)
+  }
+
+  const scrollToElement = (index: number) => {
+    const element = elementRefs.current[index];
+    element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const openNewMaterialModal = () => {
+    showModal(<NewMaterialModalContent setSubjects={setSubjects} activeSubjectId={activeSubjectId} />)
   }
 
   return (
@@ -185,29 +212,6 @@ const ViewMaterials = () => {
           main content
         </div>
       </MainContent>
-      <Modal
-        isOpen={isNewMaterialModalOpen}
-        onClose={closeNewMaterialModal}
-        onSubmit={validateNewMaterialSubmit}
-        submitContent={'Přidat materiál'}
-        cancelContent={'Zrušit'}
-      >
-        <h1 className='h1'>Nový materiál</h1>
-        <div className="new-material-form">
-          <div className='new-material-wrapper'>
-            <label htmlFor="new-material-name-input">Název nového materiálu:</label>
-            <input
-              type='text'
-              id='new-material-name-input'
-              name='new-material-name-input'
-              value={newMaterialName}
-              onChange={onNewMaterialNameInputChange}
-              ref={newMaterialNameInputRef}
-            />
-          </div>
-          <ErrorMessage content={newMaterialModalError} />
-        </div>
-      </Modal>
     </div>
   )
 }
