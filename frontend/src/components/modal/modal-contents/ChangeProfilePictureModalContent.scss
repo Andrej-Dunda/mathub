@@ -1,0 +1,10 @@
+.change-profile-picture {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+
+  .uploaded-image-name {
+    text-align: center;
+  }
+}

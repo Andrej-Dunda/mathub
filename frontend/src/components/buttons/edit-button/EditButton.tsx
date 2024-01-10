@@ -67,7 +67,7 @@ const EditPostModalContent = (props: any) => {
   }
 
   return (
-  <div className="edit-blog-post">
+  <div className="edit-post-modal-content">
     <div className="edit-post-input">
       <label htmlFor="post-title">Titulek:</label>
       <input

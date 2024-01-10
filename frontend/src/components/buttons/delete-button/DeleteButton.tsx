@@ -21,7 +21,7 @@ const DeleteBlogPostModalContent = (props: any) => {
   }
 
   return (
-    <div className="delete-blog-post">
+    <div className="delete-blog-post-modal-content">
       <h2 className="h2">Přejete si opravdu smazat tento příspěvek?</h2>
       <span>Tuto akci již nelze vrátit zpět!</span>
       <ModalFooter onSubmit={deleteBlogPost} submitButtonLabel='Smazat' cancelButtonLabel='Zrušit'/>

@@ -1,3 +1,4 @@
+import './NewSubjectModalContent.scss';
 import { useEffect, useRef, useState } from "react"
 import { useSnackbar } from "../../../contexts/SnackbarProvider";
 import ErrorMessage from '../../error-message/ErrorMessage';
@@ -43,21 +44,19 @@ const NewSubjectModalContent: React.FC<iNewSubjectModalContent> = ({ subjects, s
   return (
     <>
       <h1 className='h1'>Nový předmět</h1>
-      <div className="new-subject-form">
-        <div className='new-subject-wrapper'>
-          <label htmlFor="new-subject-name-input">Název nového předmětu:</label>
-          <input
-            type='text'
-            id='new-subject-name-input'
-            name='new-subject-name-input'
-            value={newSubjectName}
-            onChange={onNewSubjectNameInputChange}
-            ref={newSubjectNameInputRef}
-          />
-        </div>
-        <ErrorMessage content={newSubjectModalError} />
-        <ModalFooter onSubmit={validateNewSubjectSubmit} submitButtonLabel='Přidat předmět' cancelButtonLabel='Zrušit' />
+      <div className='new-subject-wrapper'>
+        <label htmlFor="new-subject-name-input">Název nového předmětu:</label>
+        <input
+          type='text'
+          id='new-subject-name-input'
+          name='new-subject-name-input'
+          value={newSubjectName}
+          onChange={onNewSubjectNameInputChange}
+          ref={newSubjectNameInputRef}
+        />
       </div>
+      <ErrorMessage content={newSubjectModalError} />
+      <ModalFooter onSubmit={validateNewSubjectSubmit} submitButtonLabel='Přidat předmět' cancelButtonLabel='Zrušit' />
     </>
   )
 }

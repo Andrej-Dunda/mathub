@@ -1,3 +1,4 @@
+import './ChangePasswordModalContent.scss'
 import { useEffect, useRef, useState } from 'react'
 import axios from 'axios';
 import ErrorMessage from '../../../components/error-message/ErrorMessage';

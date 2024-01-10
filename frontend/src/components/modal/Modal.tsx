@@ -49,9 +49,7 @@ const Modal: React.FC<iModal> = ({ children }) => {
         ref={modalRef}
         onMouseDown={handleModalMouseDown}
       >
-        <div className="modal-body">
-          {children}
-        </div>
+        {children}
       </div>
     </div>
   )

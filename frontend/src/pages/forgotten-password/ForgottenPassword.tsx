@@ -15,10 +15,12 @@ interface iForgottenPasswordModalContent {
 
 const ForgottenPasswordModalContent: React.FC<iForgottenPasswordModalContent> = ({ newPassword, modalSubmit }) => {
   return (
-    <div className='new-password-window'>
+    <div className='forgotten-password-modal-content'>
       <h2 className="new-password-heading">Heslo úspěšně resetováno!</h2>
-      <span className='new-password-title'>Vaše nové heslo je:</span>
-      <CopyToClipboard textToCopy={newPassword} label={newPassword} labelClassName='new-password' />
+      <div className="new-password-wrapper">
+        <span className='new-password-title'>Vaše nové heslo je:</span>
+        <CopyToClipboard textToCopy={newPassword} label={newPassword} labelClassName='new-password' />
+      </div>
       <ModalFooter onSubmit={modalSubmit} submitButtonLabel='Na přihlášení' cancelButtonLabel='Zavřít'/>
     </div>
   )
