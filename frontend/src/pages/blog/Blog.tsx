@@ -104,9 +104,7 @@ const Blog = () => {
             </div>
             <div className="new-post-input">
               <FileUploader
-                width100={true}
-                boxShadow={false}
-                label='Obrázek k příspěvku:'
+                label='Nahrát obrázek k příspěvku'
                 acceptAttributeValue='image/*'
                 file={postImage}
                 setFile={setPostImage}

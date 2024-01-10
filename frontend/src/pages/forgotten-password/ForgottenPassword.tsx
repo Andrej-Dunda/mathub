@@ -46,11 +46,13 @@ const ForgottenPassword = () => {
     };
   })
 
+  useEffect(() => {
+    newPassword && openForgottenPasswordModal()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newPassword])
+
   const submitForgottenPassword = (event: any) => {
-    if (!forgottenPasswordEmail) {
-      setErrorResponseMessage('Vyplňte pole e-mail!')
-      return
-    }
+    if (!forgottenPasswordEmail) return setErrorResponseMessage('Vyplňte pole e-mail!')
     axios({
       method: "POST",
       url: "/forgotten-password",
@@ -60,8 +62,9 @@ const ForgottenPassword = () => {
     })
       .then((response: any) => {
         setNewPassword(response.data.new_password)
+        console.log(response.data.new_password)
         setErrorResponseMessage('')
-        response.data.result ? openForgottenPasswordModal() : setErrorResponseMessage(response.data.response_message)
+        if (response.data.result) setErrorResponseMessage(response.data.response_message)
       }).catch((error: any) => {
         if (error.response) {
           console.error(error.response)

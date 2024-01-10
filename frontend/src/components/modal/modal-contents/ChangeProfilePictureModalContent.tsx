@@ -56,8 +56,6 @@ const ChangeProfilePictureModalContent: React.FC = () => {
         file={newProfilePicture}
         setFile={setNewProfilePicture}
         acceptAttributeValue='image/*'
-        width100
-        boxShadow
       />
       <ErrorMessage content={errorMessage} />
       <ModalFooter onSubmit={handleNewProfilePictureSubmit} submitButtonLabel='Nahrát obrázek' cancelButtonLabel='Zrušit'/>

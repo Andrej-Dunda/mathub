@@ -9,17 +9,15 @@ interface iFileUploader {
   acceptAttributeValue?: string;
   file: File | null;
   setFile: React.Dispatch<React.SetStateAction<File | null>>;
-  width100?: boolean;
   boxShadow?: boolean;
 }
 
-const FileUploader = ({label, labelClassName, acceptAttributeValue, file, setFile, width100, boxShadow}: iFileUploader) => {
+const FileUploader = ({ label, labelClassName, acceptAttributeValue, file, setFile, boxShadow }: iFileUploader) => {
   const hiddenFileInputRef = useRef<HTMLInputElement>(null)
-  const [fileName, setFileName] = useState<string>('')
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
 
   useEffect(() => {
-    setFileName(file ? file.name : '')
+    console.log(file?.name)
   }, [file])
 
   const onDrop = (event: React.DragEvent) => {
@@ -27,7 +25,6 @@ const FileUploader = ({label, labelClassName, acceptAttributeValue, file, setFil
     const files = event.dataTransfer.files;
     if (files.length) {
       setFile(files[0]);
-      setFileName && setFileName(files[0].name)
     }
   };
 
@@ -39,34 +36,33 @@ const FileUploader = ({label, labelClassName, acceptAttributeValue, file, setFil
     const files = event.target.files;
     if (files) {
       setFile(files[0]);
-      setFileName && setFileName(files[0].name)
+      event.target.value = '';
     }
   };
 
   return (
-    <div className='file-uploader'>
-      <label className={`file-upload-label ${labelClassName}`} htmlFor='hiddenFileInput'>{label}</label>
-      <div
-        className={`drop-file-upload${width100 ? ' width-100' : ''}${boxShadow ? ' box-shadow' : ''}`}
-        onClick={triggerFileInput}
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={onDrop}
-      >
-        <FontAwesomeIcon
-          icon={faUpload}
-          className='file-upload-icon'
-          color={grayscale900}
-        />
-      </div>
+    <div
+      className={`file-uploader drop-file-upload${boxShadow ? ' box-shadow' : ''}`}
+      onClick={triggerFileInput}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={onDrop}
+    >
+      <FontAwesomeIcon
+        icon={faUpload}
+        className='file-upload-icon'
+        color={grayscale900}
+      />
+      <span className={`file-upload-label ${labelClassName}`}>
+        {file ? `Nahraný soubor: ${file.name}` : label}
+      </span>
       <input
-        type="file" 
-        id='hiddenFileInput' 
-        onChange={onFileChange} 
-        style={{display: 'none'}} 
+        type="file"
+        id='hiddenFileInput'
+        onChange={onFileChange}
+        style={{ display: 'none' }}
         ref={hiddenFileInputRef}
         {...(acceptAttributeValue ? { accept: acceptAttributeValue } : {})}
       />
-      {fileName && <span>{`Nahraný soubor: ${fileName}`}</span>}
     </div>
   );
 };
