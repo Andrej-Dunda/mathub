@@ -1,6 +1,6 @@
 import React from "react";
 import './FriendWindow.scss'
-import FriendButton from "../friend-button/FriendButton";
+import FriendButton from "../buttons/friend-button/FriendButton";
 import ProfilePicture from "../profile-picture/ProfilePicture";
 
 const FriendWindow = (props: any) => {
@@ -21,9 +21,9 @@ const FriendWindow = (props: any) => {
   }
 
   return (
-    <div className="friend-window">
+    <div className={`friend-window ${props.className}`}>
       <ProfilePicture className='medium' userId={id} />
-      <h4 className="h4 friend-name">
+      <h4 className="h4 friend-name" title={`${first_name} ${last_name}`}>
         {`${first_name} ${last_name}`}
       </h4>
       <div className="buttons">

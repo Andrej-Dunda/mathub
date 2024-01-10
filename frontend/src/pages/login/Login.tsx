@@ -4,6 +4,9 @@ import axios from "axios";
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { useUserData } from '../../contexts/UserDataProvider';
+import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
+import { useNav } from '../../contexts/NavigationProvider';
 
 const LoginPage = (props: any) => {
   const [loginForm, setLoginForm] = useState({
@@ -14,6 +17,9 @@ const LoginPage = (props: any) => {
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const emailInputRef = useRef<HTMLInputElement>(null)
   const passwordInputRef = useRef<HTMLInputElement>(null)
+  const { setUser } = useUserData();
+  const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
+  const { toRegistration, toForgottenPassword } = useNav();
 
   useEffect(() => {
     const handleKeyPress = (e: any) => {
@@ -48,7 +54,7 @@ const LoginPage = (props: any) => {
           profile_picture: response.data.profile_picture,
           registration_date: response.data.registration_date
         }
-        props.setUser(loggedUser)
+        setUser(loggedUser)
         localStorage.setItem('userData', JSON.stringify(loggedUser));
       }).catch((error: any) => error.response && setResponseMessage(error.response.data.message))
 
@@ -74,7 +80,10 @@ const LoginPage = (props: any) => {
 
   return (
     <div className="login-page">
-      <h1 className="h1 habitator-heading">Habitator</h1>
+      <div className="logo-and-title">
+        <MatHubLogo color={grayscale900} className='mathub-logo' />
+        <h1 className="mathub-title">MatHub</h1>
+      </div>
       <div className="login-window">
         <h2 className='h2 form-heading'>Přihlášení</h2>
         <form>
@@ -109,8 +118,8 @@ const LoginPage = (props: any) => {
           </div>
           <div className="form-footer">
             <div className='login-other-options'>
-              <a href='/registration'>registrovat se</a>
-              <a href="/forgotten-password">zapomenuté heslo</a>
+              <span onClick={toRegistration}>registrovat se</span>
+              <span onClick={toForgottenPassword}>zapomenuté heslo</span>
             </div>
             <ErrorMessage content={responseMessage} />
             <div className='login-submit'>

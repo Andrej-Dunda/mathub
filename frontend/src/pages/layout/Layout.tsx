@@ -1,14 +1,18 @@
 import { Outlet } from "react-router-dom";
 import './Layout.scss'
-import Nav from "../../components/navigation/Navigation";
-import React from "react";
+import Navigation from "../../components/layout-components/navigation/Navigation";
 
-const Layout = (props: any) => {
+interface iLayout {
+  removeToken: () => void;
+}
 
+const Layout: React.FC<iLayout> = ({ removeToken }) => {
   return (
-    <div className="layout">
-      <Nav className='nav' removeToken={props.removeToken} />
-      <Outlet/>
+    <div id="layout" className='layout'>
+      <Navigation className='nav' removeToken={removeToken} />
+      <div className="outlet">
+        <Outlet />
+      </div>
     </div>
   )
 }

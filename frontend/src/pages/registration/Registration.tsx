@@ -1,12 +1,13 @@
 import './Registration.scss'
 import axios from "axios";
 import { useEffect, useState, useRef } from 'react';
-import { useNavigate } from "react-router-dom"
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
+import { useNav } from '../../contexts/NavigationProvider';
 
-const Registration = (props: any) => {
+const Registration = () => {
   const [registrationForm, setRegistrationForm] = useState({
     email: "",
     password: "",
@@ -15,13 +16,14 @@ const Registration = (props: any) => {
     last_name: "",
   })
   const [responseMessage, setResponseMessage] = useState<string>('')
-  const navigate = useNavigate()
   const emailInputRef = useRef<HTMLInputElement>(null)
   const firstNameInputRef = useRef<HTMLInputElement>(null)
   const lastNameInputRef = useRef<HTMLInputElement>(null)
   const passwordInputRef = useRef<HTMLInputElement>(null)
   const passwordAgainInputRef = useRef<HTMLInputElement>(null)
   const [showPassword, setShowPassword] = useState(false)
+  const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
+  const { toLogin, toForgottenPassword } = useNav();
 
   useEffect(() => {
     const handleKeyPress = (e: any) => {
@@ -79,7 +81,7 @@ const Registration = (props: any) => {
             first_name: "",
             last_name: ""
           })
-          navigate('/')
+          toLogin()
         } else {
           response.data.email_already_registered ? emailInputRef.current?.focus() : setRegistrationForm({
             email: "",
@@ -114,7 +116,10 @@ const Registration = (props: any) => {
 
   return (
     <div className="registration-page">
-      <h1 className="h1 habitator-heading">Habitator</h1>
+      <div className="logo-and-title">
+        <MatHubLogo color={grayscale900} className='mathub-logo' />
+        <h1 className="mathub-title">MatHub</h1>
+      </div>
       <div className="registration-window">
         <h2 className='h2 form-heading'>Registrace</h2>
         <form>
@@ -189,8 +194,8 @@ const Registration = (props: any) => {
           </div>
           <div className="form-footer">
             <div className='registration-other-options'>
-              <a href='/'>zpět na přihlášení</a>
-              <a href="/forgotten-password">zapomenuté heslo</a>
+              <span onClick={toLogin}>zpět na přihlášení</span>
+              <span onClick={toForgottenPassword}>zapomenuté heslo</span>
             </div>
             <ErrorMessage content={responseMessage} />
             <div className='registration-submit'>

@@ -1,0 +1,28 @@
+.delete-button {
+  width: 44px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 600;
+  
+  border: none;
+
+  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+  -webkit-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+  -moz-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+
+  &:hover {
+    background-color: var(--hover-white);
+  }
+}
+
+.delete-blog-post-modal-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+}

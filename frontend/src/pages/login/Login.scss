@@ -7,9 +7,24 @@
   align-items: center;
   gap: 32px;
 
-  .habitator-heading {
-    font-size: 64px;
-    margin-top: 48px;
+  .logo-and-title {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: flex-end;
+    margin-top: 24px;
+
+    .mathub-title {
+      font-size: 64px;
+    }
+
+    .mathub-logo {
+      height: 90px;
+      width: auto;
+
+      pointer-events: all;
+      cursor: pointer;
+    }
   }
 
   .login-window {
@@ -20,17 +35,13 @@
     width: 400px;
     height: fit-content;
 
-    border: 1px solid gray;
-    border-radius: 4px;
+    border-radius: 16px;
 
     padding: 32px;
 
     box-shadow: 1px 1px 16px 5px rgba(0, 0, 0, 0.31);
     -webkit-box-shadow: 1px 1px 16px 5px rgba(0, 0, 0, 0.31);
     -moz-box-shadow: 1px 1px 16px 5px rgba(0, 0, 0, 0.31);
-
-    border: 1px solid black;
-    border-radius: 4px;
 
     .form-heading {
       margin: 0;
@@ -52,12 +63,6 @@
           display: flex;
           flex-direction: column;
           gap: 4px;
-
-          input {
-            padding: 8px;
-            border-radius: 8px;
-            border: 1px solid black;
-          }
 
           label {
             font-weight: 500;
@@ -83,7 +88,7 @@
 
                 width: 24px;
                 height: auto;
-                color: grey;
+                color: var(--grayscale-300);
 
                 cursor: pointer;
 
@@ -107,46 +112,28 @@
           flex-direction: row;
           justify-content: space-between;
 
-          a {
-            color: black;
+          span {
+            color: var(--grayscale-900);
+            text-decoration: underline;
+            cursor: pointer;
 
             &:hover {
-              color: #202020;
+              color: var(--hover-black);
             }
           }
         }
 
-        .error-message {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-
-          color: red;
-          font-weight: 500;
-          align-self: center;
-          height: 0;
-          overflow: hidden;
-          transition: height 0.3s;
-
-          &.active {
-            height: 24px;
-          }
-        }
-
         .login-submit {
-          display: flex;
-          flex-direction: row;
-          justify-content: right;
-
           .login-button {
             width: 100%;
-            border: none;
-            color: white;
+            height: 48px;
+            color: var(--grayscale-100);
             font-weight: 500;
-            background-color: black;
+            font-size: 16px;
+            background-color: var(--grayscale-900);
 
             &:hover {
-              background-color: #202020;
+              background-color: var(--hover-black);
               box-shadow: 0px 0px 11px -4px rgba(0, 0, 0, 0.75);
               -webkit-box-shadow: 0px 0px 11px -4px rgba(0, 0, 0, 0.75);
               -moz-box-shadow: 0px 0px 11px -4px rgba(0, 0, 0, 0.75);

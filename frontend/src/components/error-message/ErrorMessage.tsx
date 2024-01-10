@@ -1,8 +1,14 @@
 import './ErrorMessage.scss'
 
-const ErrorMessage = (props: any) => {
+interface iErrorMessage {
+  content: string;
+}
+
+const ErrorMessage: React.FC<iErrorMessage> = ({ content }) => {
   return (
-    <span className={`error-message ${props.content && 'active'}`}>{props.content}</span>
+    <>
+      {content && <span className={`error-message ${content ? 'active' : 'inactive'}`}>{content}</span>}
+    </>
   )
 }
 export default ErrorMessage;

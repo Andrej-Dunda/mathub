@@ -4,18 +4,14 @@ import axios from 'axios';
 import ProfilePicture from '../profile-picture/ProfilePicture';
 
 const Comment = (props: any) => {
-  const [authoName, setAuthorName] = useState('')
+  const [authorName, setAuthorName] = useState('')
   const rawPostDate = new Date(props.commentContent[2])
-  const czechMonthNames = [
-    'ledna', 'února', 'března', 'dubna', 'května', 'června',
-    'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'
-  ];
   const dayOfMonth = rawPostDate.getDate();
-  const month = czechMonthNames[rawPostDate.getMonth()];
+  const month = rawPostDate.getMonth() + 1;
   const hour = rawPostDate.getHours();
   const minute = rawPostDate.getMinutes();
   const addLeadingZero = (num: number) => (num < 10 ? `0${num}` : num);
-  const customDateFormat = `${dayOfMonth}. ${month} ${hour}:${addLeadingZero(minute)}`;
+  const customDateFormat = `${dayOfMonth}. ${month}. v ${hour}:${addLeadingZero(minute)}`;
 
   const commentContent = {
     commentator_id: props.commentContent[0],
@@ -35,12 +31,10 @@ const Comment = (props: any) => {
   return (
     <div className='comment'>
       <div className="comment-header">
-        <div className="profile-picture">
-          <ProfilePicture className='xsmall radius-100' userId={commentContent.commentator_id} />
-        </div>
+        <ProfilePicture className='xsmall radius-100' userId={commentContent.commentator_id} />
         <div className="author-and-comment-time">
-          <span className='comment-author'>{authoName}</span>
-          <span>{commentContent.comment_time}</span>
+          <span className='comment-author'>{authorName}</span>
+          <span className='comment-time'>{commentContent.comment_time}</span>
         </div>
       </div>
       <div className="comment-body">
