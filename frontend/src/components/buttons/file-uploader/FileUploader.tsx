@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './FileUploader.scss';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
 
 interface iFileUploader {
@@ -15,10 +15,6 @@ interface iFileUploader {
 const FileUploader = ({ label, labelClassName, acceptAttributeValue, file, setFile, boxShadow }: iFileUploader) => {
   const hiddenFileInputRef = useRef<HTMLInputElement>(null)
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
-
-  useEffect(() => {
-    console.log(file?.name)
-  }, [file])
 
   const onDrop = (event: React.DragEvent) => {
     event.preventDefault();

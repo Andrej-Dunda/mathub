@@ -10,7 +10,9 @@ const Layout: React.FC<iLayout> = ({ removeToken }) => {
   return (
     <div id="layout" className='layout'>
       <Navigation className='nav' removeToken={removeToken} />
-      <Outlet/>
+      <div className="outlet">
+        <Outlet />
+      </div>
     </div>
   )
 }

@@ -8,12 +8,12 @@ import axios from 'axios';
 import { useSnackbar } from '../../../contexts/SnackbarProvider';
 import ErrorMessage from '../../error-message/ErrorMessage';
 import ModalFooter from '../../modal/modal-footer/ModalFooter';
+import FileUploader from '../file-uploader/FileUploader';
 
 const EditPostModalContent = (props: any) => {
   const [postTitle, setPostTitle] = useState(props.postData.title)
   const [postDescription, setPostDescription] = useState(props.postData.content)
   const [postImage, setPostImage] = useState<File | null>(null);
-  const [inputKey, setInputKey] = useState(Date.now());
   const { openSnackbar } = useSnackbar();
   const [errorMessage, setErrorMessage] = useState<string>('')
   const { closeModal } = useModal();
@@ -21,7 +21,6 @@ const EditPostModalContent = (props: any) => {
   useEffect(() => {
     setPostDescription(props.postData.content)
     setPostTitle(props.postData.title)
-    setInputKey(Date.now());
     setErrorMessage('')
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -88,10 +87,7 @@ const EditPostModalContent = (props: any) => {
         rows={10}
       />
     </div>
-    <div className="edit-post-input">
-      <label htmlFor="post-image-input">Obrázek k příspěvku:</label>
-      <input id='post-image-input' type="file" accept="image/*" key={inputKey} onChange={handleImageChange} />
-    </div>
+    <FileUploader label='Nahrát obrázek' file={postImage} setFile={setPostImage} acceptAttributeValue='image/*' />
     <ErrorMessage content={errorMessage} />
     <ModalFooter onSubmit={editPost} submitButtonLabel='Uložit' cancelButtonLabel='Zahodit změny'/>
   </div>
