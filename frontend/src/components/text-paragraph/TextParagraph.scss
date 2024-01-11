@@ -1,0 +1,11 @@
+.text-paragraph {
+  word-wrap: break-word;
+  
+  .show-more {
+    color: var(--grayscale-500);
+    font-style: italic;
+    cursor: pointer;
+    padding-left: 8px;
+    text-wrap: nowrap;
+  }
+}

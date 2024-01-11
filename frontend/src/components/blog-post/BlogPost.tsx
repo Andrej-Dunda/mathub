@@ -10,6 +10,7 @@ import CommentButton from '../buttons/comment-button/CommentButton'
 import EditButton from '../buttons/edit-button/EditButton'
 import DeleteButton from '../buttons/delete-button/DeleteButton'
 import { useUserData } from '../../contexts/UserDataProvider'
+import TextParagraph from '../text-paragraph/TextParagraph'
 
 const BlogPost = (props: any) => {
   const { user } = useUserData();
@@ -42,6 +43,7 @@ const BlogPost = (props: any) => {
   const commentsRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>(0)
   const grayscale100 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-100').trim();
+  const [keyUpdate, setKeyUpdate] = useState<number>(new Date().getTime());
 
   useEffect(() => {
     // Function to update height
@@ -60,7 +62,7 @@ const BlogPost = (props: any) => {
 
     // Cleanup
     return () => window.removeEventListener('resize', updateHeight);
-  }, [showComments]);
+  }, [showComments, keyUpdate]);
 
   useEffect(() => {
     axios.get(`/user/${postData.user_id}`)
@@ -72,7 +74,7 @@ const BlogPost = (props: any) => {
 
   useEffect(() => {
     getComments()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const getComments = () => {
@@ -109,6 +111,10 @@ const BlogPost = (props: any) => {
       .catch(err => console.error(err))
   }
 
+  const updateCommentsSectionHeight = () => {
+    setKeyUpdate(new Date().getTime());
+  }
+
   return (
     <div className={`blog-post ${!showComments && 'no-comments'}`}>
       <main className={`blog-post-main ${showComments && 'border-right-grey'}`} ref={postContentRef} >
@@ -129,9 +135,9 @@ const BlogPost = (props: any) => {
         </div>
         <div className="blog-post-body">
           <h5 className='h4 blog-post-heading'>{postData.title}</h5>
-          <p className='blog-post-content'>{postData.content}</p>
+          <TextParagraph className='blog-post-content' text={postData.content} characterLimit={185} onShowMoreToggle={updateCommentsSectionHeight} />
           {
-            postData.image && 
+            postData.image &&
             <div className="post-image-wrapper">
               <img
                 className='post-image'
