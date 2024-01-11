@@ -22,7 +22,7 @@ const FriendWindow = (props: any) => {
 
   return (
     <div className={`friend-window ${props.className}`}>
-      <ProfilePicture className='medium' userId={id} />
+      <ProfilePicture className='friend-window-profile-picture' userId={id} />
       <h4 className="h4 friend-name" title={`${first_name} ${last_name}`}>
         {`${first_name} ${last_name}`}
       </h4>

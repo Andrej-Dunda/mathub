@@ -114,7 +114,7 @@ const BlogPost = (props: any) => {
       <main className={`blog-post-main ${showComments && 'border-right-grey'}`} ref={postContentRef} >
         <div className="blog-post-header">
           <div className="blog-info">
-            <ProfilePicture className='post-size radius-100 border box-shadow' userId={postData.user_id} />
+            <ProfilePicture className='post-size radius-100 border box-shadow-dark' userId={postData.user_id} />
             <div className="user-name-and-post-time">
               <h5 className='user-name'>{userName}</h5>
               <span className='blog-post-time'>{postData.time}</span>
