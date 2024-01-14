@@ -1,0 +1,24 @@
+version: '3'
+services:
+## Backend
+  backend:
+    build: backend
+    container_name: mathub-backend
+    volumes:
+      - ./backend:/backend
+    ports:
+      - '5001:5001'
+
+  ## Frontend
+  frontend:
+    build: frontend
+    container_name: mathub-frontend
+    volumes:
+      - ./frontend:/app
+    # Just for the dev server ws
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+    environment:
+      - NODE_ENV=development

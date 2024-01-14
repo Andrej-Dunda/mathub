@@ -14,6 +14,13 @@ const Homepage = () => {
     .then(res => {
       setPosts(res.data)
     })
+    .catch((error: any) => {
+      if (error.response) {
+        console.error(error.response)
+        console.error(error.response.status)
+        console.error(error.response.headers)
+      }
+    })
   }, [setActiveLink])  
 
   return (

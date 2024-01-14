@@ -179,7 +179,6 @@ const ViewMaterials = () => {
             setActiveSubjectName={setActiveSubjectName}
             activeSubjectId={activeSubjectId}
             setActiveSubjectId={setActiveSubjectId}
-            onChange={(subject) => console.log(subject)}
           />
           <div className="aside-button new-material-button" onClick={openNewMaterialModal}>
             <FontAwesomeIcon icon={faPlus} color={grayscale400} className='plus-icon' />

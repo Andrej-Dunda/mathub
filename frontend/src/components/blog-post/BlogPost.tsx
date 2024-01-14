@@ -41,28 +41,19 @@ const BlogPost = (props: any) => {
   const postContentRef = useRef<HTMLDivElement>(null);
   const commentSectionRef = useRef<HTMLDivElement>(null);
   const commentsRef = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState<number>(0)
   const grayscale100 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-100').trim();
-  const [keyUpdate, setKeyUpdate] = useState<number>(new Date().getTime());
+  const [height, setHeight] = useState<number>(postContentRef.current?.getBoundingClientRect().height || 0);
+
+useEffect(() => {
+    getComments()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
-    // Function to update height
-    const updateHeight = () => {
-      if (postContentRef.current) {
-        // Using getBoundingClientRect to get full outer dimensions
-        const rect = postContentRef.current.getBoundingClientRect();
-        setHeight(rect.height);
-      }
-    };
-
-    // Delaying the update to ensure content is loaded
-    setTimeout(updateHeight, 100);
-
+    updateHeight();
     window.addEventListener('resize', updateHeight);
-
-    // Cleanup
     return () => window.removeEventListener('resize', updateHeight);
-  }, [showComments, keyUpdate]);
+  }, [showComments]);
 
   useEffect(() => {
     axios.get(`/user/${postData.user_id}`)
@@ -71,11 +62,6 @@ const BlogPost = (props: any) => {
       })
       .catch((err) => console.error(err))
   }, [postData.user_id])
-
-  useEffect(() => {
-    getComments()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const getComments = () => {
     axios.get(`/comments/${postData.id}`)
@@ -111,9 +97,14 @@ const BlogPost = (props: any) => {
       .catch(err => console.error(err))
   }
 
-  const updateCommentsSectionHeight = () => {
-    setKeyUpdate(new Date().getTime());
-  }
+  // Function to update height off the comment section
+  const updateHeight = () => {
+    if (postContentRef.current) {
+      // Using getBoundingClientRect to get full outer dimensions
+      const rect = postContentRef.current.getBoundingClientRect();
+      setHeight(rect.height);
+    }
+  };
 
   return (
     <div className={`blog-post ${!showComments && 'no-comments'}`}>
@@ -135,7 +126,7 @@ const BlogPost = (props: any) => {
         </div>
         <div className="blog-post-body">
           <h5 className='h4 blog-post-heading'>{postData.title}</h5>
-          <TextParagraph className='blog-post-content' text={postData.content} characterLimit={185} onShowMoreToggle={updateCommentsSectionHeight} />
+          <TextParagraph className='blog-post-content' text={postData.content} characterLimit={185} onShowMoreToggle={updateHeight} />
           {
             postData.image &&
             <div className="post-image-wrapper">

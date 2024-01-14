@@ -21,7 +21,7 @@ const ForgottenPasswordModalContent: React.FC<iForgottenPasswordModalContent> = 
         <span className='new-password-title'>Vaše nové heslo je:</span>
         <CopyToClipboard textToCopy={newPassword} label={newPassword} labelClassName='new-password' />
       </div>
-      <ModalFooter onSubmit={modalSubmit} submitButtonLabel='Na přihlášení' cancelButtonLabel='Zavřít'/>
+      <ModalFooter onSubmit={modalSubmit} submitButtonLabel='Přihlásit se' cancelButtonLabel='Zavřít'/>
     </div>
   )
 }
@@ -62,7 +62,6 @@ const ForgottenPassword = () => {
     })
       .then((response: any) => {
         setNewPassword(response.data.new_password)
-        console.log(response.data.new_password)
         setErrorResponseMessage('')
         if (response.data.result) setErrorResponseMessage(response.data.response_message)
       }).catch((error: any) => {

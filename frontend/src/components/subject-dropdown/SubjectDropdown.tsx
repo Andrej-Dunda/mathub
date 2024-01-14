@@ -37,7 +37,6 @@ const SubjectDropdown: FC<DropdownProps> = ({
   useEffect(() => {
     if (oldSubjectsLength < subjects.length) {
       handleChange(subjects[subjects.length - 1])
-      console.log(subjects[subjects.length - 1])
       setOldSubjectsLength(subjects.length)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
