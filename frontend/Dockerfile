@@ -1,5 +1,5 @@
 # Use the node:alpine image as the base image
-FROM node:alpine
+FROM node:14
 # Set the working directory to /app
 WORKDIR /app
 # Copy the package.json file to the working directory
