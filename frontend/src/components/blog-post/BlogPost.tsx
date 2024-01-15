@@ -128,7 +128,7 @@ useEffect(() => {
           <h5 className='h4 blog-post-heading'>{postData.title}</h5>
           <TextParagraph className='blog-post-content' text={postData.content} characterLimit={185} onShowMoreToggle={updateHeight} />
           {
-            postData.image && 
+            postData.image &&
             <div className="post-image-wrapper">
               <img
                 className='post-image'

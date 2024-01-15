@@ -1,0 +1,32 @@
+# backend
+backend/venv/
+backend/habits.db
+backend/media/post-images/
+backend/media/profile-pictures/*
+backend/!media/profile-pictures/profile-picture-default.png
+backend/.DS_Store
+
+# frontend
+frontend/node_modules/
+frontend/package-lock.json
+
+frontend/.pnp
+frontend/.pnp.js
+frontend/coverage
+frontend/build
+
+frontend/.DS_Store
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# neo4j
+neo4j/data/databases/
+
+# misc
+.DS_Store

@@ -8,6 +8,9 @@ services:
       - ./backend:/backend
     ports:
       - '5001:5001'
+    depends_on:
+      neo4j:
+        condition: service_healthy # Wait for neo4j to be ready
 
   ## Frontend
   frontend:
@@ -22,3 +25,33 @@ services:
       - backend
     environment:
       - NODE_ENV=development
+
+  ## Database
+  neo4j:
+    image: neo4j:5.15.0-community-bullseye
+    container_name: mathub-neo4j
+    ports:
+      - '7474:7474'
+      - '7687:7687'
+    healthcheck:
+      test: cypher-shell --username neo4j --password mathubdb 'MATCH (n) RETURN COUNT(n);' # Checks if neo4j server is up and running
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - ./neo4j/data:/data
+      - ./neo4j/logs:/logs
+      - ./neo4j/conf:/conf
+      - ./neo4j/plugins:/plugins
+    environment:
+      - NEO4J_AUTH=neo4j/mathubdb
+      - NEO4J_dbms_memory_pagecache_size=1G
+      - NEO4J_dbms_memory_heap_max__size=2G
+      - NEO4J_dbms_memory_heap_initial__size=1G
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_apoc_import_file_use__neo4j__config=true
+      - NEO4J_apoc_export_file_use__neo4j__config=true
+      - NEO4J_PLUGINS=["apoc"]
+    restart: unless-stopped

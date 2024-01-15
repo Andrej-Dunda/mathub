@@ -11,6 +11,7 @@ import os
 from flask_cors import CORS
 from PIL import Image
 from flask_swagger import swagger
+from neo4j import GraphDatabase
 
 app = Flask(__name__)
 
@@ -360,6 +361,7 @@ def get_post(id):
 
 @app.route('/posts')
 def get_posts():
+    print('posts')
     conn = sqlite3.connect('habits.db')
     cur = conn.cursor()
     posts_data = cur.execute('SELECT * FROM user_posts ORDER BY id DESC').fetchall()
@@ -530,10 +532,6 @@ def change_password():
 # OTHER ENDPOINTS
 # ---------------
 
-@app.route('/logo')
-def get_logo():
-    return send_from_directory(app.config['STATIC_FOLDER'], 'logo.png')
-
 # swagger documentation visualisation
 @app.route("/documentation")
 def get_documentation():
@@ -541,6 +539,14 @@ def get_documentation():
     swag['info']['version'] = "1.0"
     swag['info']['title'] = "My API"
     return jsonify(swag)
+
+# write neo4j query to get a post
+@app.route('/neo4j', methods=['GET'])
+def get_neo4j():
+    driver = GraphDatabase.driver("bolt://neo4j:7687", auth=("neo4j", "mathubdb"))
+    with driver.session() as session:
+        result = session.run("MATCH (post:BLOG_POST) RETURN post")
+        return result.data()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5001", debug=True)
