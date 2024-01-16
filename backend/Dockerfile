@@ -9,11 +9,6 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 # Copy the remaining files to the working directory
 COPY . .
-# Set the FLASK_APP environment variable
-ENV FLASK_APP=app.py
-# Set the FLASK_ENV environment variable to development to enable hot reloading
-ENV FLASK_ENV=development
-# Expose port 5001
 EXPOSE 5001
 # Run the app
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5001"]
+CMD ["python", "app.py", "--host=0.0.0.0", "--port=5001"]

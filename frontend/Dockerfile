@@ -3,9 +3,9 @@ FROM node:14
 # Set the working directory to /app
 WORKDIR /app
 # Copy the package.json file to the working directory
-COPY package.json .
+COPY package*.json .
 # Install the dependencies
-RUN npm install
+RUN npm i && rm -rf ./node_modules/.cache
 # Copy the remaining files to the working directory
 COPY . .
 # Set the environment variable PORT to 3000
