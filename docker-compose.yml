@@ -21,6 +21,7 @@ services:
     container_name: mathub-frontend
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     # Just for the dev server ws
     ports:
       - '3000:3000'

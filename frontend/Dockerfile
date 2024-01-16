@@ -5,7 +5,7 @@ WORKDIR /app
 # Copy the package.json file to the working directory
 COPY package*.json .
 # Install the dependencies
-RUN npm i && rm -rf ./node_modules/.cache
+RUN npm install && rm -rf ./node_modules/.cache
 # Copy the remaining files to the working directory
 COPY . .
 # Set the environment variable PORT to 3000
