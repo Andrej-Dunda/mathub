@@ -3,10 +3,11 @@ import hashlib
 from datetime import datetime, timedelta
 import random
 from uuid import uuid4
+import time
 
 class Neo4jService:
     def __init__(self):
-        self.driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "mathubdb"))
+        self.driver = GraphDatabase.driver("bolt://neo4j:7687", auth=("neo4j", "mathubdb"))
 
     def close(self):
         self.driver.close()
@@ -14,9 +15,22 @@ class Neo4jService:
     def run_query(self, query):
         with self.driver.session() as session:
             return session.run(query)
+    
+    def is_ready(self):
+        try:
+            with self.driver.session() as session:
+                session.run("RETURN 1")
+            return True
+        except Exception:
+            return False
         
 # Create an instance of Neo4j
 neo4j = Neo4jService()
+
+# Wait until Neo4j is ready
+while not neo4j.is_ready():
+    print("Waiting for Neo4j...")
+    time.sleep(1)
 
 # Generating a random time within the last 5 days
 def random_time():
