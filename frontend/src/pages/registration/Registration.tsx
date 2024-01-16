@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
 import { useNav } from '../../contexts/NavigationProvider';
+import { useSnackbar } from '../../contexts/SnackbarProvider';
 
 const Registration = () => {
   const [registrationForm, setRegistrationForm] = useState({
@@ -24,6 +25,7 @@ const Registration = () => {
   const [showPassword, setShowPassword] = useState(false)
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
   const { toLogin, toForgottenPassword } = useNav();
+  const { openSnackbar } = useSnackbar();
 
   useEffect(() => {
     const handleKeyPress = (e: any) => {
@@ -49,6 +51,8 @@ const Registration = () => {
   }
 
   const submitRegistration = (event: any) => {
+    setResponseMessage('')
+
     if (!registrationForm.first_name) return errorResponse('Vyplňte pole Jméno!', firstNameInputRef)
     if (!registrationForm.last_name) return errorResponse('Vyplňte pole Příjmení!', lastNameInputRef)
     if (!registrationForm.email) return errorResponse('Vyplňte pole E-mail!', emailInputRef)
@@ -82,6 +86,7 @@ const Registration = () => {
             last_name: ""
           })
           toLogin()
+          openSnackbar('Registrace proběhla úspěšně!')
         } else {
           response.data.email_already_registered ? emailInputRef.current?.focus() : setRegistrationForm({
             email: "",

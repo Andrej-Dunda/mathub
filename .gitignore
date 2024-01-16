@@ -26,7 +26,7 @@ frontend/yarn-debug.log*
 frontend/yarn-error.log*
 
 # neo4j
-neo4j/data/databases/
+neo4j/
 
 # misc
 .DS_Store

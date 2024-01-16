@@ -12,17 +12,17 @@ const Homepage = () => {
 
   useEffect(() => {
     setActiveLink('home')
-    axios.get('/posts')
-    .then(res => {
-      setPosts(res.data)
-    })
-    .catch((error: any) => {
-      if (error.response) {
-        console.error(error.response)
-        console.error(error.response.status)
-        console.error(error.response.headers)
-      }
-    })
+    // axios.get('/posts')
+    // .then(res => {
+    //   setPosts(res.data)
+    // })
+    // .catch((error: any) => {
+    //   if (error.response) {
+    //     console.error(error.response)
+    //     console.error(error.response.status)
+    //     console.error(error.response.headers)
+    //   }
+    // })
 
     axios.get('/neo4j')
     .then(res => {
@@ -57,13 +57,13 @@ const Homepage = () => {
             ]} showComments={false} blogFormat={false} />
           )
         }
-        {
+        {/* {
           posts && posts.map((post, index) => {
             return (
               <BlogPost key={index} postData={post} showComments={false} blogFormat={false} />
             )
           })
-        }
+        } */}
       </main>
     </div>
   )

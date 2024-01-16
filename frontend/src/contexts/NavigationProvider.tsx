@@ -2,7 +2,6 @@ import { createContext, useContext, ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface iNavigationContext {
-  toDocumentation: () => void;
   toLogin: () => void;
   toRegistration: () => void;
   toForgottenPassword: () => void;
@@ -23,10 +22,6 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState<string>('');
 
-  const toDocumentation = () => {
-    navigate('/documentation');
-    setActiveLink('documentation')
-  }
   const toLogin = () => {
     navigate('/');
     setActiveLink('login')
@@ -71,7 +66,6 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <NavigationContext.Provider value={{
-      toDocumentation,
       toLogin,
       toRegistration,
       toForgottenPassword,

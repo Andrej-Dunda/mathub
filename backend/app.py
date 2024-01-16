@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 import json
 from flask import Flask, request, jsonify, send_from_directory
 import sqlite3
-from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, unset_jwt_cookies, jwt_required, JWTManager
+from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, unset_jwt_cookies, JWTManager
 import hashlib
 import random
 import string
@@ -10,8 +10,8 @@ from werkzeug.utils import secure_filename
 import os
 from flask_cors import CORS
 from PIL import Image
-from flask_swagger import swagger
 from neo4j import GraphDatabase
+from uuid import uuid4
 
 app = Flask(__name__)
 
@@ -23,6 +23,21 @@ app.config['PROFILE_PICTURES_FOLDER'] = 'media/profile-pictures'
 app.config['POST_IMAGES_FOLDER'] = 'media/post-images'
 app.config['STATIC_FOLDER'] = 'media/static'
 jwt = JWTManager(app)
+
+class Neo4jService:
+    def __init__(self):
+        self.driver = GraphDatabase.driver("bolt://neo4j:7687", auth=("neo4j", "mathubdb"))
+
+    def close(self):
+        self.driver.close()
+
+    def run_query(self, query):
+        with self.driver.session() as session:
+            result = session.run(query)
+            return [record.data() for record in result]
+        
+# Create an instance of Neo4j
+neo4j = Neo4jService()
 
 @app.after_request
 def refresh_expiring_jwts(response):
@@ -48,32 +63,22 @@ def refresh_expiring_jwts(response):
 
 @app.route('/login', methods=["POST"])
 def create_token():
-    print('Login')
     email = request.json.get("email", None)
     password = request.json.get("password", None)
 
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    cur.execute('SELECT user_password FROM users WHERE user_email = ?', (email,))
-    user_data = cur.fetchone()
-    conn.close()
-    
+    user_data = neo4j.run_query(f'MATCH (user:USER {{user_email: "andrejdunda@gmail.com"}}) RETURN user')[0]['user']
+
     if user_data:
-        stored_password_hash = user_data[0]
+        stored_password_hash = user_data['user_password']
         input_password_hash = hashlib.sha256(password.encode()).hexdigest()
         if stored_password_hash == input_password_hash:
             access_token = create_access_token(identity=email)
 
-            conn = sqlite3.connect('habits.db')
-            cur = conn.cursor()
-            cur.execute('SELECT id, first_name, last_name, profile_picture, registration_date FROM users WHERE user_email = ?', (email,))
-            user = cur.fetchone()
-            user_id = user[0]
-            first_name = user[1]
-            last_name = user[2]
-            profile_picture = user[3]
-            registration_date = user[4]
-            conn.close()
+            user_id = user_data['_id']
+            first_name = user_data['first_name']
+            last_name = user_data['last_name']
+            profile_picture = user_data['profile_picture']
+            registration_date = user_data['registration_date']
 
             response = {
                 "access_token": access_token,
@@ -84,7 +89,6 @@ def create_token():
                 "profile_picture": profile_picture,
                 "registration_date": registration_date
                }
-            print("Login successful")
             return response
     
     print("Something went wrong")
@@ -96,28 +100,36 @@ def logout():
     unset_jwt_cookies(response)
     return response
 
+def create_user_node(user_email, user_password, first_name, last_name, profile_picture = 'profile-picture-default.png'):
+  query = f"""
+  CREATE (:USER {{
+    _id: '{uuid4()}',
+    user_email: '{user_email}',
+    user_password: '{hashlib.sha256(user_password.encode()).hexdigest()}',
+    first_name: '{first_name}',
+    last_name: '{last_name}',
+    profile_picture: '{profile_picture}',
+    registration_date: '{datetime.now().isoformat()}'
+  }})
+  """
+  neo4j.run_query(query)
+
 @app.route('/registration', methods=['POST'])
 def register_new_user():
     try:
-      email = request.json.get("email", None)
-      password = request.json.get("password", None)
-      first_name = request.json.get("first_name", None)
-      last_name = request.json.get("last_name", None)
-      # Process and save the data as needed
-      conn = sqlite3.connect("habits.db")
-      cur = conn.cursor()
-      password_hash = hashlib.sha256(password.encode()).hexdigest()  # Hash the password
+        email = request.json.get("email", None)
+        password = request.json.get("password", None)
+        first_name = request.json.get("first_name", None)
+        last_name = request.json.get("last_name", None)
+        
+        password_hash = hashlib.sha256(password.encode()).hexdigest()  # Hash the password
 
-      # Check if the user_name already exists in the table
-      cur.execute("SELECT user_email FROM users WHERE user_email = ?", (email,))
-      existing_user = cur.fetchone()
+        existing_user = neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) RETURN user')
 
-      if existing_user is None:
-        cur.execute('INSERT INTO users (user_email, user_password, first_name, last_name, registration_date) VALUES (?, ?, ?, ?, ?)', (email, password_hash, first_name, last_name, datetime.now().isoformat()))
-      else:
-         return {'message': 'Tento email je již registrován!', 'success': False, 'email_already_registered': True}
-      conn.commit()
-      conn.close()
+        if not len(existing_user):
+            create_user_node(email, password_hash, first_name, last_name)
+        else:
+            return {'message': 'Tento email je již registrován!', 'success': False, 'email_already_registered': True}
     except:
         return {'message': 'Registrace se nezdařila :(', 'success': False, 'email_already_registered': False}
     else:
@@ -131,21 +143,13 @@ def generate_new_password():
       characters = string.ascii_letters + string.digits
       new_password = ''.join(random.choice(characters) for _ in range(12))
 
-      # Process and save the data as needed
-      conn = sqlite3.connect("habits.db")
-      cur = conn.cursor()
-
-      # Check if the user_name already exists in the table
-      cur.execute("SELECT user_email FROM users WHERE user_email = ?", (email,))
-      existing_user = cur.fetchone()
+      existing_user = neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) RETURN user')[0]
 
       if existing_user is None:
         return jsonify({'console_message': 'User profile does not exist!', 'response_message': 'Tento profil neexistuje!', 'result': False})
       
       password_hash = hashlib.sha256(new_password.encode()).hexdigest()  # Hash the password
-      cur.execute("UPDATE users SET user_password = ? WHERE user_email = ?", (password_hash, email))
-      conn.commit()
-      conn.close()
+      neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) SET user.user_password = "{password_hash}"')
     except:
       return jsonify({'console_message': 'Failed to reset password', 'response_message': 'Heslo nemohlo být resetováno', 'result': False})
     else:
@@ -532,21 +536,11 @@ def change_password():
 # OTHER ENDPOINTS
 # ---------------
 
-# swagger documentation visualisation
-@app.route("/documentation")
-def get_documentation():
-    swag = swagger(app)
-    swag['info']['version'] = "1.0"
-    swag['info']['title'] = "My API"
-    return jsonify(swag)
-
 # write neo4j query to get a post
 @app.route('/neo4j', methods=['GET'])
 def get_neo4j():
-    driver = GraphDatabase.driver("bolt://neo4j:7687", auth=("neo4j", "mathubdb"))
-    with driver.session() as session:
-        result = session.run("MATCH (post:BLOG_POST) RETURN post")
-        return result.data()
+    result = neo4j.run_query("MATCH (post:BLOG_POST) RETURN post")
+    return jsonify(result)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5001", debug=True)
