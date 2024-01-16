@@ -18,7 +18,7 @@ const LikeButton = (props: any) => {
   const getLikes = () => {
     axios.get(`/post-likes/${props.postId}`)
     .then(res => {
-      const isLiked = res.data.some((subArray: any) => subArray.includes(user.id));
+      const isLiked = res.data.some((liker: any) => liker.user_id === user.id);
       setLiked(isLiked)
       setLikesCount(res.data.length)
     })

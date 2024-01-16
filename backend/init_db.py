@@ -41,9 +41,6 @@ def random_time():
     return random_time.isoformat()
 
 init_db_query = f'''
-    // Delete all nodes and relationships
-    MATCH (n) DETACH DELETE n
-
     // Users
     CREATE
     (sarah:USER {{_id: '{uuid4()}', user_email: 'sarah.johnson@example.com', user_password: '{hashlib.sha256('sarah123'.encode()).hexdigest()}', first_name: 'Sára', last_name: 'Johnsonová', profile_picture: 'pp1.png', registration_date: '{random_time()}'}}),
@@ -94,15 +91,18 @@ init_db_query = f'''
 
     // Comments
     CREATE
-    (post1) <-[:BELONGS_TO]- (comment1:COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Skvělá inspirace, díky!' }}) -[:COMMENTED_BY]-> (sarah),
-    (post1) <-[:BELONGS_TO]- (comment2:COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Myslím si, že každá slušná posilovna by nikdy nic takového neudělala! Za minulého režimu to bylo jednoduché, žádné rádoby fit boostery ani jiné steroidy jsme nebrali! To se věci ještě dělaly pořádně, ale to vy nemůžete pochopit. Dávám palec dolů!' }}) -[:COMMENTED_BY]-> (andrej),
-    (post1) <-[:BELONGS_TO]- (comment3:COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Tento článek přišel v pravou chvíli! Právě jsem se rozhodl/a začít chodit do posilovny a hledám všechny možné informace. Máte nějaké konkrétní rady, které by mohly pomoci úplnému nováčkovi?' }}) -[:COMMENTED_BY]-> (jane),
-    (post1) <-[:BELONGS_TO]- (comment4:COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Skvělé postřehy! Souhlasím, že výběr správné posilovny je klíčový. Chodím cvičit už léta a změna posilovny mě naprosto nabila novou energií. Jaké funkční cviky byste doporučili pro maximalizaci tréninku?' }}) -[:COMMENTED_BY]-> (david),
-    (post1) <-[:BELONGS_TO]- (comment5:COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Jako instruktor fitness tříd musím říct, že skupinové lekce skutečně mohou zázraky nejen pro fyzickou kondici, ale i pro sociální vazby mezi účastníky. Je úžasné vidět, jak společné cvičení posiluje týmového ducha!' }}) -[:COMMENTED_BY]-> (emma),
-    (post1) <-[:BELONGS_TO]- (comment6:COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Miluji váš holistický přístup ke zdraví! Je důležité si uvědomit, že posilování těla není jen o svalové síle, ale také o duševním a emocionálním blahobytu. Máte nějaké tipy na relaxační techniky po náročném tréninku?' }}) -[:COMMENTED_BY]-> (john),
-    (post2) <-[:BELONGS_TO]- (comment7:COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Nevíte někdo, kde sehnat levné ale kvalitní běžecké boty?' }}) -[:COMMENTED_BY]-> (emma),
-    (post3) <-[:BELONGS_TO]- (comment8:COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'V pubertě jsem skoro nečetla a teď toho lituju, jsem ráda, že jsem se konečně vrátila ke čtení.' }}) -[:COMMENTED_BY]-> (john)
+    (post1) <-[:BELONGS_TO]- (comment1:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Skvělá inspirace, díky!' }}) -[:COMMENTED_BY]-> (sarah),
+    (post1) <-[:BELONGS_TO]- (comment2:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Myslím si, že každá slušná posilovna by nikdy nic takového neudělala! Za minulého režimu to bylo jednoduché, žádné rádoby fit boostery ani jiné steroidy jsme nebrali! To se věci ještě dělaly pořádně, ale to vy nemůžete pochopit. Dávám palec dolů!' }}) -[:COMMENTED_BY]-> (andrej),
+    (post1) <-[:BELONGS_TO]- (comment3:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Tento článek přišel v pravou chvíli! Právě jsem se rozhodl/a začít chodit do posilovny a hledám všechny možné informace. Máte nějaké konkrétní rady, které by mohly pomoci úplnému nováčkovi?' }}) -[:COMMENTED_BY]-> (jane),
+    (post1) <-[:BELONGS_TO]- (comment4:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Skvělé postřehy! Souhlasím, že výběr správné posilovny je klíčový. Chodím cvičit už léta a změna posilovny mě naprosto nabila novou energií. Jaké funkční cviky byste doporučili pro maximalizaci tréninku?' }}) -[:COMMENTED_BY]-> (david),
+    (post1) <-[:BELONGS_TO]- (comment5:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Jako instruktor fitness tříd musím říct, že skupinové lekce skutečně mohou zázraky nejen pro fyzickou kondici, ale i pro sociální vazby mezi účastníky. Je úžasné vidět, jak společné cvičení posiluje týmového ducha!' }}) -[:COMMENTED_BY]-> (emma),
+    (post1) <-[:BELONGS_TO]- (comment6:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Miluji váš holistický přístup ke zdraví! Je důležité si uvědomit, že posilování těla není jen o svalové síle, ale také o duševním a emocionálním blahobytu. Máte nějaké tipy na relaxační techniky po náročném tréninku?' }}) -[:COMMENTED_BY]-> (john),
+    (post2) <-[:BELONGS_TO]- (comment7:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Nevíte někdo, kde sehnat levné ale kvalitní běžecké boty?' }}) -[:COMMENTED_BY]-> (emma),
+    (post3) <-[:BELONGS_TO]- (comment8:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'V pubertě jsem skoro nečetla a teď toho lituju, jsem ráda, že jsem se konečně vrátila ke čtení.' }}) -[:COMMENTED_BY]-> (john)
     '''
 
 neo4j.run_query(init_db_query)
 neo4j.close()
+
+# print(random_time())
+# print(uuid4())

@@ -15,7 +15,7 @@ import TextParagraph from '../text-paragraph/TextParagraph'
 const BlogPost = (props: any) => {
   const { user } = useUserData();
   const [userName, setUserName] = useState<string>('')
-  const rawPostDate = new Date(props.postData[2])
+  const rawPostDate = new Date(props.postData.post_time)
   const czechMonthNames = [
     'ledna', 'února', 'března', 'dubna', 'května', 'června',
     'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'
@@ -28,12 +28,12 @@ const BlogPost = (props: any) => {
   const addLeadingZero = (num: number) => (num < 10 ? `0${num}` : num);
   const customDateFormat = `${dayOfMonth}. ${monthName} v ${hour}:${addLeadingZero(minute)}`;
   const postData = {
-    id: props.postData[0],
-    user_id: props.postData[1],
+    id: props.postData._id,
+    author_id: props.postData.author_id,
     time: customDateFormat,
-    title: props.postData[3],
-    content: props.postData[4],
-    image: props.postData[5]
+    title: props.postData.post_title,
+    content: props.postData.post_description,
+    image: props.postData.post_image
   }
   const [comments, setComments] = useState([])
   const [newComment, setNewComment] = useState<string>('')
@@ -56,12 +56,12 @@ useEffect(() => {
   }, [showComments]);
 
   useEffect(() => {
-    axios.get(`/user/${postData.user_id}`)
+    axios.get(`/user/${postData.author_id}`)
       .then(res => {
-        setUserName(res.data.user[2] + ' ' + res.data.user[3])
+        setUserName(res.data.first_name + ' ' + res.data.last_name)
       })
       .catch((err) => console.error(err))
-  }, [postData.user_id])
+  }, [postData.author_id])
 
   const getComments = () => {
     axios.get(`/comments/${postData.id}`)
@@ -89,7 +89,7 @@ useEffect(() => {
         comment: newComment
       }
     })
-      .then((res) => {
+      .then(() => {
         setNewComment('')
         getComments()
         if (commentsRef.current) commentsRef.current.scrollTop = 0;
@@ -111,7 +111,7 @@ useEffect(() => {
       <main className={`blog-post-main ${showComments && 'border-right-grey'}`} ref={postContentRef} >
         <div className="blog-post-header">
           <div className="blog-info">
-            <ProfilePicture className='post-size radius-100 border box-shadow-dark' userId={postData.user_id} />
+            <ProfilePicture className='post-size radius-100 border box-shadow-dark' userId={postData.author_id} />
             <div className="user-name-and-post-time">
               <h5 className='user-name'>{userName}</h5>
               <span className='blog-post-time'>{postData.time}</span>

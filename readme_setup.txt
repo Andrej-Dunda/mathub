@@ -12,7 +12,7 @@ python3 app.py
 ** Through Docker: **
 docker-compose up --build
 
-After docker is composed
+After docker is composed (initialize db data)
 python3 backend/init_db.py
 
 ** When installing new package on frontend: **

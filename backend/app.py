@@ -63,6 +63,8 @@ def refresh_expiring_jwts(response):
 
 @app.route('/login', methods=["POST"])
 def create_token():
+    response_msg = "Chybný email nebo heslo!"
+
     email = request.json.get("email", None)
     password = request.json.get("password", None)
 
@@ -90,8 +92,12 @@ def create_token():
                 "registration_date": registration_date
                }
             return response
+        else:
+            response_msg = f"Chybné heslo!\nZadané heslo: {input_password_hash}\nHeslo v databázi: {stored_password_hash}"    
+    else:
+        response_msg = f"Uživatel '{email}' neexistuje!"
     
-    return jsonify({"message": "Chybný email nebo heslo!"}), 401
+    return jsonify({"message": response_msg}), 401
 
 @app.route("/logout", methods=["POST"])
 def logout():
@@ -120,13 +126,11 @@ def register_new_user():
         password = request.json.get("password", None)
         first_name = request.json.get("first_name", None)
         last_name = request.json.get("last_name", None)
-        
-        password_hash = hashlib.sha256(password.encode()).hexdigest()  # Hash the password
 
         existing_user = neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) RETURN user')
 
         if not len(existing_user):
-            create_user_node(email, password_hash, first_name, last_name)
+            create_user_node(email, password, first_name, last_name)
         else:
             return {'message': 'Tento email je již registrován!', 'success': False, 'email_already_registered': True}
     except:
@@ -348,20 +352,18 @@ def delete_blog_post(post_id):
 
 @app.route('/post/<id>')
 def get_post(id):
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    post_data = cur.execute('SELECT * FROM user_posts WHERE id = ?', (id,)).fetchone()
-    conn.close()
+    post_data = neo4j.run_query(f'MATCH (post:BLOG_POST {{_id: "{id}"}}) RETURN post LIMIT 1')[0]['post']
     return post_data
 
 @app.route('/posts')
 def get_posts():
-    print('posts')
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    posts_data = cur.execute('SELECT * FROM user_posts ORDER BY id DESC').fetchall()
-    conn.close()
-    return posts_data
+    posts_data = neo4j.run_query('MATCH (post:BLOG_POST) -[:POSTED_BY]-> (author:USER) RETURN post, author._id AS author_id ORDER BY post.post_time DESC')
+    posts = []
+    for post_data in posts_data:
+        post = post_data['post']
+        post['author_id'] = post_data['author_id']
+        posts.append(post)
+    return posts
 
 @app.route('/get-my-posts/<user_id>')
 def get_my_posts(user_id):
@@ -373,31 +375,21 @@ def get_my_posts(user_id):
 
 @app.route('/post-likes/<post_id>')
 def get_post_likes(post_id):
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    post_liker_ids = cur.execute('SELECT liker_id FROM post_likes WHERE post_id = ?', (post_id,)).fetchall()
-    conn.close()
+    post_liker_ids = neo4j.run_query(f'MATCH (post:BLOG_POST {{_id: "{post_id}"}}) <-[:LIKES]- (user:USER) RETURN user._id AS user_id')
     return post_liker_ids
 
 @app.route('/toggle-post-like', methods=['POST'])
 def toggle_post_like():
     post_id = request.json.get('post_id', None)
     user_id = request.json.get('user_id', None)
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    like_data = cur.execute('SELECT * FROM post_likes WHERE post_id = ? AND liker_id = ?', (post_id, user_id)).fetchone()
+    like_data = neo4j.run_query(f'MATCH (post:BLOG_POST {{_id: "{post_id}"}}) <-[:LIKES]- (user:USER {{_id: "{user_id}"}}) RETURN user._id AS user_id')
 
-    print(like_data)
-    if like_data != None:
-        cur.execute('DELETE FROM post_likes WHERE post_id = ? AND liker_id = ?', (post_id, user_id))
-        conn.commit()
-        conn.close()
-        return 'unliked'
+    if len(like_data):
+        neo4j.run_query(f'MATCH (post:BLOG_POST {{_id: "{post_id}"}}) <-[like:LIKES]- (user:USER {{_id: "{user_id}"}}) DELETE like')
+        return
     else:
-        cur.execute('INSERT INTO post_likes (post_id, liker_id) VALUES (?, ?)', (post_id, user_id))
-        conn.commit()
-        conn.close()
-        return 'liked'
+        neo4j.run_query(f'MATCH (post:BLOG_POST {{_id: "{post_id}"}}) <-[:LIKES]- (user:USER {{_id: "{user_id}"}})')
+        return
 
 @app.route('/post-image/<filename>')
 def get_post_image(filename):
@@ -413,25 +405,28 @@ def get_post_image(filename):
 
 @app.route('/comments/<post_id>')
 def get_comments(post_id):
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    comments = cur.execute('SELECT commenter_id, comment, comment_time FROM post_comments WHERE post_id = ? ORDER BY id DESC', (post_id,)).fetchall()
-    conn.close()
+    comments_data = neo4j.run_query(f'MATCH (comment_author:USER) <-[:COMMENTED_BY]- (comment:POST_COMMENT) -[:BELONGS_TO]-> (:BLOG_POST {{_id: "{post_id}"}}) RETURN comment, comment_author._id AS author_id ORDER BY comment.comment_time DESC')
+    comments = []
+    for comment_data in comments_data:
+        comment = comment_data['comment']
+        comment['author_id'] = comment_data['author_id']
+        comments.append(comment)
     return comments
 
 @app.route('/add-comment', methods=['POST'])
 def add_comment():
-    post_id = request.json.get('post_id', None)
-    commenter_id = request.json.get('commenter_id', None)
-    comment = request.json.get('comment', None)
-    comment_time = datetime.now().isoformat()
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    cur.execute('INSERT INTO post_comments (post_id, commenter_id, comment, comment_time) VALUES (?, ?, ?, ?)',
-                (post_id, commenter_id, comment, comment_time))
-    conn.commit()
-    conn.close()
-    return 'Comment added successfuly!'
+    try:
+        post_id = request.json.get('post_id', None)
+        commenter_id = request.json.get('commenter_id', None)
+        comment = request.json.get('comment', None)
+        comment_time = datetime.now().isoformat()
+        neo4j.run_query(f'''
+                        MATCH (author:USER {{_id: "{commenter_id}"}}), (post:BLOG_POST {{_id: "{post_id}"}})
+                        CREATE (author) <-[:COMMENTED_BY]- (:POST_COMMENT {{_id: "{uuid4()}", comment: "{comment}", comment_time: "{comment_time}"}}) -[:BELONGS_TO]-> (post)
+                        ''')
+        return 'Comment added successfuly', 200
+    except:
+        return 'Comment could not be added', 400
 
 
 # ----------------------
@@ -440,16 +435,8 @@ def add_comment():
 
 @app.route('/user/<id>', methods=['GET'])
 def get_user(id):
-    fetched_user = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user')[0]['user']
-    user = {
-        'id': fetched_user['_id'],
-        'email': fetched_user['user_email'],
-        'first_name': fetched_user['first_name'],
-        'last_name': fetched_user['last_name'],
-        'profile_picture': fetched_user['profile_picture'],
-        'registration_date': fetched_user['registration_date']
-    }
-    return jsonify(user)
+    user = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user')[0]['user']
+    return user
 
 def crop_image_to_square(image_path):
     with Image.open(image_path) as img:

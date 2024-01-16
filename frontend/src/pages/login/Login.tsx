@@ -20,10 +20,6 @@ const LoginPage = (props: any) => {
   const { setUser } = useUserData();
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
   const { toRegistration, toForgottenPassword, toHome } = useNav();
-
-  useEffect(() => {
-    console.log(props.token)
-  }, [props.token])
   
   useEffect(() => {
     const handleKeyPress = (e: any) => {
@@ -62,15 +58,14 @@ const LoginPage = (props: any) => {
         localStorage.setItem('userData', JSON.stringify(loggedUser));
         toHome()
       }).catch((error: any) => {
-        console.log('someting went wrong')
         error.response && setResponseMessage(error.response.data.message)
+        console.error(error.response.data.message)
       })
 
     setLoginForm(({
       email: "",
       password: ""
     }))
-    console.log('login procedure ended')
 
     event.preventDefault()
   }
