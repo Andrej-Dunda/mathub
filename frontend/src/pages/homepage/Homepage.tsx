@@ -27,8 +27,6 @@ const Homepage = () => {
     axios.get('/neo4j')
     .then(res => {
       setNeo4jPost(res.data[0].post)
-      console.log(res.data[0].post)
-      console.log(new Date())
     })
     .catch((error: any) => {
       if (error.response) {

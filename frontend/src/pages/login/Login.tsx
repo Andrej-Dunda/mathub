@@ -19,8 +19,12 @@ const LoginPage = (props: any) => {
   const passwordInputRef = useRef<HTMLInputElement>(null)
   const { setUser } = useUserData();
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
-  const { toRegistration, toForgottenPassword } = useNav();
+  const { toRegistration, toForgottenPassword, toHome } = useNav();
 
+  useEffect(() => {
+    console.log(props.token)
+  }, [props.token])
+  
   useEffect(() => {
     const handleKeyPress = (e: any) => {
       e.key === 'Enter' && submitLogin(e)
@@ -56,12 +60,17 @@ const LoginPage = (props: any) => {
         }
         setUser(loggedUser)
         localStorage.setItem('userData', JSON.stringify(loggedUser));
-      }).catch((error: any) => error.response && setResponseMessage(error.response.data.message))
+        toHome()
+      }).catch((error: any) => {
+        console.log('someting went wrong')
+        error.response && setResponseMessage(error.response.data.message)
+      })
 
     setLoginForm(({
       email: "",
       password: ""
     }))
+    console.log('login procedure ended')
 
     event.preventDefault()
   }

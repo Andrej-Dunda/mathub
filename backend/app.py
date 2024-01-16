@@ -66,7 +66,7 @@ def create_token():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
 
-    user_data = neo4j.run_query(f'MATCH (user:USER {{user_email: "andrejdunda@gmail.com"}}) RETURN user')[0]['user']
+    user_data = neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) RETURN user')[0]['user']
 
     if user_data:
         stored_password_hash = user_data['user_password']
@@ -91,7 +91,6 @@ def create_token():
                }
             return response
     
-    print("Something went wrong")
     return jsonify({"message": "Chybný email nebo heslo!"}), 401
 
 @app.route("/logout", methods=["POST"])
@@ -165,15 +164,7 @@ def generate_new_password():
 # FRIENDS ENDPOINTS
 # -----------------
 
-@app.route("/users")
-def users_table():
-    conn = sqlite3.connect("habits.db")
-    cur = conn.cursor()
-    res = cur.execute("SELECT * FROM users").fetchall()
-    return res
-
 @app.route('/get-friend-suggestions', methods=['POST'])
-# @jwt_required()
 def get_friend_suggestions():
     user_id = request.json.get('user_id', None)
     conn = sqlite3.connect("habits.db")
@@ -449,10 +440,16 @@ def add_comment():
 
 @app.route('/user/<id>', methods=['GET'])
 def get_user(id):
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    user = cur.execute('SELECT id, user_email, first_name, last_name, profile_picture, registration_date FROM users WHERE id = ?', (id,)).fetchone()
-    return {"user": user}
+    fetched_user = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user')[0]['user']
+    user = {
+        'id': fetched_user['_id'],
+        'email': fetched_user['user_email'],
+        'first_name': fetched_user['first_name'],
+        'last_name': fetched_user['last_name'],
+        'profile_picture': fetched_user['profile_picture'],
+        'registration_date': fetched_user['registration_date']
+    }
+    return jsonify(user)
 
 def crop_image_to_square(image_path):
     with Image.open(image_path) as img:
@@ -473,37 +470,19 @@ def upload_profile_picture(id):
         file = request.files['profile_picture']
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], filename))
-        conn = sqlite3.connect('habits.db')
-        cur = conn.cursor()
-        cur.execute('UPDATE users SET profile_picture = ? WHERE id = ?', (filename, id))
-        conn.commit()
-        conn.close()
+        neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) SET user.profile_picture = "{filename}"')
         crop_image_to_square(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], filename))
         return 'File uploaded successfully', 200
     else:
         return 'No file part', 400
 
-@app.route('/user-profile-picture/<user_id>')
-def get_profile_picture(user_id):
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
-    try:
-        profile_picture = cur.execute('SELECT profile_picture FROM users WHERE id = ?', (user_id,)).fetchone()[0]
-    except:
-        profile_picture = 'profile-picture-defualt.png'
-    return profile_picture
-
 @app.route('/profile-picture/<id>')
 def get_user_profile_picture(id):
-    conn = sqlite3.connect('habits.db')
-    cur = conn.cursor()
     try:
-        profile_picture = cur.execute('SELECT profile_picture FROM users WHERE id = ?', (id,)).fetchone()[0]
+        profile_picture = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user.profile_picture AS profile_picture_name')[0]['profile_picture_name']
         return send_from_directory(app.config['PROFILE_PICTURES_FOLDER'], profile_picture)
     except:
         return send_from_directory(app.config['PROFILE_PICTURES_FOLDER'], 'profile-picture-default.png')
-    finally:
-        conn.close()
 
 @app.route('/change-password', methods=['POST'])
 def change_password():
@@ -514,22 +493,14 @@ def change_password():
         new_password = request.json.get('new_password', None)
         hashed_new_password = hashlib.sha256(new_password.encode()).hexdigest()
         
-        conn = sqlite3.connect('habits.db')
-        cur = conn.cursor()
-        
-        fetched_old_password = cur.execute('SELECT user_password FROM users WHERE id = ?', (user_id,)).fetchone()[0]
+        fetched_old_password = neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}) RETURN user.user_password AS old_password')[0]['old_password']
         if fetched_old_password == hashed_old_password:
-            cur.execute('UPDATE users SET user_password = ? WHERE id = ?', (hashed_new_password, user_id))
-            conn.commit()
-            conn.close()
+            neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}) SET user.user_password = "{hashed_new_password}"')
             return {'success': True}
         else:
-            conn.close()
             return {'success': False}
-    except sqlite3.Error as e:
-        return {'msg': f'Databázová chyba: {str(e)}', 'success': False}
-    finally:
-        conn.close()
+    except:
+        return {'success': False}
 
 
 # ---------------
@@ -539,7 +510,7 @@ def change_password():
 # write neo4j query to get a post
 @app.route('/neo4j', methods=['GET'])
 def get_neo4j():
-    result = neo4j.run_query("MATCH (post:BLOG_POST) RETURN post")
+    result = neo4j.run_query(f'MATCH (user:USER {{user_email: "andrejdunda@gmail.com"}}) RETURN user')[0]['user']
     return jsonify(result)
 
 if __name__ == "__main__":

@@ -12,7 +12,7 @@ const ProfileBadge = (props: any) => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const profileBadgeRef = useRef<HTMLImageElement>(null);
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
-  const { toUserProfile } = useNav();
+  const { toUserProfile, toLogin } = useNav();
   
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -44,6 +44,7 @@ const ProfileBadge = (props: any) => {
       .then(() => {
         props.removeToken()
         localStorage.removeItem('userData')
+        toLogin()
       }).catch((error) => {
         if (error.response) {
           console.error(error.response)

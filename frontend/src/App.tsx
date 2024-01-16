@@ -22,16 +22,16 @@ const App = () => {
         <Routes>
           {!token && token !== "" && token !== undefined ? (
             <Route path="/">
-              <Route index element={<LoginPage setToken={setToken} />} />
+              <Route index element={<LoginPage setToken={setToken} token={token} />} />
               <Route path="registration" element={<Registration />} />
               <Route path="forgotten-password" element={<ForgottenPassword />} />
-              <Route path="*" element={<LoginPage />} />
+              <Route path="*" element={<LoginPage setToken={setToken} token={token} />} />
             </Route>
           ) : (
             <Route path="/" element={<Layout removeToken={removeToken} />}>
               <Route index element={<Homepage />} />
-              {/* <Route path="user-profile" element={<UserProfile />} />
-              <Route path="friends" element={<Friends />} />
+              <Route path="user-profile" element={<UserProfile />} />
+              {/* <Route path="friends" element={<Friends />} />
               <Route path="blog" element={<Blog />} />
               <Route path="subjects" element={<SubjectsWindow />} />
               <Route path="view-materials" element={<ViewMaterials />} />

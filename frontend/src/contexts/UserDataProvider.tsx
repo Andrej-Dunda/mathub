@@ -45,12 +45,12 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
     axios.get(`/user/${user.id}`)
       .then((res: any) => {
         setUser({
-          id: res.data.user[0],
-          email: res.data.user[1],
-          first_name: res.data.user[2],
-          last_name: res.data.user[3],
-          profile_picture: res.data.user[4],
-          registration_date: res.data.user[5]
+          id: res.data.id,
+          email: res.data.email,
+          first_name: res.data.first_name,
+          last_name: res.data.last_name,
+          profile_picture: res.data.profile_picture,
+          registration_date: res.data.registration_date
         })
       })
       .catch((err) => console.error(err))
