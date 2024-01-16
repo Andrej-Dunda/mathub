@@ -10,8 +10,10 @@ pip install -r requirements.txt
 python3 app.py
 
 ** Through Docker: **
+docker-compose up --build
 
-docker compose up
+After docker is composed
+python3 backend/init_db.py
 
 ** When installing new package on frontend: **
 docker-compose up -d —build
