@@ -4,14 +4,14 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './pages/layout/Layout'
 import Homepage from './pages/homepage/Homepage';
 import UserProfile from './pages/user-profile/UserProfile';
-// import Friends from './pages/friends/Friends';
+import Friends from './pages/friends/Friends';
 import LoginPage from './pages/login/Login';
 import Registration from './pages/registration/Registration';
 import ForgottenPassword from './pages/forgotten-password/ForgottenPassword';
-// import Blog from './pages/blog/Blog';
-// import SubjectsWindow from './pages/subjects-window/SubjectsWindow';
-// import NewBookAnalysis from './pages/new-book-analysis/NewBookAnalysis';
-// import ViewMaterials from './pages/view-materials/ViewMaterials';
+import Blog from './pages/blog/Blog';
+import SubjectsWindow from './pages/subjects-window/SubjectsWindow';
+import NewBookAnalysis from './pages/new-book-analysis/NewBookAnalysis';
+import ViewMaterials from './pages/view-materials/ViewMaterials';
 import { useToken } from './contexts/TokenProvider';
 import { NavigationProvider, useNav } from './contexts/NavigationProvider';
 
@@ -50,11 +50,11 @@ const App = () => {
             <Route path="/" element={<Layout removeToken={removeToken} />}>
               <Route index element={<Homepage />} />
               <Route path="user-profile" element={<UserProfile />} />
-              {/* <Route path="friends" element={<Friends />} />
+              <Route path="friends" element={<Friends />} />
               <Route path="blog" element={<Blog />} />
               <Route path="subjects" element={<SubjectsWindow />} />
               <Route path="view-materials" element={<ViewMaterials />} />
-              <Route path="new-book-analysis" element={<NewBookAnalysis />} /> */}
+              <Route path="new-book-analysis" element={<NewBookAnalysis />} />
               <Route path="*" element={<RedirectToHome />} />
             </Route>
           )}

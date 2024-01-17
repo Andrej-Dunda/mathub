@@ -81,13 +81,13 @@ init_db_query = f'''
     FOREACH (user in [mike, susan] | CREATE (robert) -[:FRIEND_REQUEST]-> (user))
     FOREACH (user in [david, karla, patricia] | CREATE (laura) -[:FRIEND_REQUEST]-> (user))
     FOREACH (user in [robert, lisa] | CREATE (karla) -[:FRIEND_REQUEST]-> (user))
-    FOREACH (user in [john, michael, sarah] | CREATE (james) -[:FRIEND_REQUEST]-> (user))
+    FOREACH (user in [john, michael, sarah, andrej] | CREATE (james) -[:FRIEND_REQUEST]-> (user))
     
     // Posts
     CREATE
     (post1:BLOG_POST {{ _id: '{uuid4()}', post_time: "{random_time()}", post_title: 'Základy fitness posiloven: budování síly a komunity', post_description: 'Tento příspěvek se zabývá úlohou posiloven při podpoře fyzické kondice a sociálních vazeb. Nabízí postřehy o výběru správné posilovny, maximalizaci tréninku a výhodách skupinových lekcí. Součástí jsou osobní anekdoty a tipy pro začátečníky v posilovně, které kladou důraz na holistický přístup ke zdraví.', post_image: 'gym.png' }}) -[:POSTED_BY]-> (sarah),
     (post2:BLOG_POST {{ _id: '{uuid4()}', post_time: "{random_time()}", post_title: 'Běh pro zdraví: Osobní průvodce', post_description: 'Tento příspěvek na blogu upozorňuje na výhody běhání a poskytuje tipy pro začátečníky ohledně výběru vybavení, tréninkových plánů a motivace. Mísí osobní příběhy s praktickými radami, zdůrazňuje přínos běhání pro duševní i fyzické zdraví a obsahuje inspirativní citáty sportovců.', post_image: 'joggers.png' }}) -[:POSTED_BY]-> (mike),
-    (post3:BLOG_POST {{ _id: '{uuid4()}', post_time: "{random_time()}", post_title: 'Znovuobjevení radosti ze čtení: Jednoduchý průvodce', post_description: 'Tento blogový příspěvek se zabývá potěšením a přínosy čtení a nabízí tipy, jak najít ty správné knihy, vytvořit si čtenářský návyk a najít si čas na literaturu. Obsahuje osobní anekdoty, seznamy doporučené četby a postřehy o tom, jak čtení rozšiřuje znalosti a představivost.', post_image: 'books.png' }}) -[:POSTED_BY]-> (lisa)
+    (post3:BLOG_POST {{ _id: '{uuid4()}', post_time: "{random_time()}", post_title: 'Znovuobjevení radosti ze čtení: Jednoduchý průvodce', post_description: 'Tento blogový příspěvek se zabývá potěšením a přínosy čtení a nabízí tipy, jak najít ty správné knihy, vytvořit si čtenářský návyk a najít si čas na literaturu. Obsahuje osobní anekdoty, seznamy doporučené četby a postřehy o tom, jak čtení rozšiřuje znalosti a představivost.', post_image: 'books.png' }}) -[:POSTED_BY]-> (andrej)
 
     // Comments
     CREATE
@@ -99,6 +99,26 @@ init_db_query = f'''
     (post1) <-[:BELONGS_TO]- (comment6:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Miluji váš holistický přístup ke zdraví! Je důležité si uvědomit, že posilování těla není jen o svalové síle, ale také o duševním a emocionálním blahobytu. Máte nějaké tipy na relaxační techniky po náročném tréninku?' }}) -[:COMMENTED_BY]-> (john),
     (post2) <-[:BELONGS_TO]- (comment7:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Nevíte někdo, kde sehnat levné ale kvalitní běžecké boty?' }}) -[:COMMENTED_BY]-> (emma),
     (post3) <-[:BELONGS_TO]- (comment8:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'V pubertě jsem skoro nečetla a teď toho lituju, jsem ráda, že jsem se konečně vrátila ke čtení.' }}) -[:COMMENTED_BY]-> (john)
+    
+    // Likes
+    CREATE
+    (sarah) -[:LIKES]-> (post1),
+    (sarah) -[:LIKES]-> (post2),
+    (mike) -[:LIKES]-> (post1),
+    (mike) -[:LIKES]-> (post2),
+    (mike) -[:LIKES]-> (post3),
+    (lisa) -[:LIKES]-> (post1),
+    (lisa) -[:LIKES]-> (post2),
+    (david) -[:LIKES]-> (post2),
+    (david) -[:LIKES]-> (post3),
+    (emma) -[:LIKES]-> (post1),
+    (emma) -[:LIKES]-> (post2),
+    (john) -[:LIKES]-> (post1),
+    (john) -[:LIKES]-> (post2),
+    (robert) -[:LIKES]-> (post2),
+    (robert) -[:LIKES]-> (post3),
+    (karla) -[:LIKES]-> (post1),
+    (karla) -[:LIKES]-> (post3)
     '''
 
 neo4j.run_query(init_db_query)

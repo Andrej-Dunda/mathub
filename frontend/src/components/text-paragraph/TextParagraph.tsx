@@ -22,7 +22,7 @@ const TextParagraph: React.FC<iTextParagraph> = ({ className, text, characterLim
   return (
     <p className={`text-paragraph ${className}`}>
       {
-        characterLimit && text.length > characterLimit && !isExpanded ? (
+        characterLimit && text && text.length > characterLimit && !isExpanded ? (
           <>
             {text.substring(0, characterLimit)}
           </>
@@ -31,7 +31,7 @@ const TextParagraph: React.FC<iTextParagraph> = ({ className, text, characterLim
         )
       }
       {
-        characterLimit && text.length > characterLimit ? (
+        characterLimit && text && text.length > characterLimit ? (
           <span className='show-more' onClick={toggleExpand}>
             {isExpanded ? 'Zobrazit méně' : 'Zobrazit více'}
           </span>

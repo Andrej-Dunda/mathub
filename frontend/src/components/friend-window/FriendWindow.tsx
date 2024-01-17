@@ -4,7 +4,7 @@ import FriendButton from "../buttons/friend-button/FriendButton";
 import ProfilePicture from "../profile-picture/ProfilePicture";
 
 const FriendWindow = (props: any) => {
-  const [id, first_name, last_name] = props.userData
+  const {_id, first_name, last_name} = props.userData
 
   const windowTypeData = props.type === 'friend-request' ? {
     firstButtonType: 'accept',
@@ -22,13 +22,13 @@ const FriendWindow = (props: any) => {
 
   return (
     <div className={`friend-window ${props.className}`}>
-      <ProfilePicture className='friend-window-profile-picture' userId={id} />
+      <ProfilePicture className='friend-window-profile-picture' userId={_id} />
       <h4 className="h4 friend-name" title={`${first_name} ${last_name}`}>
         {`${first_name} ${last_name}`}
       </h4>
       <div className="buttons">
-        <FriendButton buttonType={windowTypeData?.firstButtonType} userId={id} updateFriends={props.updateFriends} />
-        <FriendButton buttonType={windowTypeData?.secondButtonType} userId={id} updateFriends={props.updateFriends} />
+        <FriendButton buttonType={windowTypeData?.firstButtonType} userId={_id} updateFriends={props.updateFriends} />
+        <FriendButton buttonType={windowTypeData?.secondButtonType} userId={_id} updateFriends={props.updateFriends} />
       </div>
       
     </div>
