@@ -1,5 +1,4 @@
 import './Registration.scss'
-import axios from "axios";
 import { useEffect, useState, useRef } from 'react';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,6 +6,7 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
 import { useNav } from '../../contexts/NavigationProvider';
 import { useSnackbar } from '../../contexts/SnackbarProvider';
+import httpClient from '../../utils/httpClient';
 
 const Registration = () => {
   const [registrationForm, setRegistrationForm] = useState({
@@ -65,19 +65,15 @@ const Registration = () => {
     if (!/[a-z]/.test(registrationForm.password)) return errorResponse('Heslo musí alespoň 1 malé písmeno!', passwordInputRef)
     if (!/[0-9]/.test(registrationForm.password)) return errorResponse('Heslo musí alespoň 1 číslo!', passwordInputRef)
 
-    axios({
-      method: "POST",
-      url: "/registration",
-      data: {
+    httpClient.post("/registration", {
         email: registrationForm.email,
         password: registrationForm.password,
         first_name: registrationForm.first_name,
         last_name: registrationForm.last_name
-      }
-    })
+      })
       .then((response: any) => {
         setResponseMessage(response.data.message)
-        if (response.data.success) {
+        if (response.status === 200) {
           setRegistrationForm({
             email: "",
             password: "",

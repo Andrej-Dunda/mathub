@@ -5,7 +5,7 @@ import { useNav } from "../../../contexts/NavigationProvider";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFolderOpen, faHome, faPen, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 
-const Navigation = (props: any) => {
+const Navigation = () => {
   const { toHome, toFriends, toBlog, toSubjects, activeLink } = useNav()
   const grayscale100 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-100').trim();
 
@@ -32,7 +32,7 @@ const Navigation = (props: any) => {
           </div>
         </div>
         <div className="navbar-right">
-          <ProfileBadge removeToken={props.removeToken} />
+          <ProfileBadge />
         </div>
     </nav>
   )

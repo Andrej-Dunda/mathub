@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import './Homepage.scss'
-import axios from "axios";
 import BlogPost from "../../components/blog-post/BlogPost";
 import { useNav } from "../../contexts/NavigationProvider";
 import { iPost } from "../../interfaces/blog-interfaces";
+import httpClient from "../../utils/httpClient";
 
 const Homepage = () => {
   const [posts, setPosts] = useState<iPost[]>([])
@@ -11,7 +11,7 @@ const Homepage = () => {
 
   useEffect(() => {
     setActiveLink('home')
-    axios.get('/posts')
+    httpClient.get('/posts')
     .then(res => {
       setPosts(res.data)
     })

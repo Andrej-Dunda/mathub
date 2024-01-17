@@ -1,17 +1,17 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './DeleteButton.scss'
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
 import { useSnackbar } from '../../../contexts/SnackbarProvider';
 import { useModal } from '../../../contexts/ModalProvider';
 import ModalFooter from '../../modal/modal-footer/ModalFooter';
+import httpClient from '../../../utils/httpClient';
 
 const DeleteBlogPostModalContent = (props: any) => {
   const { openSnackbar } = useSnackbar();
   const { closeModal } = useModal();
 
   const deleteBlogPost = () => {
-    axios.post(`/delete-blog-post/${props.postId}`)
+    httpClient.post(`/delete-blog-post/${props.postId}`)
     .then(() => {
       props.getMyPosts()
       openSnackbar('Příspěvek úspěšně smazán!')

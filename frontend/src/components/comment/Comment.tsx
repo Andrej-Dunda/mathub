@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './Comment.scss'
-import axios from 'axios';
 import ProfilePicture from '../profile-picture/ProfilePicture';
+import httpClient from '../../utils/httpClient';
 
 const Comment = (props: any) => {
   const [authorName, setAuthorName] = useState('')
@@ -20,7 +20,7 @@ const Comment = (props: any) => {
   }
 
   useEffect(() => {
-    axios.get(`/user/${commentContent.author_id}`)
+    httpClient.get(`/user/${commentContent.author_id}`)
     .then(res => {
       setAuthorName(`${res.data.first_name} ${res.data.last_name}`)
     })

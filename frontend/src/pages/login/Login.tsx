@@ -1,14 +1,14 @@
 import './Login.scss'
 import { useEffect, useRef, useState } from 'react';
-import axios from "axios";
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useUserData } from '../../contexts/UserDataProvider';
 import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
 import { useNav } from '../../contexts/NavigationProvider';
+import httpClient from '../../utils/httpClient';
 
-const LoginPage = (props: any) => {
+const LoginPage = () => {
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: ""
@@ -35,29 +35,17 @@ const LoginPage = (props: any) => {
 
   const submitLogin = (event: any) => {
     if (!loginForm.email || !loginForm.password) return setResponseMessage('Vyplňte všechna pole!')
-    axios({
-      method: "POST",
-      url: "/login",
-      data: {
-        email: loginForm.email,
-        password: loginForm.password
-      }
-    })
+    httpClient.post("/login", loginForm)
       .then((response: any) => {
-        props.setToken(response.data.access_token)
-        setResponseMessage(response.data.message)
-        const loggedUser = {
-          id: response.data.user_id,
-          email: response.data.email,
-          first_name: response.data.first_name,
-          last_name: response.data.last_name,
-          profile_picture: response.data.profile_picture,
-          registration_date: response.data.registration_date
+        if (response.status === 200) {
+          setResponseMessage(response.data.message)
+          setUser(response.data)
+          toHome()
         }
-        setUser(loggedUser)
-        localStorage.setItem('userData', JSON.stringify(loggedUser));
-        toHome()
       }).catch((error: any) => {
+        if (error.response.status === 401) {
+          console.error('Unauthorized')
+        }
         error.response && setResponseMessage(error.response.data.message)
         console.error(error.response.data.message)
       })

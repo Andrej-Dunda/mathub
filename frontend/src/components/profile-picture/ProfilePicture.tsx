@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 interface iProfilePicture {
   className?: string;
-  userId: number;
+  userId: string;
   onClick?: () => void;
 }
 

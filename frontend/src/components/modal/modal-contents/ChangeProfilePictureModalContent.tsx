@@ -1,12 +1,12 @@
 import './ChangeProfilePictureModalContent.scss';
 import { useEffect, useState } from 'react'
-import axios from 'axios';
 import ErrorMessage from '../../../components/error-message/ErrorMessage';
 import FileUploader from '../../../components/buttons/file-uploader/FileUploader';
 import { useUserData } from '../../../contexts/UserDataProvider';
 import { useSnackbar } from '../../../contexts/SnackbarProvider';
 import { useModal } from '../../../contexts/ModalProvider';
 import ModalFooter from '../../../components/modal/modal-footer/ModalFooter';
+import httpClient from '../../../utils/httpClient';
 
 const ChangeProfilePictureModalContent: React.FC = () => {
   const { closeModal } = useModal();
@@ -33,7 +33,7 @@ const ChangeProfilePictureModalContent: React.FC = () => {
     formData.append('profile_picture', newProfilePicture);
 
     try {
-      await axios.post(`/upload-profile-picture/${user.id}`, formData, {
+      await httpClient.post(`/upload-profile-picture/${user._id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }

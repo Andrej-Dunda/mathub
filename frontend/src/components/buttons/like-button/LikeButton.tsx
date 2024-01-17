@@ -2,8 +2,8 @@ import './LikeButton.scss'
 import { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faThumbsUp } from '@fortawesome/free-solid-svg-icons'
-import axios from 'axios'
 import { useUserData } from '../../../contexts/UserDataProvider'
+import httpClient from '../../../utils/httpClient'
 
 const LikeButton = (props: any) => {
   const { user } = useUserData();
@@ -12,32 +12,28 @@ const LikeButton = (props: any) => {
 
   useEffect(() => {
     getLikes()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const getLikes = () => {
-    axios.get(`/post-likes/${props.postId}`)
-    .then(res => {
-      const isLiked = res.data.some((liker: any) => liker.user_id === user.id);
-      setLiked(isLiked)
-      setLikesCount(res.data.length)
-    })
-    .catch(err => console.error(err))
+    httpClient.get(`/post-likes/${props.postId}`)
+      .then(res => {
+        const isLiked = res.data.some((liker: any) => liker.user_id === user._id);
+        setLiked(isLiked)
+        setLikesCount(res.data.length)
+      })
+      .catch(err => console.error(err))
   }
 
   const onLikeButtonClick = () => {
-    axios({
-      method: 'POST',
-      url: '/toggle-post-like',
-      data: {
-        post_id: props.postId,
-        user_id: user.id
-      }
+    httpClient.post('/toggle-post-like', {
+      post_id: props.postId,
+      user_id: user._id
     })
-    .then(res => {
-      getLikes()
-    })
-    .catch(err => console.error(err))
+      .then(res => {
+        getLikes()
+      })
+      .catch(err => console.error(err))
   }
 
   return (

@@ -1,14 +1,7 @@
-import axios from 'axios';
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-
-interface iUser {
-  id: number,
-  email: string,
-  first_name: string,
-  last_name: string,
-  profile_picture: string,
-  registration_date: string
-}
+import httpClient from '../utils/httpClient';
+import { iUser } from '../interfaces/user-interface';
+import { useAuth } from './AuthProvider';
 
 interface iUserContext {
   user: iUser;
@@ -19,41 +12,29 @@ interface iUserContext {
 export const UserContext = createContext<iUserContext | null>(null)
 
 export const UserDataProvider = ({ children }: { children: ReactNode }) => {
-  const userLocalData = localStorage.getItem('userData')
-  const [user, setUser] = useState<iUser>(userLocalData ? JSON.parse(userLocalData) : {
-    id: 0,
+  const { isLoggedIn } = useAuth();
+  const [user, setUser] = useState<iUser>({
+    _id: '',
     email: 'NaN',
     first_name: '',
     last_name: '',
     profile_picture: 'profile-picture-default.png',
     registration_date: '2000-01-01T00:00:00'
   });
-  
+
   useEffect(() => {
-    // Load user data from local storage when the component mounts
-    const storedUser = localStorage.getItem('userData');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    updateUser()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  
-  useEffect(() => {
-    localStorage.setItem('userData', JSON.stringify(user));
-  }, [user])
-  
+
   const updateUser = () => {
-    axios.get(`/user/${user.id}`)
+    isLoggedIn && httpClient.get('/@me')
       .then((res: any) => {
-        setUser({
-          id: res.data._id,
-          email: res.data.email,
-          first_name: res.data.first_name,
-          last_name: res.data.last_name,
-          profile_picture: res.data.profile_picture,
-          registration_date: res.data.registration_date
-        })
+        setUser(res.data)
       })
-      .catch((err) => console.error(err))
+      .catch((err) => {
+        console.error(err)
+      })
   }
 
   return (

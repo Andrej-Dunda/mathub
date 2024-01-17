@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import './Friends.scss'
-import React from 'react';
 import FriendWindow from '../../components/friend-window/FriendWindow';
-import axios from 'axios';
 import { useUserData } from '../../contexts/UserDataProvider';
 import { useNav } from '../../contexts/NavigationProvider';
+import httpClient from '../../utils/httpClient';
 
 const Friends = () => {
   const [friendRequests, setFriendRequests] = useState<any[]>([])
@@ -17,7 +16,7 @@ const Friends = () => {
   useEffect(() => {
     setActiveLink('friends')
     updateFriends()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const updateFriends = () => {
@@ -28,12 +27,8 @@ const Friends = () => {
   }
 
   const getFriends = () => {
-    axios({
-      method: "POST",
-      url: "/get-friends",
-      data: {
-        user_id: user.id
-      }
+    httpClient.post("/get-friends", {
+      user_id: user._id
     })
       .then((response: any) => {
         setFriends(response.data)
@@ -47,12 +42,8 @@ const Friends = () => {
   }
 
   const getFriendRequests = () => {
-    axios({
-      method: "POST",
-      url: "/get-friend-requests",
-      data: {
-        user_id: user.id
-      }
+    httpClient.post("/get-friend-requests", {
+      user_id: user._id
     })
       .then((response: any) => {
         setFriendRequests(response.data)
@@ -66,12 +57,8 @@ const Friends = () => {
   }
 
   const getMyFriendRequests = () => {
-    axios({
-      method: "POST",
-      url: "/get-my-friend-requests",
-      data: {
-        user_id: user.id
-      }
+    httpClient.post("/get-my-friend-requests", {
+      user_id: user._id
     })
       .then((response: any) => {
         setMyFriendRequests(response.data)
@@ -85,12 +72,8 @@ const Friends = () => {
   }
 
   const getFriendSuggestions = () => {
-    axios({
-      method: "POST",
-      url: "/get-friend-suggestions",
-      data: {
-        user_id: user.id
-      }
+    httpClient.post("/get-friend-suggestions", {
+      user_id: user._id
     })
       .then((response: any) => {
         setFriendSuggestions(response.data)

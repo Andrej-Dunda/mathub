@@ -1,5 +1,4 @@
 import './Blog.scss'
-import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import BlogPost from "../../components/blog-post/BlogPost";
 import FileUploader from '../../components/buttons/file-uploader/FileUploader';
@@ -7,6 +6,7 @@ import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { useUserData } from '../../contexts/UserDataProvider';
 import { useSnackbar } from '../../contexts/SnackbarProvider';
 import { useNav } from '../../contexts/NavigationProvider';
+import httpClient from '../../utils/httpClient';
 
 const Blog = () => {
   const { user } = useUserData();
@@ -22,14 +22,11 @@ const Blog = () => {
   useEffect(() => {
     getMyPosts()
     setActiveLink('blog')
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const getMyPosts = () => {
-    axios({
-      method: 'GET',
-      url: `/get-my-posts/${user.id}`
-    })
+    httpClient.get(`/get-my-posts/${user._id}`)
       .then(res => {
         setPosts(res.data)
       })
@@ -47,11 +44,11 @@ const Blog = () => {
     if (postImage) {
       formData.append('post_image', postImage)
     }
-    formData.append('user_id', user.id.toString())
+    formData.append('user_id', user._id.toString())
     formData.append('post_title', postTitle)
     formData.append('post_description', postDescription)
 
-    axios.post('/new-blog-post', formData, {
+    httpClient.post('/new-blog-post', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }

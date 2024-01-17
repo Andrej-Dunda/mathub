@@ -2,13 +2,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './EditButton.scss'
 import { useModal } from '../../../contexts/ModalProvider';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
-
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useSnackbar } from '../../../contexts/SnackbarProvider';
 import ErrorMessage from '../../error-message/ErrorMessage';
 import ModalFooter from '../../modal/modal-footer/ModalFooter';
 import FileUploader from '../file-uploader/FileUploader';
+import httpClient from '../../../utils/httpClient';
 
 const EditPostModalContent = (props: any) => {
   const [postTitle, setPostTitle] = useState(props.postData.title)
@@ -44,7 +43,7 @@ const EditPostModalContent = (props: any) => {
     formData.append('post_title', postTitle)
     formData.append('post_description', postDescription)
 
-    axios.post('/update-blog-post', formData, {
+    httpClient.post('/update-blog-post', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }

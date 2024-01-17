@@ -30,7 +30,7 @@ const UserProfile = () => {
   return (
     <div className="user-profile">
       <div className="user-wrapper">
-        <ProfilePicture className='large radius-100 box-shadow-dark' userId={user.id} />
+        <ProfilePicture className='large radius-100 box-shadow-dark' userId={user._id} />
         <div className="user-info">
           <h1 className='h1'>{user.first_name + ' ' + user.last_name}</h1><hr/>
           <div className="user-info-fields-wrapper">

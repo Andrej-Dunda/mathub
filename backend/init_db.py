@@ -3,6 +3,7 @@ import hashlib
 from datetime import datetime, timedelta
 import random
 from uuid import uuid4
+from flask_bcrypt import Bcrypt
 
 class Neo4jService:
     def __init__(self):
@@ -40,26 +41,29 @@ def random_time():
     # Converting to ISO format
     return random_time.isoformat()
 
+def hash_password(password):
+    return Bcrypt().generate_password_hash(password).decode('utf-8')
+
 init_db_query = f'''
     // Users
     CREATE
-    (sarah:USER {{_id: '{uuid4()}', user_email: 'sarah.johnson@example.com', user_password: '{hashlib.sha256('sarah123'.encode()).hexdigest()}', first_name: 'Sára', last_name: 'Johnsonová', profile_picture: 'pp1.png', registration_date: '{random_time()}'}}),
-    (mike:USER {{_id: '{uuid4()}', user_email: 'mike.brown@example.com', user_password: '{hashlib.sha256('mikepass'.encode()).hexdigest()}', first_name: 'Michal', last_name: 'Hnědý', profile_picture: 'pp6.png', registration_date: '{random_time()}'}}),
-    (lisa:USER {{_id: '{uuid4()}', user_email: 'lisa.white@example.com', user_password: '{hashlib.sha256('lisawhite'.encode()).hexdigest()}', first_name: 'Eliška', last_name: 'Bílá', profile_picture: 'pp2.png', registration_date: '{random_time()}'}}),
-    (david:USER {{_id: '{uuid4()}', user_email: 'david.smith@example.com', user_password: '{hashlib.sha256('david2023'.encode()).hexdigest()}', first_name: 'David', last_name: 'Kovář', profile_picture: 'pp3.png', registration_date: '{random_time()}'}}),
-    (boris:USER {{_id: '{uuid4()}', user_email: 'boris@admin.com', user_password: '{hashlib.sha256('admin'.encode()).hexdigest()}', first_name: 'Boris', last_name: 'Spaskij', profile_picture: '', registration_date: '{random_time()}'}}),
-    (emma:USER {{_id: '{uuid4()}', user_email: 'emily.jones@example.com', user_password: '{hashlib.sha256('emilyj'.encode()).hexdigest()}', first_name: 'Emma', last_name: 'Zahálková', profile_picture: 'pp9.png', registration_date: '{random_time()}'}}),
-    (john:USER {{_id: '{uuid4()}', user_email: 'john.doe@example.com', user_password: '{hashlib.sha256('johndoe1'.encode()).hexdigest()}', first_name: 'Jan', last_name: 'Lucemburský', profile_picture: 'pp8.png', registration_date: '{random_time()}'}}),
-    (michael:USER {{_id: '{uuid4()}', user_email: 'michael.lewis@example.com', user_password: '{hashlib.sha256('michaelL123'.encode()).hexdigest()}', first_name: 'Michael', last_name: 'Broadhead', profile_picture: '', registration_date: '{random_time()}'}}),
-    (susan:USER {{_id: '{uuid4()}', user_email: 'susan.green@example.com', user_password: '{hashlib.sha256('susanG2023'.encode()).hexdigest()}', first_name: 'Zuzana', last_name: 'Čaputová', profile_picture: 'pp10.png', registration_date: '{random_time()}'}}),
-    (petr:USER {{_id: '{uuid4()}', user_email: 'prezidentpavel@gmail.com', user_password: '{hashlib.sha256('petrpavel'.encode()).hexdigest()}', first_name: 'Petr', last_name: 'Pavel', profile_picture: 'pp12.jpg', registration_date: '{random_time()}'}}),
-    (jane:USER {{_id: '{uuid4()}', user_email: 'jane.wilson@example.com', user_password: '{hashlib.sha256('janew2023'.encode()).hexdigest()}', first_name: 'Jana', last_name: 'Kamenická', profile_picture: 'pp7.png', registration_date: '{random_time()}'}}),
-    (robert:USER {{_id: '{uuid4()}', user_email: 'robert.miller@example.com', user_password: '{hashlib.sha256('robertm'.encode()).hexdigest()}', first_name: 'Robert', last_name: 'Green', profile_picture: 'pp11.png', registration_date: '{random_time()}'}}),
-    (karla:USER {{_id: '{uuid4()}', user_email: 'karla.hall@example.com', user_password: '{hashlib.sha256('karlaH2023'.encode()).hexdigest()}', first_name: 'Karla', last_name: 'Krásnolásková', profile_picture: '', registration_date: '{random_time()}'}}),
-    (laura:USER {{_id: '{uuid4()}', user_email: 'laura.davis@example.com', user_password: '{hashlib.sha256('laurad2023'.encode()).hexdigest()}', first_name: 'Laura', last_name: 'Habenichtová', profile_picture: 'pp5.png', registration_date: '{random_time()}'}}),
-    (james:USER {{_id: '{uuid4()}', user_email: 'james.harris@example.com', user_password: '{hashlib.sha256('jamesh'.encode()).hexdigest()}', first_name: 'Stanislav', last_name: 'Špaček', profile_picture: '', registration_date: '{random_time()}'}}),
-    (patricia:USER {{_id: '{uuid4()}', user_email: 'patricia.clark@example.com', user_password: '{hashlib.sha256('patriciaC'.encode()).hexdigest()}', first_name: 'Patricie', last_name: 'Ševčíková', profile_picture: 'pp4.png', registration_date: '{random_time()}'}}),
-    (andrej:USER {{_id: '{uuid4()}', user_email: 'andrejdunda@gmail.com', user_password: '{hashlib.sha256('andrej'.encode()).hexdigest()}', first_name: 'Andrej', last_name: 'Dunda', profile_picture: 'andrej.jpg', registration_date: '{random_time()}'}})
+    (sarah:USER {{_id: '{uuid4()}', user_email: 'sarah.johnson@example.com', user_password: '{hash_password('sarah123')}', first_name: 'Sára', last_name: 'Johnsonová', profile_picture: 'pp1.png', registration_date: '{random_time()}'}}),
+    (mike:USER {{_id: '{uuid4()}', user_email: 'mike.brown@example.com', user_password: '{hash_password('mikepass')}', first_name: 'Michal', last_name: 'Hnědý', profile_picture: 'pp6.png', registration_date: '{random_time()}'}}),
+    (lisa:USER {{_id: '{uuid4()}', user_email: 'lisa.white@example.com', user_password: '{hash_password('lisawhite')}', first_name: 'Eliška', last_name: 'Bílá', profile_picture: 'pp2.png', registration_date: '{random_time()}'}}),
+    (david:USER {{_id: '{uuid4()}', user_email: 'david.smith@example.com', user_password: '{hash_password('david2023')}', first_name: 'David', last_name: 'Kovář', profile_picture: 'pp3.png', registration_date: '{random_time()}'}}),
+    (boris:USER {{_id: '{uuid4()}', user_email: 'boris@admin.com', user_password: '{hash_password('admin')}', first_name: 'Boris', last_name: 'Spaskij', profile_picture: '', registration_date: '{random_time()}'}}),
+    (emma:USER {{_id: '{uuid4()}', user_email: 'emily.jones@example.com', user_password: '{hash_password('emilyj')}', first_name: 'Emma', last_name: 'Zahálková', profile_picture: 'pp9.png', registration_date: '{random_time()}'}}),
+    (john:USER {{_id: '{uuid4()}', user_email: 'john.doe@example.com', user_password: '{hash_password('johndoe1')}', first_name: 'Jan', last_name: 'Lucemburský', profile_picture: 'pp8.png', registration_date: '{random_time()}'}}),
+    (michael:USER {{_id: '{uuid4()}', user_email: 'michael.lewis@example.com', user_password: '{hash_password('michaelL123')}', first_name: 'Michael', last_name: 'Broadhead', profile_picture: '', registration_date: '{random_time()}'}}),
+    (susan:USER {{_id: '{uuid4()}', user_email: 'susan.green@example.com', user_password: '{hash_password('susanG2023')}', first_name: 'Zuzana', last_name: 'Čaputová', profile_picture: 'pp10.png', registration_date: '{random_time()}'}}),
+    (petr:USER {{_id: '{uuid4()}', user_email: 'prezidentpavel@gmail.com', user_password: '{hash_password('petrpavel')}', first_name: 'Petr', last_name: 'Pavel', profile_picture: 'pp12.jpg', registration_date: '{random_time()}'}}),
+    (jane:USER {{_id: '{uuid4()}', user_email: 'jane.wilson@example.com', user_password: '{hash_password('janew2023')}', first_name: 'Jana', last_name: 'Kamenická', profile_picture: 'pp7.png', registration_date: '{random_time()}'}}),
+    (robert:USER {{_id: '{uuid4()}', user_email: 'robert.miller@example.com', user_password: '{hash_password('robertm')}', first_name: 'Robert', last_name: 'Green', profile_picture: 'pp11.png', registration_date: '{random_time()}'}}),
+    (karla:USER {{_id: '{uuid4()}', user_email: 'karla.hall@example.com', user_password: '{hash_password('karlaH2023')}', first_name: 'Karla', last_name: 'Krásnolásková', profile_picture: '', registration_date: '{random_time()}'}}),
+    (laura:USER {{_id: '{uuid4()}', user_email: 'laura.davis@example.com', user_password: '{hash_password('laurad2023')}', first_name: 'Laura', last_name: 'Habenichtová', profile_picture: 'pp5.png', registration_date: '{random_time()}'}}),
+    (james:USER {{_id: '{uuid4()}', user_email: 'james.harris@example.com', user_password: '{hash_password('jamesh')}', first_name: 'Stanislav', last_name: 'Špaček', profile_picture: '', registration_date: '{random_time()}'}}),
+    (patricia:USER {{_id: '{uuid4()}', user_email: 'patricia.clark@example.com', user_password: '{hash_password('patriciaC')}', first_name: 'Patricie', last_name: 'Ševčíková', profile_picture: 'pp4.png', registration_date: '{random_time()}'}}),
+    (andrej:USER {{_id: '{uuid4()}', user_email: 'andrejdunda@gmail.com', user_password: '{hash_password('andrej')}', first_name: 'Andrej', last_name: 'Dunda', profile_picture: 'andrej.jpg', registration_date: '{random_time()}'}})
 
     // Friendships
     FOREACH (user in [sarah, mike, petr, michael, jane, lisa] | CREATE (andrej) -[:FRIEND_WITH]-> (user), (user) -[:FRIEND_WITH]-> (andrej))

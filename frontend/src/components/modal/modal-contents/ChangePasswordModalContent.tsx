@@ -1,12 +1,12 @@
 import './ChangePasswordModalContent.scss'
 import { useEffect, useRef, useState } from 'react'
-import axios from 'axios';
 import ErrorMessage from '../../../components/error-message/ErrorMessage';
 import Checkbox from '../../../components/buttons/checkbox/Checkbox';
 import { useUserData } from '../../../contexts/UserDataProvider';
 import { useSnackbar } from '../../../contexts/SnackbarProvider';
 import { useModal } from '../../../contexts/ModalProvider';
 import ModalFooter from '../../../components/modal/modal-footer/ModalFooter';
+import httpClient from '../../../utils/httpClient';
 
 const ChangePasswordModalContent: React.FC = () => {
   const { closeModal, modalOpen } = useModal();
@@ -34,15 +34,11 @@ const ChangePasswordModalContent: React.FC = () => {
     setErrorMessage('')
     if (!newPasswordForm.newPassword || !newPasswordForm.newPasswordAgain || !newPasswordForm.oldPassword) return setErrorMessage('Vyplňte všechna pole!')
     if (newPasswordForm.newPassword !== newPasswordForm.newPasswordAgain) return setErrorMessage('Nová hesla se musí shodovat!')
-    axios({
-      method: 'POST',
-      url: '/change-password',
-      data: {
-        user_id: user.id,
+    httpClient.post('/change-password', {
+        user_id: user._id,
         old_password: newPasswordForm.oldPassword,
         new_password: newPasswordForm.newPassword
-      }
-    })
+      })
       .then((res) => {
         if (res.data.success) {
           closeModal()

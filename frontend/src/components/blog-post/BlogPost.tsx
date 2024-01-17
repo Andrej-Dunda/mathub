@@ -3,7 +3,6 @@ import LikeButton from '../buttons/like-button/LikeButton'
 import ProfilePicture from '../profile-picture/ProfilePicture'
 import Comment from '../comment/Comment'
 import { useEffect, useState, useRef } from 'react'
-import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComment, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import CommentButton from '../buttons/comment-button/CommentButton'
@@ -11,6 +10,8 @@ import EditButton from '../buttons/edit-button/EditButton'
 import DeleteButton from '../buttons/delete-button/DeleteButton'
 import { useUserData } from '../../contexts/UserDataProvider'
 import TextParagraph from '../text-paragraph/TextParagraph'
+import httpClient from '../../utils/httpClient'
+import { iPost } from '../../interfaces/blog-interfaces'
 
 const BlogPost = (props: any) => {
   const { user } = useUserData();
@@ -27,13 +28,13 @@ const BlogPost = (props: any) => {
   const minute = rawPostDate.getMinutes();
   const addLeadingZero = (num: number) => (num < 10 ? `0${num}` : num);
   const customDateFormat = `${dayOfMonth}. ${monthName} v ${hour}:${addLeadingZero(minute)}`;
-  const postData = {
-    id: props.postData._id,
+  const postData: iPost = {
+    _id: props.postData._id,
     author_id: props.postData.author_id,
-    time: customDateFormat,
-    title: props.postData.post_title,
-    content: props.postData.post_description,
-    image: props.postData.post_image
+    post_time: customDateFormat,
+    post_title: props.postData.post_title,
+    post_description: props.postData.post_description,
+    post_image: props.postData.post_image ? props.postData.post_image : null
   }
   const [comments, setComments] = useState([])
   const [newComment, setNewComment] = useState<string>('')
@@ -44,7 +45,7 @@ const BlogPost = (props: any) => {
   const grayscale100 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-100').trim();
   const [height, setHeight] = useState<number>(postContentRef.current?.getBoundingClientRect().height || 0);
 
-useEffect(() => {
+  useEffect(() => {
     getComments()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -56,7 +57,7 @@ useEffect(() => {
   }, [showComments]);
 
   useEffect(() => {
-    axios.get(`/user/${postData.author_id}`)
+    httpClient.get(`/user/${postData.author_id}`)
       .then(res => {
         setUserName(res.data.first_name + ' ' + res.data.last_name)
       })
@@ -64,7 +65,7 @@ useEffect(() => {
   }, [postData.author_id])
 
   const getComments = () => {
-    axios.get(`/comments/${postData.id}`)
+    httpClient.get(`/comments/${postData._id}`)
       .then(res => {
         setComments(res.data)
       })
@@ -80,14 +81,10 @@ useEffect(() => {
   }
 
   const submitComment = () => {
-    newComment.trim() && axios({
-      url: '/add-comment',
-      method: 'POST',
-      data: {
-        post_id: postData.id,
-        commenter_id: user.id,
-        comment: newComment
-      }
+    newComment.trim() && httpClient.post('/add-comment', {
+      post_id: postData._id,
+      commenter_id: user._id,
+      comment: newComment
     })
       .then(() => {
         setNewComment('')
@@ -114,28 +111,29 @@ useEffect(() => {
             <ProfilePicture className='post-size radius-100 border box-shadow-dark' userId={postData.author_id} />
             <div className="user-name-and-post-time">
               <h5 className='user-name'>{userName}</h5>
-              <span className='blog-post-time'>{postData.time}</span>
+              <span className='blog-post-time'>{postData.post_time}</span>
             </div>
             <div className="blog-post-buttons">
-              <LikeButton postId={postData.id} />
+              <LikeButton postId={postData._id} />
               {!props.blogFormat && <CommentButton showComments={showComments} setShowComments={setShowComments} commentsCount={comments.length} />}
               {props.blogFormat && <EditButton postData={postData} getMyPosts={props.getMyPosts} />}
-              {props.blogFormat && <DeleteButton postId={postData.id} getMyPosts={props.getMyPosts} />}
+              {props.blogFormat && <DeleteButton postId={postData._id} getMyPosts={props.getMyPosts} />}
             </div>
           </div>
         </div>
         <div className="blog-post-body">
-          <h5 className='h4 blog-post-heading'>{postData.title}</h5>
-          <TextParagraph className='blog-post-content' text={postData.content} characterLimit={185} onShowMoreToggle={updateHeight} />
+          <h5 className='h4 blog-post-heading'>{postData.post_title}</h5>
+          <TextParagraph className='blog-post-content' text={postData.post_description} characterLimit={185} onShowMoreToggle={updateHeight} />
           {
-            postData.image &&
-            <div className="post-image-wrapper">
-              <img
-                className='post-image'
-                src={`/post-image/${postData.image}`}
-                alt=""
-              />
-            </div>
+            postData.post_image ?
+              <div className="post-image-wrapper">
+                <img
+                  className='post-image'
+                  src={`/post-image/${postData.post_image}`}
+                  alt=""
+                />
+              </div>
+              : null
           }
         </div>
       </main>

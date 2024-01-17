@@ -11,10 +11,14 @@ services:
     environment:
       - FLASK_APP=app.py
       - FLASK_ENV=development
+    # depends on neo4j and redis
     depends_on:
       neo4j:
         condition: service_healthy # Wait for neo4j to be ready
-
+      redis:
+        condition: service_healthy # Wait for redis to be ready
+    restart: unless-stopped
+      
   ## Frontend
   frontend:
     build: frontend
@@ -29,6 +33,7 @@ services:
       - backend
     environment:
       - NODE_ENV=development
+    restart: unless-stopped
 
   ## Database
   neo4j:
@@ -52,4 +57,17 @@ services:
       - NEO4J_server_memory_pagecache_size=1G
       - NEO4J_server_memory_heap_max__size=2G
       - NEO4J_server_memory_heap_initial__size=1G
+    restart: unless-stopped
+
+  ## Redis 
+  redis:
+    image: redis:7.2.4
+    container_name: mathub-redis
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: redis-cli ping # Checks if redis server is up and running
+      interval: 10s
+      timeout: 10s
+      retries: 5
     restart: unless-stopped

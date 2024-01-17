@@ -1,50 +1,50 @@
-import axios from 'axios';
 import './FriendButton.scss';
 import { useUserData } from '../../../contexts/UserDataProvider';
+import httpClient from '../../../utils/httpClient';
 
 interface iFriendButtonData {
   url: string;
-  requestor_id: number;
-  acceptor_id: number;
+  requestor_id: string;
+  acceptor_id: string;
   buttonContent: string;
 }
 
 const FriendButton = (props: any) => {
   const { user } = useUserData();
-  const buttonUserId: number = props.userId
+  const buttonUserId: string = props.userId
   const acceptFriendRequest: iFriendButtonData = {
     url: '/accept-friend-request',
     requestor_id: buttonUserId,
-    acceptor_id: user.id,
+    acceptor_id: user._id,
     buttonContent: 'Potvrdit'
   }
   const removeFriendRequest: iFriendButtonData = {
     url: '/remove-friend-request',
     requestor_id: buttonUserId,
-    acceptor_id: user.id,
+    acceptor_id: user._id,
     buttonContent: 'Zrušit žádost'
   }
   const removeMyFriendRequest: iFriendButtonData = {
     url: '/remove-friend-request',
-    requestor_id: user.id,
+    requestor_id: user._id,
     acceptor_id: buttonUserId,
     buttonContent: 'Odebrat'
   }
   const addFriendRequest: iFriendButtonData = {
     url: '/add-friend-request',
-    requestor_id: user.id,
+    requestor_id: user._id,
     acceptor_id: buttonUserId,
     buttonContent: 'Přidat přítele'
   } 
   const removeFriendSuggestion: iFriendButtonData = {
     url: '/remove-friend-suggestion',
-    requestor_id: user.id,
+    requestor_id: user._id,
     acceptor_id: buttonUserId,
     buttonContent: 'Odebrat'
   }
   const removeFriend: iFriendButtonData = {
     url: '/remove-friend',
-    requestor_id: user.id,
+    requestor_id: user._id,
     acceptor_id: buttonUserId,
     buttonContent: 'Odebrat přítele'
   }
@@ -57,14 +57,10 @@ const FriendButton = (props: any) => {
     : null
 
   const handleClick = () => {
-    buttonData && axios({
-      method: "POST",
-      url: buttonData.url,
-      data: {
+    buttonData && httpClient.post(buttonData.url, {
         requestor_id: buttonData.requestor_id,
         acceptor_id: buttonData.acceptor_id
-      }
-    })
+      })
       .then(() => {
         props.updateFriends()
       }).catch((error: any) => {

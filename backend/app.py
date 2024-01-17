@@ -1,108 +1,93 @@
-from datetime import datetime, timedelta, timezone
-import json
-from flask import Flask, request, jsonify, send_from_directory
-from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, unset_jwt_cookies, JWTManager
-import hashlib
+from datetime import datetime
+from flask import Flask, request, jsonify, send_from_directory, session
+from flask_bcrypt import Bcrypt
+from flask_session import Session
+from config import ApplicationConfig, RedisSessionInterface, Neo4jService
 import random
 import string
 from werkzeug.utils import secure_filename
 import os
 from flask_cors import CORS
 from PIL import Image
-from neo4j import GraphDatabase
 from uuid import uuid4
 
 app = Flask(__name__)
+CORS(app, origins='http://frontend:3000', supports_credentials=True)
+app.config.from_object(ApplicationConfig)
+app.session_interface = RedisSessionInterface(app.config['SESSION_REDIS'])
 
-CORS(app)
+bcrypt = Bcrypt(app)
+server_session = Session(app)
 
-app.config["JWT_SECRET_KEY"] = "2a0304fc-7233-11ee-b962-0242ac120002"
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
-app.config['PROFILE_PICTURES_FOLDER'] = 'media/profile-pictures'
-app.config['POST_IMAGES_FOLDER'] = 'media/post-images'
-app.config['STATIC_FOLDER'] = 'media/static'
-jwt = JWTManager(app)
-
-class Neo4jService:
-    def __init__(self):
-        self.driver = GraphDatabase.driver("bolt://neo4j:7687", auth=("neo4j", "mathubdb"))
-
-    def close(self):
-        self.driver.close()
-
-    def run_query(self, query):
-        with self.driver.session() as session:
-            result = session.run(query)
-            return [record.data() for record in result]
-        
 # Create an instance of Neo4j
 neo4j = Neo4jService()
-
-@app.after_request
-def refresh_expiring_jwts(response):
-    try:
-        exp_timestamp = get_jwt()["exp"]
-        now = datetime.now(timezone.utc)
-        target_timestamp = datetime.timestamp(now + timedelta(minutes=1))
-        if target_timestamp > exp_timestamp:
-            access_token = create_access_token(identity=get_jwt_identity())
-            data = response.get_json()
-            if type(data) is dict:
-                data["access_token"] = access_token 
-                response.data = json.dumps(data)
-        return response
-    except (RuntimeError, KeyError):
-        # Case where there is not a valid JWT. Just return the original respone
-        return response
 
 
 # ---------------------
 # LOGIN PAGES ENDPOINTS
 # ---------------------
 
-@app.route('/login', methods=["POST"])
-def create_token():
+@app.route('/@me', methods=['GET'])
+def get_current_user():
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        return jsonify({
+            'error': 'Not logged in'
+            }), 401
+    
+    user = neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}) RETURN user')[0]['user']
+
+    return jsonify({
+        '_id': user['_id'],
+        'email': user['user_email'],
+        'first_name': user['first_name'],
+        'last_name': user['last_name'],
+        'profile_picture': user['profile_picture'],
+        'registration_date': user['registration_date']
+    })
+
+@app.route('/auth-status', methods=['GET'])
+def auth_status():
     try:
-        email = request.json.get("email", None)
-        password = request.json.get("password", None)
+        if 'user_id' in session:
+            return {'isLoggedIn': True}, 200
+        else:
+            return {'isLoggedIn': False}, 200
+    except Exception as e:
+        print({'error': str(e)})
+        return {'error': str(e)}, 400
 
-        user_data = neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) RETURN user')[0]['user']
+@app.route('/login', methods=['POST'])
+def login():
+    email = request.json['email']
+    password = request.json['password']
 
-        if user_data:
-            stored_password_hash = user_data['user_password']
-            input_password_hash = hashlib.sha256(password.encode()).hexdigest()
-            if stored_password_hash == input_password_hash:
-                access_token = create_access_token(identity=email)
+    user_data = neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) RETURN user')[0]['user']
 
-                user_id = user_data['_id']
-                first_name = user_data['first_name']
-                last_name = user_data['last_name']
-                profile_picture = user_data['profile_picture']
-                registration_date = user_data['registration_date']
+    if not user_data:
+        return jsonify({'error': 'Unauthorized'}), 401
 
-                response = {
-                    "access_token": access_token,
-                    "user_id": user_id,
-                    "email": email,
-                    "first_name": first_name,
-                    "last_name": last_name,
-                    "profile_picture": profile_picture,
-                    "registration_date": registration_date
-                }
-                return response
-        
-        return jsonify({"message": "Chybný email nebo heslo"}), 401
-    except:
-        return jsonify({"message": "Něco se nepovedlo :("}), 401
+    if not Bcrypt().check_password_hash(user_data['user_password'], password):
+        return jsonify({'error': 'Unauthorized'}), 401
 
-@app.route("/logout", methods=["POST"])
+    session['user_id'] = user_data['_id']
+    print("Session user_id:", session['user_id'])
+
+    response = {
+        "_id": user_data['_id'],
+        "email": email,
+        "first_name": user_data['first_name'],
+        "last_name": user_data['last_name'],
+        "profile_picture": user_data['profile_picture'],
+        "registration_date": user_data['registration_date']
+    }
+    return response, 200
+
+@app.route('/logout', methods=['POST'])
 def logout():
-    try:
-        response = jsonify({"msg": "logout successful"})
-        unset_jwt_cookies(response)
-        return response
-    except:
-        return jsonify({"message": "Něco se nepovedlo :("}), 401
+    session.pop('user_id', None)
+    return jsonify({'message': 'Logged out'}), 200
 
 def create_user_node(user_email, user_password, first_name, last_name, profile_picture = 'profile-picture-default.png'):
     try:
@@ -110,7 +95,7 @@ def create_user_node(user_email, user_password, first_name, last_name, profile_p
         CREATE (:USER {{
             _id: '{uuid4()}',
             user_email: '{user_email}',
-            user_password: '{hashlib.sha256(user_password.encode()).hexdigest()}',
+            user_password: '{Bcrypt().generate_password_hash(user_password).decode('utf-8')}',
             first_name: '{first_name}',
             last_name: '{last_name}',
             profile_picture: '{profile_picture}',
@@ -121,7 +106,6 @@ def create_user_node(user_email, user_password, first_name, last_name, profile_p
     except:
         return {'message': 'Registrace se nezdařila :(', 'success': False}
 
-
 @app.route('/registration', methods=['POST'])
 def register_new_user():
     try:
@@ -130,9 +114,9 @@ def register_new_user():
         first_name = request.json.get("first_name", None)
         last_name = request.json.get("last_name", None)
 
-        existing_user = neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) RETURN user')
+        user_already_exists = len(neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) RETURN user'))
 
-        if not len(existing_user):
+        if not user_already_exists:
             create_user_node(email, password, first_name, last_name)
         else:
             return {'message': 'Tento email je již registrován', 'success': False, 'email_already_registered': True}
@@ -154,7 +138,7 @@ def generate_new_password():
       if existing_user is None:
         return jsonify({'console_message': 'User profile does not exist', 'response_message': 'Tento profil neexistuje', 'result': False})
       
-      password_hash = hashlib.sha256(new_password.encode()).hexdigest()  # Hash the password
+      password_hash = Bcrypt().generate_password_hash(new_password).decode('utf-8')  # Hash the password
       neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) SET user.user_password = "{password_hash}"')
     except:
       return jsonify({'console_message': 'Failed to reset password', 'response_message': 'Heslo nemohlo být resetováno', 'result': False})
@@ -321,7 +305,7 @@ def new_blog_post():
         post_time = datetime.now().isoformat()
         post_title = request.form.get('post_title', None)
         post_description = request.form.get('post_description', None)
-        post_image_name = None
+        post_image_name = ''
 
         if 'post_image' in request.files:
             post_image = request.files['post_image']
@@ -370,7 +354,7 @@ def delete_blog_post(post_id):
     except:
         return 'Post could not be deleted'
 
-@app.route('/post/<id>')
+@app.route('/post/<id>', methods=['GET'])
 def get_post(id):
     try:
         post_data = neo4j.run_query(f'MATCH (post:BLOG_POST {{_id: "{id}"}}) RETURN post LIMIT 1')[0]['post']
@@ -378,7 +362,7 @@ def get_post(id):
     except:
         return {}
 
-@app.route('/posts')
+@app.route('/posts', methods=['GET'])
 def get_posts():
     try:
         posts_data = neo4j.run_query('MATCH (post:BLOG_POST) -[:POSTED_BY]-> (author:USER) RETURN post, author._id AS author_id ORDER BY post.post_time DESC')
@@ -391,7 +375,7 @@ def get_posts():
     except:
         return []
 
-@app.route('/get-my-posts/<user_id>')
+@app.route('/get-my-posts/<user_id>', methods=['GET'])
 def get_my_posts(user_id):
     try:
         posts_data = neo4j.run_query(f'MATCH (post:BLOG_POST) -[:POSTED_BY]-> (author:USER {{_id: "{user_id}"}}) RETURN post, author._id as author_id ORDER BY post.post_time DESC')
@@ -404,7 +388,7 @@ def get_my_posts(user_id):
     except:
         return []
 
-@app.route('/post-likes/<post_id>')
+@app.route('/post-likes/<post_id>', methods=['GET'])
 def get_post_likes(post_id):
     try:
         post_liker_ids = neo4j.run_query(f'MATCH (post:BLOG_POST {{_id: "{post_id}"}}) <-[:LIKES]- (user:USER) RETURN user._id AS user_id')
@@ -428,7 +412,7 @@ def toggle_post_like():
     except:
         return 'Like could not be toggled', 400
 
-@app.route('/post-image/<filename>')
+@app.route('/post-image/<filename>', methods=['GET'])
 def get_post_image(filename):
     try:
         return send_from_directory(app.config['POST_IMAGES_FOLDER'], filename)
@@ -440,7 +424,7 @@ def get_post_image(filename):
 # COMMENTS ENDPOINTS
 # ------------------
 
-@app.route('/comments/<post_id>')
+@app.route('/comments/<post_id>', methods=['GET'])
 def get_comments(post_id):
     try:
         comments_data = neo4j.run_query(f'MATCH (comment_author:USER) <-[:COMMENTED_BY]- (comment:POST_COMMENT) -[:BELONGS_TO]-> (:BLOG_POST {{_id: "{post_id}"}}) RETURN comment, comment_author._id AS author_id ORDER BY comment.comment_time DESC')
@@ -513,7 +497,7 @@ def upload_profile_picture(id):
     except:
         return 'File could not be uploaded', 400
 
-@app.route('/profile-picture/<id>')
+@app.route('/profile-picture/<id>', methods=['GET'])
 def get_user_profile_picture(id):
     try:
         profile_picture = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user.profile_picture AS profile_picture_name')[0]['profile_picture_name']
@@ -526,12 +510,12 @@ def change_password():
     try:
         user_id = request.json.get('user_id', None)
         old_password = request.json.get('old_password', None)
-        hashed_old_password = hashlib.sha256(old_password.encode()).hexdigest()
+        hashed_old_password = Bcrypt().generate_password_hash(old_password).decode('utf-8')
         new_password = request.json.get('new_password', None)
-        hashed_new_password = hashlib.sha256(new_password.encode()).hexdigest()
+        hashed_new_password = Bcrypt().generate_password_hash(new_password).decode('utf-8')
         
         fetched_old_password = neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}) RETURN user.user_password AS old_password')[0]['old_password']
-        if fetched_old_password == hashed_old_password:
+        if not Bcrypt().check_password_hash(fetched_old_password, hashed_old_password):
             neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}) SET user.user_password = "{hashed_new_password}"')
             return {'success': True}
         else:

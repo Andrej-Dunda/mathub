@@ -1,5 +1,4 @@
 import './ForgottenPassword.scss'
-import axios from "axios";
 import { useEffect, useState } from 'react';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
@@ -7,6 +6,7 @@ import CopyToClipboard from '../../components/buttons/copy-to-clipboard/CopyToCl
 import { useNav } from '../../contexts/NavigationProvider';
 import { useModal } from '../../contexts/ModalProvider';
 import ModalFooter from '../../components/modal/modal-footer/ModalFooter';
+import httpClient from '../../utils/httpClient';
 
 interface iForgottenPasswordModalContent {
   newPassword: string;
@@ -21,7 +21,7 @@ const ForgottenPasswordModalContent: React.FC<iForgottenPasswordModalContent> = 
         <span className='new-password-title'>Vaše nové heslo je:</span>
         <CopyToClipboard textToCopy={newPassword} label={newPassword} labelClassName='new-password' />
       </div>
-      <ModalFooter onSubmit={modalSubmit} submitButtonLabel='Přihlásit se' cancelButtonLabel='Zavřít'/>
+      <ModalFooter onSubmit={modalSubmit} submitButtonLabel='Přihlásit se' cancelButtonLabel='Zavřít' />
     </div>
   )
 }
@@ -53,12 +53,8 @@ const ForgottenPassword = () => {
 
   const submitForgottenPassword = (event: any) => {
     if (!forgottenPasswordEmail) return setErrorResponseMessage('Vyplňte pole e-mail!')
-    axios({
-      method: "POST",
-      url: "/forgotten-password",
-      data: {
-        email: forgottenPasswordEmail
-      }
+    httpClient.post("/forgotten-password", {
+      email: forgottenPasswordEmail
     })
       .then((response: any) => {
         setNewPassword(response.data.new_password)
@@ -77,7 +73,7 @@ const ForgottenPassword = () => {
     event.preventDefault()
   }
 
-  const handleChange = (event: any) => {setForgottenPasswordEmail(event.target.value)}
+  const handleChange = (event: any) => { setForgottenPasswordEmail(event.target.value) }
 
   const modalSubmit = () => {
     closeModal();
