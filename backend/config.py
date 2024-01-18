@@ -75,3 +75,11 @@ class Neo4jService:
         with self.driver.session() as session:
             result = session.run(query)
             return [record.data() for record in result]
+        
+    def is_ready(self):
+        try:
+            with self.driver.session() as session:
+                session.run("RETURN 1")
+            return True
+        except Exception:
+            return False

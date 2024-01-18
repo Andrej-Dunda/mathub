@@ -10,6 +10,10 @@ import os
 from flask_cors import CORS
 from PIL import Image
 from uuid import uuid4
+from init_db import init_db
+
+# initialize the database if it is empty
+init_db()
 
 app = Flask(__name__)
 CORS(app, origins='http://frontend:3000', supports_credentials=True)

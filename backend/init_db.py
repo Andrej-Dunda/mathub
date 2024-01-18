@@ -1,20 +1,22 @@
 from neo4j import GraphDatabase
-import hashlib
 from datetime import datetime, timedelta
 import random
 from uuid import uuid4
 from flask_bcrypt import Bcrypt
+import time
+import os
 
 class Neo4jService:
     def __init__(self):
-        self.driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "mathubdb"))
+        self.driver = GraphDatabase.driver("bolt://neo4j:7687", auth=("neo4j", "mathubdb"))
 
     def close(self):
         self.driver.close()
 
     def run_query(self, query):
         with self.driver.session() as session:
-            return session.run(query)
+            result = session.run(query)
+            return list(result)
     
     def is_ready(self):
         try:
@@ -43,6 +45,11 @@ def random_time():
 
 def hash_password(password):
     return Bcrypt().generate_password_hash(password).decode('utf-8')
+
+# Clear the console
+def clear_console():
+    command = 'clear' if os.name == 'posix' else 'cls'
+    os.system(command)
 
 init_db_query = f'''
     // Users
@@ -125,8 +132,20 @@ init_db_query = f'''
     (karla) -[:LIKES]-> (post3)
     '''
 
-neo4j.run_query(init_db_query)
-neo4j.close()
+def init_db():
+    time_waited = 0
 
-# print(random_time())
-# print(uuid4())
+    # run the query when neo4j image container is ready and healthy and the neo4j database is empty
+    while not neo4j.is_ready():
+        clear_console()
+        time_waited += 1
+        print(f"Waiting for Neo4j to start... ({time_waited}s)")
+        time.sleep(1)
+        pass
+
+    db_data = neo4j.run_query("MATCH (n) RETURN n")
+    if len(list(db_data)) == 0:
+        neo4j.run_query(init_db_query)
+        print("Database initialized")
+    else:
+        print("Database already initialized")

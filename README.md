@@ -10,11 +10,6 @@ cd frontend
 npm i
 ```
 
-### Populate neo4j db with initial data:
-```
-python3 backend/init_db.py
-```
-
 ### When installing new package on frontend:
 ```
 docker-compose up -d —build
