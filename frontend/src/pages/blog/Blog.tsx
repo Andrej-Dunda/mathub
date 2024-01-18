@@ -26,7 +26,7 @@ const Blog = () => {
   }, [])
 
   const getMyPosts = () => {
-    httpClient.get(`/get-my-posts/${user._id}`)
+    httpClient.get(`/api/get-my-posts/${user._id}`)
       .then(res => {
         setPosts(res.data)
       })
@@ -48,7 +48,7 @@ const Blog = () => {
     formData.append('post_title', postTitle)
     formData.append('post_description', postDescription)
 
-    httpClient.post('/new-blog-post', formData, {
+    httpClient.post('/api/new-blog-post', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }

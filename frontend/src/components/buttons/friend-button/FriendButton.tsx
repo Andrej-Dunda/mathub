@@ -13,37 +13,37 @@ const FriendButton = (props: any) => {
   const { user } = useUserData();
   const buttonUserId: string = props.userId
   const acceptFriendRequest: iFriendButtonData = {
-    url: '/accept-friend-request',
+    url: '/api/accept-friend-request',
     requestor_id: buttonUserId,
     acceptor_id: user._id,
     buttonContent: 'Potvrdit'
   }
   const removeFriendRequest: iFriendButtonData = {
-    url: '/remove-friend-request',
+    url: '/api/remove-friend-request',
     requestor_id: buttonUserId,
     acceptor_id: user._id,
     buttonContent: 'Zrušit žádost'
   }
   const removeMyFriendRequest: iFriendButtonData = {
-    url: '/remove-friend-request',
+    url: '/api/remove-friend-request',
     requestor_id: user._id,
     acceptor_id: buttonUserId,
     buttonContent: 'Odebrat'
   }
   const addFriendRequest: iFriendButtonData = {
-    url: '/add-friend-request',
+    url: '/api/add-friend-request',
     requestor_id: user._id,
     acceptor_id: buttonUserId,
     buttonContent: 'Přidat přítele'
   } 
   const removeFriendSuggestion: iFriendButtonData = {
-    url: '/remove-friend-suggestion',
+    url: '/api/remove-friend-suggestion',
     requestor_id: user._id,
     acceptor_id: buttonUserId,
     buttonContent: 'Odebrat'
   }
   const removeFriend: iFriendButtonData = {
-    url: '/remove-friend',
+    url: '/api/remove-friend',
     requestor_id: user._id,
     acceptor_id: buttonUserId,
     buttonContent: 'Odebrat přítele'

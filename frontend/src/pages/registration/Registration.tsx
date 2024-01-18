@@ -65,7 +65,7 @@ const Registration = () => {
     if (!/[a-z]/.test(registrationForm.password)) return errorResponse('Heslo musí alespoň 1 malé písmeno!', passwordInputRef)
     if (!/[0-9]/.test(registrationForm.password)) return errorResponse('Heslo musí alespoň 1 číslo!', passwordInputRef)
 
-    httpClient.post("/registration", {
+    httpClient.post("/api/registration", {
         email: registrationForm.email,
         password: registrationForm.password,
         first_name: registrationForm.first_name,

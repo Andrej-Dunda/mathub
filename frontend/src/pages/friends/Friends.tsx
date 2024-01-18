@@ -27,7 +27,7 @@ const Friends = () => {
   }
 
   const getFriends = () => {
-    httpClient.post("/get-friends", {
+    httpClient.post("/api/get-friends", {
       user_id: user._id
     })
       .then((response: any) => {
@@ -42,7 +42,7 @@ const Friends = () => {
   }
 
   const getFriendRequests = () => {
-    httpClient.post("/get-friend-requests", {
+    httpClient.post("/api/get-friend-requests", {
       user_id: user._id
     })
       .then((response: any) => {
@@ -57,7 +57,7 @@ const Friends = () => {
   }
 
   const getMyFriendRequests = () => {
-    httpClient.post("/get-my-friend-requests", {
+    httpClient.post("/api/get-my-friend-requests", {
       user_id: user._id
     })
       .then((response: any) => {
@@ -72,7 +72,7 @@ const Friends = () => {
   }
 
   const getFriendSuggestions = () => {
-    httpClient.post("/get-friend-suggestions", {
+    httpClient.post("/api/get-friend-suggestions", {
       user_id: user._id
     })
       .then((response: any) => {

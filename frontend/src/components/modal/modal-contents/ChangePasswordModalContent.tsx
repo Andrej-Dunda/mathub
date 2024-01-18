@@ -34,7 +34,7 @@ const ChangePasswordModalContent: React.FC = () => {
     setErrorMessage('')
     if (!newPasswordForm.newPassword || !newPasswordForm.newPasswordAgain || !newPasswordForm.oldPassword) return setErrorMessage('Vyplňte všechna pole!')
     if (newPasswordForm.newPassword !== newPasswordForm.newPasswordAgain) return setErrorMessage('Nová hesla se musí shodovat!')
-    httpClient.post('/change-password', {
+    httpClient.post('/api/change-password', {
         user_id: user._id,
         old_password: newPasswordForm.oldPassword,
         new_password: newPasswordForm.newPassword

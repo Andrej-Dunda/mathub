@@ -53,7 +53,7 @@ const ForgottenPassword = () => {
 
   const submitForgottenPassword = (event: any) => {
     if (!forgottenPasswordEmail) return setErrorResponseMessage('Vyplňte pole e-mail!')
-    httpClient.post("/forgotten-password", {
+    httpClient.post("/api/forgotten-password", {
       email: forgottenPasswordEmail
     })
       .then((response: any) => {

@@ -28,7 +28,7 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   const updateUser = () => {
-    isLoggedIn && httpClient.get('/@me')
+    isLoggedIn && httpClient.get('/api/@me')
       .then((res: any) => {
         setUser(res.data)
       })

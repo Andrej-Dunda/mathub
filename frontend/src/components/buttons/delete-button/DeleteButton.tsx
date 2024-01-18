@@ -11,7 +11,7 @@ const DeleteBlogPostModalContent = (props: any) => {
   const { closeModal } = useModal();
 
   const deleteBlogPost = () => {
-    httpClient.post(`/delete-blog-post/${props.postId}`)
+    httpClient.post(`/api/delete-blog-post/${props.postId}`)
     .then(() => {
       props.getMyPosts()
       openSnackbar('Příspěvek úspěšně smazán!')

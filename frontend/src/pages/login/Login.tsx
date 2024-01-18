@@ -35,7 +35,7 @@ const LoginPage = () => {
 
   const submitLogin = (event: any) => {
     if (!loginForm.email || !loginForm.password) return setResponseMessage('Vyplňte všechna pole!')
-    httpClient.post("/login", loginForm)
+    httpClient.post("/api/login", loginForm)
       .then((response: any) => {
         if (response.status === 200) {
           setResponseMessage(response.data.message)

@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [location, setIsLoggedIn, isLoggedIn])
 
   const updateIsLoggedIn = () => {
-    httpClient.get('/auth-status')
+    httpClient.get('/api/auth-status')
     .then((response) => {
       setIsLoggedIn(response.data.isLoggedIn)
       if (!response.data.isLoggedIn) logout()
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   const logout = () => {
-    httpClient.post('/logout')
+    httpClient.post('/api/logout')
       .then((response) => {
         if (response.status === 200) setIsLoggedIn(false)
       }).catch((error) => {
