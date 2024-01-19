@@ -23,17 +23,21 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   });
 
   useEffect(() => {
-    updateUser()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    updateUser();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn])
 
   const updateUser = () => {
+    console.log('updated user called')
     isLoggedIn && httpClient.get('/@me')
       .then((res: any) => {
         setUser(res.data)
+        console.log('updated user successfully')
+        console.log(res.data)
       })
       .catch((err) => {
         console.error(err)
+        console.log('updated user failed')
       })
   }
 

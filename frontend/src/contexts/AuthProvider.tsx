@@ -23,12 +23,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     updateIsLoggedIn();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location, setIsLoggedIn, isLoggedIn])
+  }, [location, setIsLoggedIn])
 
   const updateIsLoggedIn = () => {
     httpClient.get('/auth-status')
     .then((response) => {
       setIsLoggedIn(response.data.isLoggedIn)
+      console.log(`Logged in: ${response.data.isLoggedIn}`)
       if (!response.data.isLoggedIn) logout()
     })
     .catch(error => {

@@ -505,7 +505,10 @@ def upload_profile_picture(id):
 def get_user_profile_picture(id):
     try:
         profile_picture = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user.profile_picture AS profile_picture_name')[0]['profile_picture_name']
-        return send_from_directory(app.config['PROFILE_PICTURES_FOLDER'], profile_picture)
+        if profile_picture:
+            return send_from_directory(app.config['PROFILE_PICTURES_FOLDER'], profile_picture)
+        else:
+            return send_from_directory(app.config['PROFILE_PICTURES_FOLDER'], 'profile-picture-default.png')
     except:
         return send_from_directory(app.config['PROFILE_PICTURES_FOLDER'], 'profile-picture-default.png')
 
@@ -526,6 +529,7 @@ def change_password():
             return {'success': False}
     except:
         return {'success': False}
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5001", debug=True)
