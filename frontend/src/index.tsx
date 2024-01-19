@@ -8,6 +8,7 @@ import { ModalProvider } from './contexts/ModalProvider';
 import { NavigationProvider } from './contexts/NavigationProvider';
 import AppRouter from './AppRouter';
 import { AuthProvider } from './contexts/AuthProvider';
+import { MaterialsProvider } from './contexts/MaterialsProvider';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -18,11 +19,13 @@ root.render(
       <AuthProvider>
         <UserDataProvider>
           <SnackbarProvider>
-            <ModalProvider>
-              <NavigationProvider>
-                <AppRouter />
-              </NavigationProvider>
-            </ModalProvider>
+            <MaterialsProvider>
+              <ModalProvider>
+                <NavigationProvider>
+                  <AppRouter />
+                </NavigationProvider>
+              </ModalProvider>
+            </MaterialsProvider>
           </SnackbarProvider>
         </UserDataProvider>
       </AuthProvider>

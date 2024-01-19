@@ -5,34 +5,29 @@ import { faChevronDown, faChevronUp, faPlus } from '@fortawesome/free-solid-svg-
 import { iSubject } from '../../interfaces/materials-interface';
 import { useModal } from '../../contexts/ModalProvider';
 import NewSubjectModalContent from '../modal/modal-contents/NewSubjectModalContent';
+import { useMaterials } from '../../contexts/MaterialsProvider';
 
-type DropdownProps = {
-  isSubjectDropdownOpen: boolean;
-  setIsSubjectDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  subjects: iSubject[];
-  setSubjects: React.Dispatch<React.SetStateAction<iSubject[]>>;
-  activeSubjectName: string;
-  setActiveSubjectName: React.Dispatch<React.SetStateAction<string>>;
-  activeSubjectId: string;
-  setActiveSubjectId: React.Dispatch<React.SetStateAction<string>>;
-  onChange?: (option: iSubject) => void;
+type SubjectDropdownProps = {
+  onChange?: (subject: iSubject) => void;
+  isAsideMenuOpen: boolean;
+  setIsAsideMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const SubjectDropdown: FC<DropdownProps> = ({
-  isSubjectDropdownOpen,
-  setIsSubjectDropdownOpen,
-  subjects,
-  setSubjects,
-  activeSubjectName,
-  setActiveSubjectName,
-  activeSubjectId,
-  setActiveSubjectId,
-  onChange
-}) => {
+const SubjectDropdown: FC<SubjectDropdownProps> = ({ isAsideMenuOpen, setIsAsideMenuOpen, onChange }) => {
+  const {
+    subjects,
+    selectedSubject,
+    setSelectedSubject
+  } = useMaterials();
   const { showModal } = useModal();
   const [oldSubjectsLength, setOldSubjectsLength] = useState<number>(subjects.length)
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
   const grayscale400 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-400').trim();
+  const [isSubjectDropdownOpen, setIsSubjectDropdownOpen] = useState<boolean>(false)
+
+  useEffect(() => {
+    isAsideMenuOpen && setTimeout(() => setIsSubjectDropdownOpen(false), 350)
+  }, [isAsideMenuOpen])
 
   useEffect(() => {
     if (oldSubjectsLength < subjects.length) {
@@ -43,8 +38,7 @@ const SubjectDropdown: FC<DropdownProps> = ({
   }, [subjects])
 
   const handleChange = (subject: iSubject) => {
-    setActiveSubjectName(subject.subjectName);
-    setActiveSubjectId(subject.subjectId)
+    setSelectedSubject(subject);
     onChange && onChange(subject);
     setIsSubjectDropdownOpen(false)
   };
@@ -54,13 +48,13 @@ const SubjectDropdown: FC<DropdownProps> = ({
   }
 
   const openNewSubjectModal = () => {
-    showModal(<NewSubjectModalContent subjects={subjects} setSubjects={setSubjects} />)
+    showModal(<NewSubjectModalContent />)
   }
 
   return (
     <div className={`subject-dropdown${isSubjectDropdownOpen ? ' dropdown-open' : ''}`}>
       <div className="dropdown-button" onClick={toggleDropdown}>
-        <span title={activeSubjectName}>{activeSubjectName}</span>
+        <span title={selectedSubject?.subject_name}>{selectedSubject?.subject_name}</span>
         {isSubjectDropdownOpen ? <FontAwesomeIcon icon={faChevronUp} color={grayscale900} /> : <FontAwesomeIcon icon={faChevronDown} color={grayscale900} />}
       </div>
       <div className="aside-button new-subject-button" onClick={openNewSubjectModal}>
@@ -73,10 +67,10 @@ const SubjectDropdown: FC<DropdownProps> = ({
             return (
               <div
                 key={index}
-                className={`dropdown-option aside-button${activeSubjectId === subject.subjectId ? ' active' : ''}`}
+                className={`dropdown-option aside-button${selectedSubject?._id === subject._id ? ' active' : ''}`}
                 onClick={() => handleChange(subject)}
               >
-                <span>{subject.subjectName}</span>
+                <span>{subject.subject_name}</span>
               </div>
             )
           })

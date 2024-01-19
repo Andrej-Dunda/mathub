@@ -48,7 +48,7 @@ const Blog = () => {
     formData.append('post_title', postTitle)
     formData.append('post_description', postDescription)
 
-    httpClient.post('/api/new-blog-post', formData, {
+    httpClient.post('/api/post-blog-post', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }

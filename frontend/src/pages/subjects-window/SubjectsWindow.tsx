@@ -1,22 +1,16 @@
 import './SubjectsWindow.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { useState, useRef, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { useRef, useEffect } from 'react';
 import { iSubject } from '../../interfaces/materials-interface';
 import EllipsisMenuButton from '../../components/buttons/ellipsis-menu-button/EllipsisMenuButton';
 import { useNav } from '../../contexts/NavigationProvider';
 import { useModal } from '../../contexts/ModalProvider';
 import NewSubjectModalContent from '../../components/modal/modal-contents/NewSubjectModalContent';
+import { useMaterials } from '../../contexts/MaterialsProvider';
 
 const SubjectsWindow = () => {
-  const [subjects, setSubjects] = useState<iSubject[]>([
-    {subjectName: 'Češtinaalskdjhgljkhalskdjfhlakjhdsfadflgkjhaldkjgh', subjectId: uuidv4(), materials: [{ materialId: uuidv4(), materialName: '1. Literatura 2. poloviny 20. století' }]},
-    {subjectName: 'Ekonomie', subjectId: uuidv4(), materials: []},
-    {subjectName: 'Informatika', subjectId: uuidv4(), materials: [{ materialId: uuidv4(), materialName: '1. Hardware' }]},
-    {subjectName: 'Angličtina', subjectId: uuidv4(), materials: [{ materialId: uuidv4(), materialName: '1. Schools and Education' }]},
-    {subjectName: 'Matematika', subjectId: uuidv4(), materials: [{ materialId: uuidv4(), materialName: '1. Kombinatorika a pravděpodobnost' }]},
-  ])
+  const { subjects } = useMaterials();
   const newSubjectNameInputRef = useRef<HTMLInputElement>(null)
   const grayscale300 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-300').trim();
   const { toViewMaterials, setActiveLink } = useNav();
@@ -31,7 +25,7 @@ const SubjectsWindow = () => {
   }, [modalOpen])
 
   const openNewSubjectModal = () => {
-    showModal(<NewSubjectModalContent subjects={subjects} setSubjects={setSubjects} />)
+    showModal(<NewSubjectModalContent />)
   }
 
   return (
@@ -45,9 +39,9 @@ const SubjectsWindow = () => {
                 <header>
                   <EllipsisMenuButton menuOptions={['option 1', 'option 2', 'option 3', 'option 4']}/>
                 </header>
-                <main onClick={toViewMaterials} title={subject.subjectName}>
+                <main onClick={toViewMaterials} title={subject.subject_name}>
                   <span>
-                    {subject.subjectName}
+                    {subject.subject_name}
                   </span>
                 </main>
               </div>

@@ -1,7 +1,7 @@
 # SETUP INSTRUCTIONS
 ## Docker:
 ```
-docker-compose up --build
+docker-compose up
 ```
 
 ### If you want VS Code to recognize used npm packages run:
