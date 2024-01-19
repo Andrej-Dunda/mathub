@@ -70,7 +70,6 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const toPreviousPage = () => {
-    console.log(activeLink)
     navigate(activeLink);
   }
 

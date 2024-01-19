@@ -59,10 +59,9 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
     httpClient.get('/api/get-subjects')
       .then(res => {
         setSubjects(res.data)
-        console.log('got subjects')
       })
       .catch(err => {
-        console.log(err)
+        console.error(err)
       })
   }
 
@@ -85,7 +84,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
         setSelectedSubject(res.data)
       })
       .catch(err => {
-        console.log(err)
+        console.error(err)
       })
   }
 
@@ -122,7 +121,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
         setTopics(res.data)
       })
       .catch(err => {
-        console.log(err)
+        console.error(err)
       })
   }
 
@@ -146,7 +145,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
         setSelectedTopic(res.data)
       })
       .catch(err => {
-        console.log(err)
+        console.error(err)
       })
   }
 
