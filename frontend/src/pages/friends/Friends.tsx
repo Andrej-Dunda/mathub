@@ -14,7 +14,7 @@ const Friends = () => {
   const { setActiveLink } = useNav();
 
   useEffect(() => {
-    setActiveLink('friends')
+    setActiveLink('/friends')
     updateFriends()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

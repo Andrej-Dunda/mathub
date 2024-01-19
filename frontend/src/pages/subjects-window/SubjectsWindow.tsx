@@ -10,15 +10,17 @@ import NewSubjectModalContent from '../../components/modal/modal-contents/NewSub
 import { useMaterials } from '../../contexts/MaterialsProvider';
 
 const SubjectsWindow = () => {
-  const { subjects } = useMaterials();
+  const { subjects, getSubjects, setSelectedSubject } = useMaterials();
   const newSubjectNameInputRef = useRef<HTMLInputElement>(null)
   const grayscale300 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-300').trim();
   const { toViewMaterials, setActiveLink } = useNav();
   const { showModal, modalOpen } = useModal();
 
   useEffect(() => {
-    setActiveLink('subjects')
-  })
+    setActiveLink('/subjects')
+    getSubjects()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setActiveLink])
 
   useEffect(() => {
     newSubjectNameInputRef.current?.focus()
@@ -26,6 +28,11 @@ const SubjectsWindow = () => {
 
   const openNewSubjectModal = () => {
     showModal(<NewSubjectModalContent />)
+  }
+
+  const openSubject = (subject: iSubject) => {
+    setSelectedSubject(subject)
+    toViewMaterials()
   }
 
   return (
@@ -39,7 +46,7 @@ const SubjectsWindow = () => {
                 <header>
                   <EllipsisMenuButton menuOptions={['option 1', 'option 2', 'option 3', 'option 4']}/>
                 </header>
-                <main onClick={toViewMaterials} title={subject.subject_name}>
+                <main onClick={() => openSubject(subject)} title={subject.subject_name}>
                   <span>
                     {subject.subject_name}
                   </span>

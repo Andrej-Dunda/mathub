@@ -23,9 +23,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     updateIsLoggedIn();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location, setIsLoggedIn])
+  }, [location])
 
-  const updateIsLoggedIn = () => {
+  const updateIsLoggedIn = async () => {
     httpClient.get('/api/auth-status')
     .then((response) => {
       setIsLoggedIn(response.data.isLoggedIn)

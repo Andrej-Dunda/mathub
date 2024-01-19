@@ -21,16 +21,21 @@ const Blog = () => {
 
   useEffect(() => {
     getMyPosts()
-    setActiveLink('blog')
+    setActiveLink('/blog')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const getMyPosts = () => {
+    console.log('trying to get posts')
     httpClient.get(`/api/get-my-posts/${user._id}`)
       .then(res => {
         setPosts(res.data)
+        console.log('got posts')
       })
-      .catch(err => console.error(err))
+      .catch(err => {
+        console.error(err)
+        console.log('failed to get posts')
+      })
   }
 
   const submitNewPost = async (e: any) => {
@@ -126,7 +131,10 @@ const Blog = () => {
                 />
               )
             }) : (
-              <span className='no-posts'>Zatím nemáte žádné příspěvky :(</span>
+              <>
+                <span className='no-posts'>Zatím nemáte žádné příspěvky :(</span>
+                <button onClick={getMyPosts} className='get-posts dark padding-medium'>Načíst příspěvky</button>
+              </>
             )
           }
         </div>

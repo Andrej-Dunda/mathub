@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode, useState } from 'react';
+import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface iNavigationContext {
@@ -14,46 +14,51 @@ interface iNavigationContext {
   toNewBookAnalysis: () => void;
   activeLink: string;
   setActiveLink: React.Dispatch<React.SetStateAction<string>>;
+  toPreviousPage: () => void;
 }
 
 export const NavigationContext = createContext<iNavigationContext | null>(null)
 
 export const NavigationProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
-  const [activeLink, setActiveLink] = useState<string>('');
+  const [activeLink, setActiveLink] = useState<string>(localStorage.getItem('activeLink') || '/');
+
+  useEffect(() => {
+    localStorage.setItem('activeLink', activeLink);
+  }, [activeLink]);
 
   const toLogin = () => {
     navigate('/');
-    setActiveLink('login')
+    setActiveLink('/')
   }
   const toRegistration = () => {
     navigate('/registration');
-    setActiveLink('registration')
+    setActiveLink('/registration')
   }
   const toForgottenPassword = () => {
     navigate('/forgotten-password');
-    setActiveLink('forgotten-password')
+    setActiveLink('/forgotten-password')
   }
   
   const toHome = () => {
     navigate('/');
-    setActiveLink('home')
+    setActiveLink('/')
   }
   const toUserProfile = () => {
     navigate('/user-profile');
-    setActiveLink('user-profile')
+    setActiveLink('/user-profile')
   }
   const toFriends = () => {
     navigate('/friends');
-    setActiveLink('friends')
+    setActiveLink('/friends')
   }
   const toBlog = () => {
     navigate('/blog');
-    setActiveLink('blog')
+    setActiveLink('/blog')
   }
   const toSubjects = () => {
     navigate('/subjects');
-    setActiveLink('subjects')
+    setActiveLink('/subjects')
   }
   const toViewMaterials = () => {
     navigate('/view-materials');
@@ -61,7 +66,12 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
   }
   const toNewBookAnalysis = () => {
     navigate('/new-book-analysis');
-    setActiveLink('new-book-analysis')
+    setActiveLink('/new-book-analysis')
+  }
+
+  const toPreviousPage = () => {
+    console.log(activeLink)
+    navigate(activeLink);
   }
 
   return (
@@ -77,7 +87,8 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
       toViewMaterials,
       toNewBookAnalysis,
       activeLink,
-      setActiveLink
+      setActiveLink,
+      toPreviousPage
     }}>
       {children}
     </NavigationContext.Provider>

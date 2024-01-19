@@ -59,6 +59,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
     httpClient.get('/api/get-subjects')
       .then(res => {
         setSubjects(res.data)
+        console.log('got subjects')
       })
       .catch(err => {
         console.log(err)

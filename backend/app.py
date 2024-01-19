@@ -378,9 +378,16 @@ def get_posts():
     except:
         return []
 
-@app.route('/api/get-my-posts/<user_id>', methods=['GET'])
-def get_my_posts(user_id):
+@app.route('/api/get-my-posts/', methods=['GET'])
+def get_my_posts():
     try:
+        user_id = session.get('user_id')
+
+        if user_id is None:
+            return jsonify({
+                'error': 'Not logged in'
+                }), 401
+        
         posts_data = neo4j.run_query(f'MATCH (post:BLOG_POST) -[:POSTED_BY]-> (author:USER {{_id: "{user_id}"}}) RETURN post, author._id as author_id ORDER BY post.post_time DESC')
         posts = []
         for post_data in posts_data:
@@ -623,6 +630,7 @@ def get_subject_topics(subject_id):
         topics_data = neo4j.run_query(f'''
             MATCH (subject:SUBJECT {{_id: "{subject_id}"}}) <-[:TOPIC_OF]- (topic:TOPIC)
             RETURN topic
+            ORDER BY topic.topic_name
             ''')
         topics = []
         for topic_data in topics_data:

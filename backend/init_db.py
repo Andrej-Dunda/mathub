@@ -139,13 +139,13 @@ init_db_query = f'''
 
     // Topics
     CREATE
-    (topic1:TOPIC {{ _id: '{uuid4()}', topic_name: '1. Základní ekonomické pojmy', topic_content: 'DEMO obsah materiálu', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (subject1),
-    (topic2:TOPIC {{ _id: '{uuid4()}', topic_name: '2. Výroba, výrobní proces', topic_content: 'DEMO obsah materiálu', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (subject1),
-    (topic3:TOPIC {{ _id: '{uuid4()}', topic_name: '3. Trh a jeho charakteristika', topic_content: 'DEMO obsah materiálu', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (subject1),
-    (topic4:TOPIC {{ _id: '{uuid4()}', topic_name: '4. Mzda a její formy', topic_content: 'DEMO obsah materiálu', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (subject1),
-    (topic5:TOPIC {{ _id: '{uuid4()}', topic_name: '5. Charakteristika podnikání', topic_content: 'DEMO obsah materiálu', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (subject1),
-    (topic6:TOPIC {{ _id: '{uuid4()}', topic_name: 'Algebra DEMO', topic_content: 'DEMO obsah materiálu', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (subject2),
-    (topic7:TOPIC {{ _id: '{uuid4()}', topic_name: 'Neo4j DEMO', topic_content: 'DEMO obsah materiálu', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (subject3)
+    (topic1:TOPIC {{ _id: '{uuid4()}', topic_name: '1. Základní ekonomické pojmy', topic_content: 'DEMO obsah materiálu 1. Základní ekonomické pojmy', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (subject1),
+    (topic2:TOPIC {{ _id: '{uuid4()}', topic_name: '2. Výroba, výrobní proces', topic_content: 'DEMO obsah materiálu 2. Výroba, výrobní proces', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (subject1),
+    (topic3:TOPIC {{ _id: '{uuid4()}', topic_name: '3. Trh a jeho charakteristika', topic_content: 'DEMO obsah materiálu 3. Trh a jeho charakteristika', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (subject1),
+    (topic4:TOPIC {{ _id: '{uuid4()}', topic_name: '4. Mzda a její formy', topic_content: 'DEMO obsah materiálu 4. Mzda a její formy', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (subject1),
+    (topic5:TOPIC {{ _id: '{uuid4()}', topic_name: '5. Charakteristika podnikání', topic_content: 'DEMO obsah materiálu 5. Charakteristika podnikání', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (subject1),
+    (topic6:TOPIC {{ _id: '{uuid4()}', topic_name: 'Algebra DEMO', topic_content: 'DEMO obsah materiálu Algebra DEMO', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (subject2),
+    (topic7:TOPIC {{ _id: '{uuid4()}', topic_name: 'Neo4j DEMO', topic_content: 'DEMO obsah materiálu Neo4j DEMO', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (subject3)
     '''
 
 def init_db():

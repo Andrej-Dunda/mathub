@@ -18,16 +18,16 @@ const Navigation = () => {
           </div>
         </div>
         <div className="navbar-middle">
-          <div onClick={toHome} className={`link ${activeLink === 'home' ? 'active' : ''}`}>
+          <div onClick={toHome} className={`link ${activeLink === '/' ? 'active' : ''}`}>
             <FontAwesomeIcon className='nav-icon' icon={faHome} color={grayscale100} />
           </div>
-          <div onClick={toFriends} className={`link ${activeLink === 'friends' ? 'active' : ''}`}>
+          <div onClick={toFriends} className={`link ${activeLink === '/friends' ? 'active' : ''}`}>
             <FontAwesomeIcon className='nav-icon' icon={faUserFriends} color={grayscale100} />
           </div>
-          <div onClick={toBlog} className={`link ${activeLink === 'blog' ? 'active' : ''}`}>
+          <div onClick={toBlog} className={`link ${activeLink === '/blog' ? 'active' : ''}`}>
             <FontAwesomeIcon className='nav-icon' icon={faPen} color={grayscale100} />
           </div>
-          <div onClick={toSubjects} className={`link ${activeLink === 'subjects' ? 'active' : ''}`}>
+          <div onClick={toSubjects} className={`link ${activeLink === '/subjects' ? 'active' : ''}`}>
             <FontAwesomeIcon className='nav-icon' icon={faFolderOpen} color={grayscale100} />
           </div>
         </div>

@@ -1,7 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
 import { useAuth } from './contexts/AuthProvider'
-import { useEffect } from 'react';
-import { useNav } from './contexts/NavigationProvider';
 import Layout from './pages/layout/Layout';
 import Homepage from './pages/homepage/Homepage';
 import UserProfile from './pages/user-profile/UserProfile';
@@ -13,27 +11,10 @@ import NewBookAnalysis from './pages/new-book-analysis/NewBookAnalysis';
 import LoginPage from './pages/login/Login';
 import Registration from './pages/registration/Registration';
 import ForgottenPassword from './pages/forgotten-password/ForgottenPassword';
+import PageNotFound from './pages/page-not-found/PageNotFound';
 
 const AppRouter = () => {
   const { isLoggedIn } = useAuth()
-
-  const RedirectToHome = () => {
-    const { toHome } = useNav();
-    useEffect(() => {
-      toHome();
-    }, [toHome]);
-
-    return null;
-  };
-
-  const RedirectToLogin = () => {
-    const { toLogin } = useNav();
-    useEffect(() => {
-      toLogin();
-    }, [toLogin]);
-
-    return null;
-  };
 
   return (
     <Routes>
@@ -47,14 +28,14 @@ const AppRouter = () => {
             <Route path="subjects" element={<SubjectsWindow />} />
             <Route path="view-materials" element={<ViewMaterials />} />
             <Route path="new-book-analysis" element={<NewBookAnalysis />} />
-            <Route path="*" element={<RedirectToHome />} />
+            <Route path="*" element={<PageNotFound />} />
           </Route>
         ) : (
           <Route path="/">
             <Route index element={<LoginPage />} />
             <Route path="registration" element={<Registration />} />
             <Route path="forgotten-password" element={<ForgottenPassword />} />
-            <Route path="*" element={<RedirectToLogin />} />
+            <Route path="*" element={<PageNotFound />} />
           </Route>
         )
       }
