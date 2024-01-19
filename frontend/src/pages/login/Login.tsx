@@ -44,10 +44,8 @@ const LoginPage = () => {
         }
       }).catch((error: any) => {
         if (error.response.status === 401) {
-          console.error('Unauthorized')
+          setResponseMessage('Nesprávné jméno nebo heslo!')
         }
-        error.response && setResponseMessage(error.response.data.message)
-        console.error(error.response.data.message)
       })
 
     setLoginForm(({

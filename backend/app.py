@@ -64,29 +64,33 @@ def auth_status():
 
 @app.route('/api/login', methods=['POST'])
 def login():
-    email = request.json['email']
-    password = request.json['password']
+    try:
+        email = request.json['email']
+        password = request.json['password']
 
-    user_data = neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) RETURN user')[0]['user']
+        user_data = neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) RETURN user')
 
-    if not user_data:
-        return jsonify({'error': 'Unauthorized'}), 401
+        if not len(user_data):
+            return jsonify({'error': 'Unauthorized'}), 401
+        
+        user = user_data[0]['user']
 
-    if not Bcrypt().check_password_hash(user_data['user_password'], password):
-        return jsonify({'error': 'Unauthorized'}), 401
+        if not Bcrypt().check_password_hash(user['user_password'], password):
+            return jsonify({'error': 'Unauthorized'}), 401
 
-    session['user_id'] = user_data['_id']
-    print("Session user_id:", session['user_id'])
+        session['user_id'] = user['_id']
 
-    response = {
-        "_id": user_data['_id'],
-        "email": email,
-        "first_name": user_data['first_name'],
-        "last_name": user_data['last_name'],
-        "profile_picture": user_data['profile_picture'],
-        "registration_date": user_data['registration_date']
-    }
-    return response, 200
+        response = {
+            "_id": user['_id'],
+            "email": email,
+            "first_name": user['first_name'],
+            "last_name": user['last_name'],
+            "profile_picture": user['profile_picture'],
+            "registration_date": user['registration_date']
+        }
+        return response, 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 404
 
 @app.route('/api/logout', methods=['POST'])
 def logout():
@@ -496,11 +500,14 @@ def upload_profile_picture(id):
     except:
         return 'File could not be uploaded', 400
 
-@app.route('/profile-picture/<id>', methods=['GET'])
+@app.route('/api/profile-picture/<id>', methods=['GET'])
 def get_user_profile_picture(id):
     try:
         profile_picture = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user.profile_picture AS profile_picture_name')[0]['profile_picture_name']
-        return send_from_directory(app.config['PROFILE_PICTURES_FOLDER'], profile_picture)
+        if profile_picture:
+            return send_from_directory(app.config['PROFILE_PICTURES_FOLDER'], profile_picture)
+        else:
+            return send_from_directory(app.config['PROFILE_PICTURES_FOLDER'], 'profile-picture-default.png')
     except:
         return send_from_directory(app.config['PROFILE_PICTURES_FOLDER'], 'profile-picture-default.png')
 
@@ -521,6 +528,7 @@ def change_password():
             return {'success': False}
     except:
         return {'success': False}
+
 
 # ------------------   
 # SUBJECTS ENDPOINTS

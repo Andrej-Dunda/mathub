@@ -25,7 +25,7 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     updateUser()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isLoggedIn])
 
   const updateUser = () => {
     isLoggedIn && httpClient.get('/api/@me')
