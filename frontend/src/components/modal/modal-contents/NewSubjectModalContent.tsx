@@ -9,19 +9,22 @@ const NewSubjectModalContent: React.FC = () => {
   const { postSubject } = useMaterials();
   const [newSubjectName, setNewSubjectName] = useState<string>('')
   const [newSubjectModalError, setNewSubjectModalError] = useState<string>('')
-  const { closeModal, modalOpen } = useModal();
+  const { closeModal } = useModal();
   const newSubjectNameInputRef = useRef<HTMLInputElement>(null)
   
   useEffect(() => {
     newSubjectNameInputRef.current?.focus()
+
+    return () => {
+      setNewSubjectName('')
+      setNewSubjectModalError('')
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [modalOpen])
+  }, [])
 
 
   const submitNewSubject = () => {
     if (newSubjectName) {
-      setNewSubjectName('')
-      setNewSubjectModalError('')
       closeModal()
       return postSubject(newSubjectName)
     }

@@ -58,12 +58,11 @@ const ViewMaterials: React.FC = () => {
   const NewTopicModalContent: React.FC = () => {
     const [newTopicName, setNewTopicName] = useState<string>('')
     const [newTopicModalError, setNewTopicModalError] = useState<string>('')
-    const { modalOpen } = useModal();
     const newTopicNameInputRef = useRef<HTMLInputElement>(null)
   
     useEffect(() => {
       newTopicNameInputRef.current?.focus()
-    }, [modalOpen])
+    }, [])
   
     const submitNewTopic = () => {
       if (newTopicName && selectedSubject) return postTopic(selectedSubject._id, newTopicName)

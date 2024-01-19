@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import React from 'react';
 import httpClient from '../utils/httpClient';
+import { useNav } from './NavigationProvider';
 
 type AuthContextType = {
   updateIsLoggedIn: () => void;
@@ -19,6 +20,7 @@ type AuthProviderProps = {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
+  const { toLogin } = useNav();
 
   useEffect(() => {
     updateIsLoggedIn();
@@ -29,7 +31,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     httpClient.get('/api/auth-status')
     .then((response) => {
       setIsLoggedIn(response.data.isLoggedIn)
-      if (!response.data.isLoggedIn) logout()
+      // if (!response.data.isLoggedIn) logout()
     })
     .catch(error => {
       console.error(error)
@@ -40,7 +42,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = () => {
     httpClient.post('/api/logout')
       .then((response) => {
-        if (response.status === 200) setIsLoggedIn(false)
+        if (response.status === 200) {
+          setIsLoggedIn(false)
+          toLogin()
+        }
       }).catch((error) => {
         if (error.response.status === 401) {
           console.error('Logout failed')

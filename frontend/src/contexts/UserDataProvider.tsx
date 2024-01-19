@@ -12,7 +12,7 @@ interface iUserContext {
 export const UserContext = createContext<iUserContext | null>(null)
 
 export const UserDataProvider = ({ children }: { children: ReactNode }) => {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, logout } = useAuth();
   const [user, setUser] = useState<iUser>({
     _id: '',
     email: 'NaN',
@@ -34,6 +34,7 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
       })
       .catch((err) => {
         console.error(err)
+        logout()
       })
   }
 
