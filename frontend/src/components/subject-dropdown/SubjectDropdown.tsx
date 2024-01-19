@@ -1,23 +1,25 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './SubjectDropdown.scss'
 import React, { FC, useEffect, useState } from 'react';
-import { faChevronDown, faChevronUp, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronUp, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { iSubject } from '../../interfaces/materials-interface';
 import { useModal } from '../../contexts/ModalProvider';
 import NewSubjectModalContent from '../modal/modal-contents/NewSubjectModalContent';
 import { useMaterials } from '../../contexts/MaterialsProvider';
+import EllipsisMenuButton from '../buttons/ellipsis-menu-button/EllipsisMenuButton';
+import DeleteModalContent from '../modal/modal-contents/DeleteModalContent';
 
 type SubjectDropdownProps = {
   onChange?: (subject: iSubject) => void;
   isAsideMenuOpen: boolean;
-  setIsAsideMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const SubjectDropdown: FC<SubjectDropdownProps> = ({ isAsideMenuOpen, setIsAsideMenuOpen, onChange }) => {
+const SubjectDropdown: FC<SubjectDropdownProps> = ({ isAsideMenuOpen, onChange }) => {
   const {
     subjects,
     selectedSubject,
-    setSelectedSubject
+    setSelectedSubject,
+    deleteSubject
   } = useMaterials();
   const { showModal } = useModal();
   const [oldSubjectsLength, setOldSubjectsLength] = useState<number>(subjects.length)
@@ -34,7 +36,7 @@ const SubjectDropdown: FC<SubjectDropdownProps> = ({ isAsideMenuOpen, setIsAside
       handleChange(subjects[subjects.length - 1])
       setOldSubjectsLength(subjects.length)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subjects])
 
   const handleChange = (subject: iSubject) => {
@@ -71,6 +73,25 @@ const SubjectDropdown: FC<SubjectDropdownProps> = ({ isAsideMenuOpen, setIsAside
                 onClick={() => handleChange(subject)}
               >
                 <span>{subject.subject_name}</span>
+                <EllipsisMenuButton
+                  className='dropdown-option-ellipsis-menu-button'
+                  light={selectedSubject?._id === subject._id ? false : true}
+                  onClick={(e) => e.stopPropagation()}
+                  menuOptions={[
+                    {
+                      name: 'Smazat',
+                      icon: faTrash,
+                      onClick: () => showModal(
+                        <DeleteModalContent
+                          onSubmit={() => deleteSubject(subject._id)}
+                          submitButtonLabel='Smazat'
+                          cancelButtonLabel='Zrušit'
+                          title={`Smazat předmět "${subject.subject_name}"?`}
+                          content='Opravdu chcete smazat tento předmět? Tato akce je nevratná!'
+                        />
+                      )
+                    }
+                  ]} />
               </div>
             )
           })

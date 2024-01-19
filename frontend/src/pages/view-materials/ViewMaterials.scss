@@ -61,12 +61,24 @@
       scrollbar-width: none;  /* Firefox */
 
       .material-button {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+
         border-bottom: 1px solid var(--grayscale-150);
 
         cursor: pointer;
 
+        .material-button-ellipsis {
+          display: none;
+        }
+
         &:hover {
           background-color: var(--hover-white);
+
+          .material-button-ellipsis {
+            display: initial!important;
+          }
         }
 
         &.active {

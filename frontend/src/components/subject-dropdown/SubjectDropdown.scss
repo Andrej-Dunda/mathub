@@ -70,9 +70,9 @@
       min-height: 50px;
 
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
 
       padding: 10px;
 
@@ -87,8 +87,16 @@
 
       cursor: pointer;
 
+      .dropdown-option-ellipsis-menu-button {
+        display: none;
+      }
+
       &:hover {
         background-color: var(--hover-white);
+        
+        .dropdown-option-ellipsis-menu-button {
+          display: initial;
+        }
       }
 
       &.active {

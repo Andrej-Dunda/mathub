@@ -44,10 +44,6 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   const { openSnackbar } = useSnackbar();
 
   useEffect(() => {
-    subjects && setSelectedSubject(subjects[0])
-  }, [subjects])
-
-  useEffect(() => {
     selectedSubject && getSubjectTopics(selectedSubject._id)
   }, [selectedSubject])
 

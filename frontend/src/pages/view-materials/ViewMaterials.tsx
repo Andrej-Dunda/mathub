@@ -3,13 +3,15 @@ import './ViewMaterials.scss'
 import AsideMenu from '../../components/layout-components/aside-menu/AsideMenu';
 import MainContent from '../../components/layout-components/main-content/MainContent';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import SubjectDropdown from '../../components/subject-dropdown/SubjectDropdown';
 import { iTopic } from '../../interfaces/materials-interface';
 import { useModal } from '../../contexts/ModalProvider';
 import ModalFooter from '../../components/modal/modal-footer/ModalFooter';
 import { useMaterials } from '../../contexts/MaterialsProvider';
+import EllipsisMenuButton from '../../components/buttons/ellipsis-menu-button/EllipsisMenuButton';
+import DeleteModalContent from '../../components/modal/modal-contents/DeleteModalContent';
 
 const ViewMaterials: React.FC = () => {
   const {
@@ -18,7 +20,8 @@ const ViewMaterials: React.FC = () => {
     topics,
     selectedTopic,
     getTopic,
-    postTopic
+    postTopic,
+    deleteTopic
   } = useMaterials();
   const [oldTopicsLength, setOldTopicsLength] = useState<number>(topics.length)
   const topicsRefs = useRef<Array<HTMLElement | null>>([]);
@@ -59,17 +62,22 @@ const ViewMaterials: React.FC = () => {
     const [newTopicName, setNewTopicName] = useState<string>('')
     const [newTopicModalError, setNewTopicModalError] = useState<string>('')
     const newTopicNameInputRef = useRef<HTMLInputElement>(null)
-  
+    const { closeModal }  = useModal();
+
     useEffect(() => {
       newTopicNameInputRef.current?.focus()
     }, [])
-  
+
     const submitNewTopic = () => {
-      if (newTopicName && selectedSubject) return postTopic(selectedSubject._id, newTopicName)
+      if (newTopicName && selectedSubject) {
+        postTopic(selectedSubject._id, newTopicName)
+        closeModal()
+        return 
+      }
       setNewTopicModalError('Vyplňte pole Název nového materiálu!')
       newTopicNameInputRef.current?.focus()
     }
-  
+
     return (
       <div className="new-material-form">
         <h1 className='h1'>Nový materiál</h1>
@@ -94,7 +102,7 @@ const ViewMaterials: React.FC = () => {
     <div className={`view-materials ${isAsideMenuOpen ? 'aside-menu-open' : ''}`}>
       <AsideMenu isAsideMenuOpen={isAsideMenuOpen} setIsAsideMenuOpen={setIsAsideMenuOpen} >
         <div className="aside-header">
-          <SubjectDropdown isAsideMenuOpen={isAsideMenuOpen} setIsAsideMenuOpen={setIsAsideMenuOpen} />
+          <SubjectDropdown isAsideMenuOpen={isAsideMenuOpen} />
           <div className="aside-button new-material-button" onClick={openNewMaterialModal}>
             <FontAwesomeIcon icon={faPlus} color={grayscale400} className='plus-icon' />
             <span className='new-material-label'>Nový materiál</span>
@@ -112,6 +120,25 @@ const ViewMaterials: React.FC = () => {
                   ref={el => (topicsRefs.current[index] = el)}
                 >
                   <span>{topic.topic_name}</span>
+                  <EllipsisMenuButton
+                    className='material-button-ellipsis'
+                    onClick={(e) => e.stopPropagation()}
+                    light={topic._id === selectedTopic?._id ? false : true}
+                    menuOptions={[
+                      {
+                        name: 'Smazat',
+                        icon: faTrash,
+                        onClick: () => showModal(
+                          <DeleteModalContent
+                            onSubmit={() => deleteTopic(topic._id)}
+                            submitButtonLabel='Smazat'
+                            cancelButtonLabel='Zrušit'
+                            title={`Smazat materiál "${topic.topic_name}"?`}
+                            content='Opravdu chcete smazat tento materiál? Tato akce je nevratná!'
+                          />
+                        )
+                      }
+                    ]} />
                 </div>
               )
             })

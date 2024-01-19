@@ -1,6 +1,6 @@
 import './SubjectsWindow.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useRef, useEffect } from 'react';
 import { iSubject } from '../../interfaces/materials-interface';
 import EllipsisMenuButton from '../../components/buttons/ellipsis-menu-button/EllipsisMenuButton';
@@ -8,9 +8,10 @@ import { useNav } from '../../contexts/NavigationProvider';
 import { useModal } from '../../contexts/ModalProvider';
 import NewSubjectModalContent from '../../components/modal/modal-contents/NewSubjectModalContent';
 import { useMaterials } from '../../contexts/MaterialsProvider';
+import DeleteModalContent from '../../components/modal/modal-contents/DeleteModalContent';
 
 const SubjectsWindow = () => {
-  const { subjects, getSubjects, setSelectedSubject } = useMaterials();
+  const { subjects, getSubjects, setSelectedSubject, deleteSubject } = useMaterials();
   const newSubjectNameInputRef = useRef<HTMLInputElement>(null)
   const grayscale300 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-300').trim();
   const { toViewMaterials, setActiveLink } = useNav();
@@ -44,7 +45,21 @@ const SubjectsWindow = () => {
             return (
               <div key={index} className="subject-button">
                 <header>
-                  <EllipsisMenuButton menuOptions={['option 1', 'option 2', 'option 3', 'option 4']}/>
+                  <EllipsisMenuButton menuOptions={[
+                    {
+                      name: 'Smazat',
+                      icon: faTrash,
+                      onClick: () => showModal(
+                        <DeleteModalContent
+                          onSubmit={() => deleteSubject(subject._id)}
+                          submitButtonLabel='Smazat'
+                          cancelButtonLabel='Zrušit'
+                          title={`Smazat předmět "${subject.subject_name}"?`}
+                          content='Opravdu chcete smazat tento předmět? Tato akce je nevratná!'
+                        />
+                      )
+                    }
+                  ]}/>
                 </header>
                 <main onClick={() => openSubject(subject)} title={subject.subject_name}>
                   <span>
