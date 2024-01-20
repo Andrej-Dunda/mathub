@@ -12,9 +12,10 @@ import DeleteModalContent from '../modal/modal-contents/DeleteModalContent';
 type SubjectDropdownProps = {
   onChange?: (subject: iSubject) => void;
   isAsideMenuOpen: boolean;
+  onEditorTopicSwitch?: (onFinish?: any) => void;
 };
 
-const SubjectDropdown: FC<SubjectDropdownProps> = ({ isAsideMenuOpen, onChange }) => {
+const SubjectDropdown: FC<SubjectDropdownProps> = ({ isAsideMenuOpen, onEditorTopicSwitch, onChange }) => {
   const {
     subjects,
     selectedSubject,
@@ -33,16 +34,20 @@ const SubjectDropdown: FC<SubjectDropdownProps> = ({ isAsideMenuOpen, onChange }
 
   useEffect(() => {
     if (oldSubjectsLength < subjects.length) {
-      handleChange(subjects[subjects.length - 1])
+      setSelectedSubject(subjects[subjects.length - 1]);
+      setIsSubjectDropdownOpen(false)
+      onChange && onChange(subjects[subjects.length - 1])
       setOldSubjectsLength(subjects.length)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subjects])
 
   const handleChange = (subject: iSubject) => {
-    setSelectedSubject(subject);
-    onChange && onChange(subject);
-    setIsSubjectDropdownOpen(false)
+    onEditorTopicSwitch && onEditorTopicSwitch(() => {
+      setSelectedSubject(subject);
+      setIsSubjectDropdownOpen(false)
+      onChange && onChange(subject)
+    })
   };
 
   const toggleDropdown = (e: any) => {

@@ -24,7 +24,7 @@ type MaterialsContextType = {
   getSubjectTopics: (subject_id: string) => void;
   postTopic: (subject_id: string, topic_name: string) => void;
   getTopic: (topic_id: string) => void;
-  putTopic: (topic_id: string, topic_name: string) => void;
+  putTopic: (topic_id: string, topic_name: string, topic_content: string, keepTopicSelected?: boolean) => void;
   deleteTopic: (topic_id: string) => void;
 };
 
@@ -145,18 +145,19 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
       })
   }
 
-  const putTopic = async (topic_id: string, topic_name: string) => {
+  const putTopic = async (topic_id: string, topic_name: string, topic_content: string, keepTopicSelected?: boolean) => {
     httpClient.put(`/api/put-topic`, {
-      topic_id,
-      topic_name
+      topic_id: topic_id,
+      topic_name: topic_name,
+      topic_content: topic_content
     })
       .then(() => {
-        selectedSubject && getSubjectTopics(selectedSubject._id)
-        setSelectedTopic(undefined)
-        openSnackbar('Materiál úspěšně upraven!')
+        keepTopicSelected && getTopic(topic_id)
+        openSnackbar('Materiál úspěšně uložen!')
       })
       .catch(err => {
         console.error(err)
+        openSnackbar('Materiál nemohl být uložen :(')
       })
   }
 
@@ -172,7 +173,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
       })
   }
 
-  const contextValue = {
+  const contextValue: MaterialsContextType = {
     topics,
     setTopics,
     selectedTopic,

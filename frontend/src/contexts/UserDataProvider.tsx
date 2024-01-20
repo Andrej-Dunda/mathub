@@ -33,7 +33,6 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
         setUser(res.data)
       })
       .catch((err) => {
-        console.error(err)
         logout()
       })
   }

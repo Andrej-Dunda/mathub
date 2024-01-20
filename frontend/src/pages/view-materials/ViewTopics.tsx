@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import './ViewMaterials.scss'
+import './ViewTopics.scss'
 import AsideMenu from '../../components/layout-components/aside-menu/AsideMenu';
 import MainContent from '../../components/layout-components/main-content/MainContent';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrash, faSave } from '@fortawesome/free-solid-svg-icons';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import SubjectDropdown from '../../components/subject-dropdown/SubjectDropdown';
 import { iTopic } from '../../interfaces/materials-interface';
@@ -12,8 +12,9 @@ import ModalFooter from '../../components/modal/modal-footer/ModalFooter';
 import { useMaterials } from '../../contexts/MaterialsProvider';
 import EllipsisMenuButton from '../../components/buttons/ellipsis-menu-button/EllipsisMenuButton';
 import DeleteModalContent from '../../components/modal/modal-contents/DeleteModalContent';
+import SaveTopicModalContent from '../../components/modal/modal-contents/SaveTopicModalContent';
 
-const ViewMaterials: React.FC = () => {
+const ViewTopics: React.FC = () => {
   const {
     getSubjects,
     selectedSubject,
@@ -21,18 +22,38 @@ const ViewMaterials: React.FC = () => {
     selectedTopic,
     getTopic,
     postTopic,
+    putTopic,
     deleteTopic
   } = useMaterials();
   const [oldTopicsLength, setOldTopicsLength] = useState<number>(topics.length)
   const topicsRefs = useRef<Array<HTMLElement | null>>([]);
+  const [editorTopicContent, setEditorTopicContent] = useState<string>('')
 
   const [isAsideMenuOpen, setIsAsideMenuOpen] = useState<boolean>(true)
   const grayscale400 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-400').trim();
+  const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
+  const grayscale100 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-100').trim();
   const { showModal } = useModal();
 
   useEffect(() => {
     getSubjects()
     setTimeout(() => setIsAsideMenuOpen(false), 200);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 's' && selectedTopic?.topic_content !== editorTopicContent) {
+        e.preventDefault()
+        saveTopic()
+      }
+    })
+
+    return () => {
+      window.removeEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 's') {
+          e.preventDefault()
+          saveTopic()
+        }
+      })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -49,20 +70,44 @@ const ViewMaterials: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topics, oldTopicsLength])
 
+  useEffect(() => {
+    if (selectedTopic) {
+      setEditorTopicContent(selectedTopic.topic_content)
+    }
+  }, [selectedTopic])
+
+  const onEditorTopicSwitch = (onFinish?: any) => {
+    if (selectedTopic?.topic_content !== editorTopicContent) {
+      return showModal(<SaveTopicModalContent saveTopic={saveTopic} onFinish={onFinish} />);
+    }
+    onFinish && onFinish();
+  }
+
+  const saveTopic = (keepTopicSelected?: boolean) => {
+    if (selectedTopic) {
+      putTopic(selectedTopic._id, selectedTopic.topic_name, editorTopicContent, keepTopicSelected)
+      setEditorTopicContent(selectedTopic.topic_content)
+    }
+  }
+
   const scrollToElement = (index: number) => {
     const element = topicsRefs.current[index];
     element?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const openNewMaterialModal = () => {
+  const openNewTopicModal = () => {
     showModal(<NewTopicModalContent />)
+  }
+
+  const handleTopicChange = (topic_id: string) => {
+    onEditorTopicSwitch(() => getTopic(topic_id))
   }
 
   const NewTopicModalContent: React.FC = () => {
     const [newTopicName, setNewTopicName] = useState<string>('')
     const [newTopicModalError, setNewTopicModalError] = useState<string>('')
     const newTopicNameInputRef = useRef<HTMLInputElement>(null)
-    const { closeModal }  = useModal();
+    const { closeModal } = useModal();
 
     useEffect(() => {
       newTopicNameInputRef.current?.focus()
@@ -72,21 +117,21 @@ const ViewMaterials: React.FC = () => {
       if (newTopicName && selectedSubject) {
         postTopic(selectedSubject._id, newTopicName)
         closeModal()
-        return 
+        return
       }
       setNewTopicModalError('Vyplňte pole Název nového materiálu!')
       newTopicNameInputRef.current?.focus()
     }
 
     return (
-      <div className="new-material-form">
+      <div className="new-topic-form">
         <h1 className='h1'>Nový materiál</h1>
-        <div className='new-material-wrapper'>
-          <label htmlFor="new-material-name-input">Název nového materiálu:</label>
+        <div className='new-topic-wrapper'>
+          <label htmlFor="new-topic-name-input">Název nového materiálu:</label>
           <input
             type='text'
-            id='new-material-name-input'
-            name='new-material-name-input'
+            id='new-topic-name-input'
+            name='new-topic-name-input'
             value={newTopicName}
             onChange={(e: any) => setNewTopicName(e.target.value)}
             ref={newTopicNameInputRef}
@@ -99,13 +144,13 @@ const ViewMaterials: React.FC = () => {
   }
 
   return (
-    <div className={`view-materials ${isAsideMenuOpen ? 'aside-menu-open' : ''}`}>
+    <div className={`view-topics ${isAsideMenuOpen ? 'aside-menu-open' : ''}`}>
       <AsideMenu isAsideMenuOpen={isAsideMenuOpen} setIsAsideMenuOpen={setIsAsideMenuOpen} >
         <div className="aside-header">
-          <SubjectDropdown isAsideMenuOpen={isAsideMenuOpen} />
-          <div className="aside-button new-material-button" onClick={openNewMaterialModal}>
+          <SubjectDropdown isAsideMenuOpen={isAsideMenuOpen} onEditorTopicSwitch={onEditorTopicSwitch} />
+          <div className="aside-button new-topic-button" onClick={openNewTopicModal}>
             <FontAwesomeIcon icon={faPlus} color={grayscale400} className='plus-icon' />
-            <span className='new-material-label'>Nový materiál</span>
+            <span className='new-topic-label'>Nový materiál</span>
           </div>
         </div>
         <div className="aside-body">
@@ -114,14 +159,14 @@ const ViewMaterials: React.FC = () => {
               return (
                 <div
                   key={index}
-                  className={`aside-button material-button ${topic._id === selectedTopic?._id ? 'active' : ''}`}
+                  className={`aside-button topic-button ${topic._id === selectedTopic?._id ? 'active' : ''}`}
                   title={topic.topic_name}
-                  onClick={() => getTopic(topic._id)}
+                  onClick={() => handleTopicChange(topic._id)}
                   ref={el => (topicsRefs.current[index] = el)}
                 >
                   <span>{topic.topic_name}</span>
                   <EllipsisMenuButton
-                    className='material-button-ellipsis'
+                    className='topic-button-ellipsis'
                     onClick={(e) => e.stopPropagation()}
                     light={topic._id === selectedTopic?._id ? false : true}
                     menuOptions={[
@@ -147,13 +192,26 @@ const ViewMaterials: React.FC = () => {
       </AsideMenu>
       <MainContent>
         <div className="main-content-header">
-          <span className='material-title'>{selectedTopic?.topic_name}</span>
+          <span className='topic-title'>{selectedTopic?.topic_name}</span>
+          <button
+            className={`save-button ${editorTopicContent === selectedTopic?.topic_content ? '' : 'not-saved'}`}
+            onClick={() => editorTopicContent !== selectedTopic?.topic_content && saveTopic(true)}
+          >
+            <FontAwesomeIcon icon={faSave} color={editorTopicContent === selectedTopic?.topic_content ? grayscale900 : grayscale100} className='save-icon' />
+            <span className='label'>Uložit</span>
+          </button>
         </div>
         <div className="main-content-body">
-          {selectedTopic?.topic_content}
+          <textarea
+            name="topic-content"
+            id="topic-content"
+            className="topic-content"
+            value={editorTopicContent}
+            onChange={(e: any) => setEditorTopicContent(e.target.value)}
+          />
         </div>
       </MainContent>
     </div>
   )
 }
-export default ViewMaterials;
+export default ViewTopics;
