@@ -78,6 +78,30 @@ button {
   &:focus {
     outline: none !important;
   }
+
+  &.dark {
+    color: var(--grayscale-100);
+    background-color: var(--grayscale-900);
+
+    &:hover {
+      background-color: var(--hover-black);
+      box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
+      -webkit-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
+      -moz-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
+    }
+  }
+
+  &.light {
+    color: var(--grayscale-900);
+    background-color: var(--grayscale-100);
+
+    &:hover {
+      background-color: var(--hover-white);
+      box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
+      -webkit-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
+      -moz-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
+    }
+  }
 }
 
 img {

@@ -10,8 +10,8 @@ const Homepage = () => {
   const { setActiveLink } = useNav();
 
   useEffect(() => {
-    setActiveLink('home')
-    httpClient.get('/posts')
+    setActiveLink('/')
+    httpClient.get('/api/posts')
     .then(res => {
       setPosts(res.data)
     })

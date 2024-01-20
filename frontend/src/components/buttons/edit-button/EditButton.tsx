@@ -43,7 +43,7 @@ const EditPostModalContent = (props: any) => {
     formData.append('post_title', postTitle)
     formData.append('post_description', postDescription)
 
-    httpClient.post('/update-blog-post', formData, {
+    httpClient.put('/api/put-blog-post', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }

@@ -16,7 +16,7 @@ const LikeButton = (props: any) => {
   }, [])
 
   const getLikes = () => {
-    httpClient.get(`/post-likes/${props.postId}`)
+    httpClient.get(`/api/post-likes/${props.postId}`)
       .then(res => {
         const isLiked = res.data.some((liker: any) => liker.user_id === user._id);
         setLiked(isLiked)
@@ -26,7 +26,7 @@ const LikeButton = (props: any) => {
   }
 
   const onLikeButtonClick = () => {
-    httpClient.post('/toggle-post-like', {
+    httpClient.post('/api/toggle-post-like', {
       post_id: props.postId,
       user_id: user._id
     })

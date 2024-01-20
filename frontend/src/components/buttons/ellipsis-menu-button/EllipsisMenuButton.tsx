@@ -3,16 +3,28 @@ import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState } from 'react';
 
-interface EllipsisMenuButtonProps {
-  menuOptions: string[];
-  primaryColor?: string;
-  secondaryColor?: string;
+type MenuOption = {
+  name: string;
+  onClick?: () => void;
+  icon?: any;
 }
 
-const EllipsisMenuButton: React.FC<EllipsisMenuButtonProps> = ({ menuOptions, primaryColor, secondaryColor }) => {
+type EllipsisMenuButtonProps = {
+  menuOptions: MenuOption[];
+  primaryColor?: string;
+  secondaryColor?: string;
+  onClick?: (e: any) => void;
+  light?: boolean;
+  className?: string;
+}
+
+const EllipsisMenuButton: React.FC<EllipsisMenuButtonProps> = ({ menuOptions, onClick, light, className }) => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const secondaryColor = getComputedStyle(document.documentElement).getPropertyValue(light ? '--grayscale-100' : '--grayscale-900').trim();
+  const primaryColor = getComputedStyle(document.documentElement).getPropertyValue(light ? '--grayscale-900' : '--grayscale-100').trim();
+  const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -34,16 +46,13 @@ const EllipsisMenuButton: React.FC<EllipsisMenuButtonProps> = ({ menuOptions, pr
     };
   }, [isMenuOpen]);
 
-  const toggleMenu = () => {
+  const toggleMenu = (e: any) => {
+    onClick && onClick(e);
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const onMenuItemClick = () => {
-    setIsMenuOpen(false)
-  }
-
   return (
-    <div className="ellipsis-menu-button" style={{ '--primary-color': primaryColor, '--secondary-color': secondaryColor } as React.CSSProperties}>
+    <div className={`ellipsis-menu-button ${className}`} style={{ '--primary-color': primaryColor, '--secondary-color': secondaryColor } as React.CSSProperties}>
       <button
         type='button'
         onClick={toggleMenu}
@@ -54,16 +63,17 @@ const EllipsisMenuButton: React.FC<EllipsisMenuButtonProps> = ({ menuOptions, pr
       </button>
       {
         isMenuOpen && (
-          <div className="popup-menu" ref={menuRef}>
+          <div className="popup-menu" ref={menuRef} onClick={() => setIsMenuOpen(false)}>
             {
-              menuOptions.map((option: string, index: number) => {
+              menuOptions.map((option: MenuOption, index: number) => {
                 return (
                   <div
                     key={index}
                     className="menu-item"
-                    onClick={onMenuItemClick}
+                    onClick={option.onClick && option.onClick}
                   >
-                    {option}
+                    {option.icon && <FontAwesomeIcon icon={option.icon} color={grayscale900} width={'16px'} height={'16px'} />}
+                    {option.name}
                   </div>
                 )
               })

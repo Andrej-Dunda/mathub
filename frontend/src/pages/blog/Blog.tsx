@@ -21,16 +21,18 @@ const Blog = () => {
 
   useEffect(() => {
     getMyPosts()
-    setActiveLink('blog')
+    setActiveLink('/blog')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const getMyPosts = () => {
-    httpClient.get(`/get-my-posts/${user._id}`)
+    httpClient.get(`/api/get-my-posts/`)
       .then(res => {
         setPosts(res.data)
       })
-      .catch(err => console.error(err))
+      .catch(err => {
+        console.error(err)
+      })
   }
 
   const submitNewPost = async (e: any) => {
@@ -48,7 +50,7 @@ const Blog = () => {
     formData.append('post_title', postTitle)
     formData.append('post_description', postDescription)
 
-    httpClient.post('/new-blog-post', formData, {
+    httpClient.post('/api/post-blog-post', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }

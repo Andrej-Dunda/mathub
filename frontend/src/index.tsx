@@ -8,6 +8,7 @@ import { ModalProvider } from './contexts/ModalProvider';
 import { NavigationProvider } from './contexts/NavigationProvider';
 import AppRouter from './AppRouter';
 import { AuthProvider } from './contexts/AuthProvider';
+import { MaterialsProvider } from './contexts/MaterialsProvider';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -15,17 +16,19 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Router>
-      <AuthProvider>
-        <UserDataProvider>
-          <SnackbarProvider>
-            <ModalProvider>
-              <NavigationProvider>
-                <AppRouter />
-              </NavigationProvider>
-            </ModalProvider>
-          </SnackbarProvider>
-        </UserDataProvider>
-      </AuthProvider>
+      <NavigationProvider>
+        <AuthProvider>
+          <UserDataProvider>
+            <SnackbarProvider>
+              <MaterialsProvider>
+                <ModalProvider>
+                  <AppRouter />
+                </ModalProvider>
+              </MaterialsProvider>
+            </SnackbarProvider>
+          </UserDataProvider>
+        </AuthProvider>
+      </NavigationProvider>
     </Router>
   </React.StrictMode>
 );

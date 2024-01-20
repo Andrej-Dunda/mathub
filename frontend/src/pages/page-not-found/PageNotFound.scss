@@ -1,0 +1,49 @@
+.page-not-found {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .window {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+
+    align-items: center;
+
+    cursor: pointer;
+
+    width: 600px;
+    height: 600px;
+
+    padding: 32px;
+    border-radius: 16px;
+
+    box-shadow: 10px 10px 30px 6px rgba(0,0,0,0.3);
+    -webkit-box-shadow: 10px 10px 30px 6px rgba(0,0,0,0.3);
+    -moz-box-shadow: 10px 10px 30px 6px rgba(0,0,0,0.3);
+
+    .mathub-logo {
+      width: 400px;
+      height: 400px;
+    }
+
+    .title {
+      font-size: 32px;
+      font-weight: 700;
+    }
+
+    &:hover {
+      background-color: var(--hover-white);
+    }
+  }
+
+  &.logged-in {
+    height: calc(100vh - var(--navigation-menu-height))
+  };
+
+  &.logged-out {
+    height: 100vh;
+  }
+}

@@ -33,7 +33,7 @@ const ChangeProfilePictureModalContent: React.FC = () => {
     formData.append('profile_picture', newProfilePicture);
 
     try {
-      await httpClient.post(`/upload-profile-picture/${user._id}`, formData, {
+      await httpClient.post(`/api/upload-profile-picture/${user._id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }

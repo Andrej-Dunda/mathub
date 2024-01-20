@@ -35,7 +35,7 @@ const LoginPage = () => {
 
   const submitLogin = (event: any) => {
     if (!loginForm.email || !loginForm.password) return setResponseMessage('Vyplňte všechna pole!')
-    httpClient.post("/login", loginForm)
+    httpClient.post("/api/login", loginForm)
       .then((response: any) => {
         if (response.status === 200) {
           setResponseMessage(response.data.message)
@@ -44,10 +44,8 @@ const LoginPage = () => {
         }
       }).catch((error: any) => {
         if (error.response.status === 401) {
-          console.error('Unauthorized')
+          setResponseMessage('Nesprávné jméno nebo heslo!')
         }
-        error.response && setResponseMessage(error.response.data.message)
-        console.error(error.response.data.message)
       })
 
     setLoginForm(({

@@ -12,7 +12,7 @@ interface iUserContext {
 export const UserContext = createContext<iUserContext | null>(null)
 
 export const UserDataProvider = ({ children }: { children: ReactNode }) => {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, logout } = useAuth();
   const [user, setUser] = useState<iUser>({
     _id: '',
     email: 'NaN',
@@ -25,15 +25,15 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     updateUser()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isLoggedIn])
 
   const updateUser = () => {
-    isLoggedIn && httpClient.get('/@me')
+    isLoggedIn && httpClient.get('/api/@me')
       .then((res: any) => {
         setUser(res.data)
       })
       .catch((err) => {
-        console.error(err)
+        logout()
       })
   }
 

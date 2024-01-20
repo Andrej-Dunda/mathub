@@ -20,7 +20,7 @@ const Comment = (props: any) => {
   }
 
   useEffect(() => {
-    httpClient.get(`/user/${commentContent.author_id}`)
+    httpClient.get(`/api/user/${commentContent.author_id}`)
     .then(res => {
       setAuthorName(`${res.data.first_name} ${res.data.last_name}`)
     })

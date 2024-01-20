@@ -1,37 +1,39 @@
 import './SubjectsWindow.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { useState, useRef, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { useRef, useEffect } from 'react';
 import { iSubject } from '../../interfaces/materials-interface';
 import EllipsisMenuButton from '../../components/buttons/ellipsis-menu-button/EllipsisMenuButton';
 import { useNav } from '../../contexts/NavigationProvider';
 import { useModal } from '../../contexts/ModalProvider';
 import NewSubjectModalContent from '../../components/modal/modal-contents/NewSubjectModalContent';
+import { useMaterials } from '../../contexts/MaterialsProvider';
+import DeleteModalContent from '../../components/modal/modal-contents/DeleteModalContent';
 
 const SubjectsWindow = () => {
-  const [subjects, setSubjects] = useState<iSubject[]>([
-    {subjectName: 'Češtinaalskdjhgljkhalskdjfhlakjhdsfadflgkjhaldkjgh', subjectId: uuidv4(), materials: [{ materialId: uuidv4(), materialName: '1. Literatura 2. poloviny 20. století' }]},
-    {subjectName: 'Ekonomie', subjectId: uuidv4(), materials: []},
-    {subjectName: 'Informatika', subjectId: uuidv4(), materials: [{ materialId: uuidv4(), materialName: '1. Hardware' }]},
-    {subjectName: 'Angličtina', subjectId: uuidv4(), materials: [{ materialId: uuidv4(), materialName: '1. Schools and Education' }]},
-    {subjectName: 'Matematika', subjectId: uuidv4(), materials: [{ materialId: uuidv4(), materialName: '1. Kombinatorika a pravděpodobnost' }]},
-  ])
+  const { subjects, getSubjects, setSelectedSubject, deleteSubject } = useMaterials();
   const newSubjectNameInputRef = useRef<HTMLInputElement>(null)
   const grayscale300 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-300').trim();
   const { toViewMaterials, setActiveLink } = useNav();
   const { showModal, modalOpen } = useModal();
 
   useEffect(() => {
-    setActiveLink('subjects')
-  })
+    setActiveLink('/subjects')
+    getSubjects()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setActiveLink])
 
   useEffect(() => {
     newSubjectNameInputRef.current?.focus()
   }, [modalOpen])
 
   const openNewSubjectModal = () => {
-    showModal(<NewSubjectModalContent subjects={subjects} setSubjects={setSubjects} />)
+    showModal(<NewSubjectModalContent />)
+  }
+
+  const openSubject = (subject: iSubject) => {
+    setSelectedSubject(subject)
+    toViewMaterials()
   }
 
   return (
@@ -43,11 +45,25 @@ const SubjectsWindow = () => {
             return (
               <div key={index} className="subject-button">
                 <header>
-                  <EllipsisMenuButton menuOptions={['option 1', 'option 2', 'option 3', 'option 4']}/>
+                  <EllipsisMenuButton menuOptions={[
+                    {
+                      name: 'Smazat',
+                      icon: faTrash,
+                      onClick: () => showModal(
+                        <DeleteModalContent
+                          onSubmit={() => deleteSubject(subject._id)}
+                          submitButtonLabel='Smazat'
+                          cancelButtonLabel='Zrušit'
+                          title={`Smazat předmět "${subject.subject_name}"?`}
+                          content='Opravdu chcete smazat tento předmět? Tato akce je nevratná!'
+                        />
+                      )
+                    }
+                  ]}/>
                 </header>
-                <main onClick={toViewMaterials} title={subject.subjectName}>
+                <main onClick={() => openSubject(subject)} title={subject.subject_name}>
                   <span>
-                    {subject.subjectName}
+                    {subject.subject_name}
                   </span>
                 </main>
               </div>

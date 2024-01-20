@@ -57,7 +57,7 @@ const BlogPost = (props: any) => {
   }, [showComments]);
 
   useEffect(() => {
-    httpClient.get(`/user/${postData.author_id}`)
+    httpClient.get(`/api/user/${postData.author_id}`)
       .then(res => {
         setUserName(res.data.first_name + ' ' + res.data.last_name)
       })
@@ -65,7 +65,7 @@ const BlogPost = (props: any) => {
   }, [postData.author_id])
 
   const getComments = () => {
-    httpClient.get(`/comments/${postData._id}`)
+    httpClient.get(`/api/comments/${postData._id}`)
       .then(res => {
         setComments(res.data)
       })
@@ -81,7 +81,7 @@ const BlogPost = (props: any) => {
   }
 
   const submitComment = () => {
-    newComment.trim() && httpClient.post('/add-comment', {
+    newComment.trim() && httpClient.post('/api/add-comment', {
       post_id: postData._id,
       commenter_id: user._id,
       comment: newComment
