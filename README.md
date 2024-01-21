@@ -24,6 +24,10 @@ Aktuálně aplikace podporuje:
 - Vytváření a procházení Předmětů, kde Předmět je složka obsahující Materiály daného předmětu. Každý materiál je pak aktuálně pouze jednoduchým textovým souborem, který lze upravovat, ukládát a mazat.
 
 # SETUP INSTRUCTIONS
+Do systému se dostanete přes DEMO účet:
+- email: admin@admin.com
+- heslo: admin
+
 ## Docker:
 ```
 docker-compose up --build
