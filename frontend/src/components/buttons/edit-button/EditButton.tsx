@@ -53,10 +53,10 @@ const EditPostModalContent = (props: any) => {
       .then(() => {
         props.getMyPosts()
         openSnackbar("Příspěvek úspěšně uložen!")
-        setErrorMessage('')
-        closeModal();
       })
       .catch(err => console.error(err))
+      setErrorMessage('')
+      closeModal();
   }
 
   return (

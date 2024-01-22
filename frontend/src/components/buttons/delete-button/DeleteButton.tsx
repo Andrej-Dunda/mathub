@@ -17,9 +17,9 @@ const DeleteBlogPostModalContent = (props: any) => {
     .then(() => {
       props.getMyPosts()
       openSnackbar('Příspěvek úspěšně smazán!')
-      closeModal();
     })
     .catch(err => console.error(err))
+    closeModal();
   }
 
   return (

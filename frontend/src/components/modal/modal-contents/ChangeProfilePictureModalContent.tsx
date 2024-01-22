@@ -35,16 +35,18 @@ const ChangeProfilePictureModalContent: React.FC = () => {
 
     try {
       const protectedHttpClient = await protectedHttpClientInit();
-      protectedHttpClient?.post(`/api/upload-profile-picture/${user._id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        }
-      });
+      if (protectedHttpClient) {
+        protectedHttpClient.post(`/api/upload-profile-picture/${user._id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          }
+        });
 
-      updateUser()
-      openSnackbar('Obrázek úspěšně nahrán!');
-      closeModal()
-      setErrorMessage('')
+        updateUser()
+        openSnackbar('Obrázek úspěšně nahrán!');
+        closeModal()
+        setErrorMessage('')
+      } else closeModal();
     } catch (error) {
       setErrorMessage('Chyba při nahrávání obrázku :(');
     }
@@ -60,7 +62,7 @@ const ChangeProfilePictureModalContent: React.FC = () => {
         acceptAttributeValue='image/*'
       />
       <ErrorMessage content={errorMessage} />
-      <ModalFooter onSubmit={handleNewProfilePictureSubmit} submitButtonLabel='Nahrát obrázek' cancelButtonLabel='Zrušit'/>
+      <ModalFooter onSubmit={handleNewProfilePictureSubmit} submitButtonLabel='Nahrát obrázek' cancelButtonLabel='Zrušit' />
     </div>
   )
 }

@@ -16,19 +16,19 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Router>
-      <ModalProvider>
-        <SnackbarProvider>
-          <NavigationProvider>
-            <AuthProvider>
+      <SnackbarProvider>
+        <NavigationProvider>
+          <AuthProvider>
+            <ModalProvider>
               <UserDataProvider>
                 <MaterialsProvider>
                   <AppRouter />
                 </MaterialsProvider>
               </UserDataProvider>
-            </AuthProvider>
-          </NavigationProvider>
-        </SnackbarProvider>
-      </ModalProvider>
+            </ModalProvider>
+          </AuthProvider>
+        </NavigationProvider>
+      </SnackbarProvider>
     </Router>
   </React.StrictMode>
 );

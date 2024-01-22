@@ -37,7 +37,7 @@ const ChangePasswordModalContent: React.FC = () => {
     if (newPasswordForm.newPassword !== newPasswordForm.newPasswordAgain) return setErrorMessage('Nová hesla se musí shodovat!')
     
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.post('/api/change-password', {
+    if (protectedHttpClient) protectedHttpClient.post('/api/change-password', {
         user_id: user._id,
         old_password: newPasswordForm.oldPassword,
         new_password: newPasswordForm.newPassword
@@ -56,6 +56,7 @@ const ChangePasswordModalContent: React.FC = () => {
         }
       })
       .catch(() => setErrorMessage('Někde se stala chyba :('))
+    else closeModal()
   }
 
   const handleChange = (event: any) => {
