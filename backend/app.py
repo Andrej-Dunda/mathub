@@ -117,16 +117,16 @@ def register_new_user():
                 last_name: '{last_name}',
                 profile_picture: 'profile-picture-default.png',
                 registration_date: '{datetime.now().isoformat()}'
-            }})
-            (subject:SUBJECT {{ _id: '{uuid4()}', subject_name: 'DEMO Předmět', date_created: "{datetime.now().isoformat()}", date_modified: "{datetime.now().isoformat()}" }}) -[:CREATED_BY]-> (new_user)
+            }}),
+            (subject:SUBJECT {{ _id: '{uuid4()}', subject_name: 'DEMO Předmět', date_created: "{datetime.now().isoformat()}", date_modified: "{datetime.now().isoformat()}" }}) -[:CREATED_BY]-> (new_user),
             (topic:TOPIC {{ _id: '{uuid4()}', topic_name: 'DEMO Materiál', topic_content: 'Obsah DEMO materiálu', date_created: "{datetime.now().isoformat()}", date_modified: "{datetime.now().isoformat()}" }}) -[:TOPIC_OF]-> (subject)
             """)
         else:
-            return {'message': 'Tento email je již registrován', 'success': False, 'email_already_registered': True}
-    except:
-        return {'message': 'Registrace se nezdařila :(', 'success': False, 'email_already_registered': False}
+            return {'message': 'Tento email je již registrován', 'success': False, 'email_already_registered': True}, 401
+    except Exception as e:
+        return {'message': 'Registrace se nezdařila :(', 'success': False, 'email_already_registered': False, 'error': str(e)}, 401
     else:
-        return {'message': 'Registrace proběhla úspěšně.', 'success': True, 'email_already_registered': False}
+        return {'message': 'Registrace proběhla úspěšně.', 'success': True, 'email_already_registered': False}, 200
     
 @app.route('/api/forgotten-password', methods=['POST'])
 def generate_new_password():
