@@ -6,14 +6,13 @@ import { useUserData } from '../../../contexts/UserDataProvider';
 import { useSnackbar } from '../../../contexts/SnackbarProvider';
 import { useModal } from '../../../contexts/ModalProvider';
 import ModalFooter from '../../../components/modal/modal-footer/ModalFooter';
-import httpClient from '../../../utils/httpClient';
 import { useAuth } from '../../../contexts/AuthProvider';
 
 const ChangePasswordModalContent: React.FC = () => {
   const { closeModal, modalOpen } = useModal();
   const { openSnackbar } = useSnackbar();
+  const { protectedHttpClientInit } = useAuth();
   const { user } = useUserData();
-  const { updateIsLoggedIn } = useAuth();
   const oldPasswordInputRef = useRef<HTMLInputElement>(null)
   const [newPasswordForm, setNewPasswordForm] = useState({
     oldPassword: '',
@@ -32,12 +31,13 @@ const ChangePasswordModalContent: React.FC = () => {
     oldPasswordInputRef.current?.focus()
   }, [modalOpen])
 
-  const changePassword = () => {
-    if (!updateIsLoggedIn()) return
+  const changePassword = async () => {
     setErrorMessage('')
     if (!newPasswordForm.newPassword || !newPasswordForm.newPasswordAgain || !newPasswordForm.oldPassword) return setErrorMessage('Vyplňte všechna pole!')
     if (newPasswordForm.newPassword !== newPasswordForm.newPasswordAgain) return setErrorMessage('Nová hesla se musí shodovat!')
-    httpClient.post('/api/change-password', {
+    
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.post('/api/change-password', {
         user_id: user._id,
         old_password: newPasswordForm.oldPassword,
         new_password: newPasswordForm.newPassword

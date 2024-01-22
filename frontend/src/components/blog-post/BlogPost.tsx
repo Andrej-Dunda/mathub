@@ -12,11 +12,9 @@ import { useUserData } from '../../contexts/UserDataProvider'
 import TextParagraph from '../text-paragraph/TextParagraph'
 import httpClient from '../../utils/httpClient'
 import { iPost } from '../../interfaces/blog-interfaces'
-import { useAuth } from '../../contexts/AuthProvider'
 
 const BlogPost = (props: any) => {
   const { user } = useUserData();
-  const { updateIsLoggedIn } = useAuth();
   const [userName, setUserName] = useState<string>('')
   const rawPostDate = new Date(props.postData.post_time)
   const czechMonthNames = [
@@ -59,7 +57,6 @@ const BlogPost = (props: any) => {
   }, [showComments]);
 
   useEffect(() => {
-    if (!updateIsLoggedIn()) return
     httpClient.get(`/api/user/${postData.author_id}`)
       .then(res => {
         setUserName(res.data.first_name + ' ' + res.data.last_name)
@@ -69,7 +66,6 @@ const BlogPost = (props: any) => {
   }, [postData.author_id])
 
   const getComments = () => {
-    if (!updateIsLoggedIn()) return
     httpClient.get(`/api/comments/${postData._id}`)
       .then(res => {
         setComments(res.data)
@@ -85,7 +81,7 @@ const BlogPost = (props: any) => {
     setNewComment(e.target.value)
   }
 
-  const submitComment = () => {
+  const submitComment = async () => {
     newComment.trim() && httpClient.post('/api/add-comment', {
       post_id: postData._id,
       commenter_id: user._id,

@@ -7,7 +7,6 @@ import { useSnackbar } from '../../../contexts/SnackbarProvider';
 import ErrorMessage from '../../error-message/ErrorMessage';
 import ModalFooter from '../../modal/modal-footer/ModalFooter';
 import FileUploader from '../file-uploader/FileUploader';
-import httpClient from '../../../utils/httpClient';
 import { useAuth } from '../../../contexts/AuthProvider';
 
 const EditPostModalContent = (props: any) => {
@@ -17,7 +16,7 @@ const EditPostModalContent = (props: any) => {
   const { openSnackbar } = useSnackbar();
   const [errorMessage, setErrorMessage] = useState<string>('')
   const { closeModal } = useModal();
-  const { updateIsLoggedIn } = useAuth();
+  const { protectedHttpClientInit } = useAuth();
 
   useEffect(() => {
     setPostDescription(props.postData.content)
@@ -35,7 +34,6 @@ const EditPostModalContent = (props: any) => {
   }
 
   const editPost = async () => {
-    if (!updateIsLoggedIn()) return
     if (!postTitle.trim()) return setErrorMessage('Titulek příspěvku nesmí být prázdný!')
     if (!postDescription.trim()) return setErrorMessage('Popisek příspěvku nesmí být prázdný!')
 
@@ -46,7 +44,8 @@ const EditPostModalContent = (props: any) => {
     formData.append('post_title', postTitle)
     formData.append('post_description', postDescription)
 
-    httpClient.put('/api/put-blog-post', formData, {
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.put('/api/put-blog-post', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }

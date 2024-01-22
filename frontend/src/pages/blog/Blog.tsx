@@ -6,13 +6,11 @@ import ErrorMessage from '../../components/error-message/ErrorMessage';
 import { useUserData } from '../../contexts/UserDataProvider';
 import { useSnackbar } from '../../contexts/SnackbarProvider';
 import { useNav } from '../../contexts/NavigationProvider';
-import httpClient from '../../utils/httpClient';
 import { useAuth } from '../../contexts/AuthProvider';
 
 const Blog = () => {
   const { user } = useUserData();
   const { openSnackbar } = useSnackbar();
-  const { updateIsLoggedIn } = useAuth();
   const [posts, setPosts] = useState<any[]>([])
   const [postTitle, setPostTitle] = useState('')
   const [postDescription, setPostDescription] = useState('')
@@ -20,6 +18,7 @@ const Blog = () => {
   const [errorMessage, setErrorMessage] = useState<string>('')
   const myPostsSectionRef = useRef<HTMLHRElement>(null);
   const { setActiveLink } = useNav();
+  const { protectedHttpClientInit } = useAuth();
 
   useEffect(() => {
     getMyPosts()
@@ -27,9 +26,9 @@ const Blog = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const getMyPosts = () => {
-    if (!updateIsLoggedIn()) return
-    httpClient.get(`/api/get-my-posts/`)
+  const getMyPosts = async () => {
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.get(`/api/get-my-posts/`)
       .then(res => {
         setPosts(res.data)
       })
@@ -39,7 +38,6 @@ const Blog = () => {
   }
 
   const submitNewPost = async (e: any) => {
-    if (!updateIsLoggedIn()) return
     e.preventDefault()
 
     if (!postTitle.trim()) return setErrorMessage('Titulek příspěvku nesmí být prázdný!')
@@ -54,7 +52,8 @@ const Blog = () => {
     formData.append('post_title', postTitle)
     formData.append('post_description', postDescription)
 
-    httpClient.post('/api/post-blog-post', formData, {
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.post('/api/post-blog-post', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }

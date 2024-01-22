@@ -4,8 +4,10 @@ import React from 'react';
 import httpClient from '../utils/httpClient';
 import { useNav } from './NavigationProvider';
 import { useSnackbar } from './SnackbarProvider';
+import { AxiosInstance } from 'axios';
 
 type AuthContextType = {
+  protectedHttpClientInit: () => Promise<AxiosInstance | undefined>;
   updateIsLoggedIn: () => Promise<boolean>;
   logout: (selfLogout?: boolean) => void;
   isLoggedIn: boolean;
@@ -26,27 +28,26 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     isLoggedIn && updateIsLoggedIn();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
 
-  const updateIsLoggedIn: () => Promise<boolean> = () => {
-    return httpClient.get('/api/auth-status')
-    .then((response: any) => {
+  const updateIsLoggedIn: () => Promise<boolean> = async () => {
+    try {
+      const response = await httpClient.get('/api/auth-status');
       if (!response.data.isLoggedIn) {
-        logout()
-        if (response.data.reason === 'User self logged out') openSnackbar('Odhlášení proběhlo úspěšně!')
-        else if (response.data.reason === 'Session expired') openSnackbar('Byli jste odhlášeni z důvodu neaktivity!')
-        return false
+        logout();
+        if (response.data.reason === 'User self logged out') openSnackbar('Odhlášení proběhlo úspěšně!');
+        else if (response.data.reason === 'Session expired') openSnackbar('Byli jste odhlášeni z důvodu neaktivity!');
+        return false;
       } else {
-        setIsLoggedIn(response.data.isLoggedIn)
-        return true
+        setIsLoggedIn(response.data.isLoggedIn);
+        return true;
       }
-    })
-    .catch((error: any) => {
-      console.error(error)
-      logout()
-      return false
-    });
+    } catch (error) {
+      console.error(error);
+      logout();
+      return false;
+    }
   }
 
   const logout = (selfLogout?: boolean) => {
@@ -67,7 +68,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       })
   }
 
+  const protectedHttpClientInit = async () => {
+    if(await updateIsLoggedIn()) return httpClient;
+  };
+
   const contextValue = {
+    protectedHttpClientInit,
     updateIsLoggedIn,
     logout,
     isLoggedIn,

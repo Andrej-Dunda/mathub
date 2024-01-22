@@ -3,7 +3,6 @@ import './Friends.scss'
 import FriendWindow from '../../components/friend-window/FriendWindow';
 import { useUserData } from '../../contexts/UserDataProvider';
 import { useNav } from '../../contexts/NavigationProvider';
-import httpClient from '../../utils/httpClient';
 import { useAuth } from '../../contexts/AuthProvider';
 
 const Friends = () => {
@@ -13,7 +12,7 @@ const Friends = () => {
   const [friends, setFriends] = useState<any[]>([])
   const { user } = useUserData();
   const { setActiveLink } = useNav();
-  const { updateIsLoggedIn } = useAuth();
+  const { protectedHttpClientInit } = useAuth();
 
   useEffect(() => {
     setActiveLink('/friends')
@@ -28,9 +27,9 @@ const Friends = () => {
     getFriends()
   }
 
-  const getFriends = () => {
-    if (!updateIsLoggedIn()) return
-    httpClient.post("/api/get-friends", {
+  const getFriends = async () => {
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.post("/api/get-friends", {
       user_id: user._id
     })
       .then((response: any) => {
@@ -44,9 +43,9 @@ const Friends = () => {
       })
   }
 
-  const getFriendRequests = () => {
-    if (!updateIsLoggedIn()) return
-    httpClient.post("/api/get-friend-requests", {
+  const getFriendRequests = async () => {
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.post("/api/get-friend-requests", {
       user_id: user._id
     })
       .then((response: any) => {
@@ -60,9 +59,9 @@ const Friends = () => {
       })
   }
 
-  const getMyFriendRequests = () => {
-    if (!updateIsLoggedIn()) return
-    httpClient.post("/api/get-my-friend-requests", {
+  const getMyFriendRequests = async () => {
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.post("/api/get-my-friend-requests", {
       user_id: user._id
     })
       .then((response: any) => {
@@ -76,9 +75,9 @@ const Friends = () => {
       })
   }
 
-  const getFriendSuggestions = () => {
-    if (!updateIsLoggedIn()) return
-    httpClient.post("/api/get-friend-suggestions", {
+  const getFriendSuggestions = async () => {
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.post("/api/get-friend-suggestions", {
       user_id: user._id
     })
       .then((response: any) => {
