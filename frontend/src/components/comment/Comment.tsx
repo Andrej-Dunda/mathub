@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import './Comment.scss'
 import ProfilePicture from '../profile-picture/ProfilePicture';
 import httpClient from '../../utils/httpClient';
+import { useAuth } from '../../contexts/AuthProvider';
 
 const Comment = (props: any) => {
+  const { updateIsLoggedIn } = useAuth();
   const [authorName, setAuthorName] = useState('')
   const rawPostDate = new Date(props.commentContent.comment_time)
   const dayOfMonth = rawPostDate.getDate();
@@ -20,6 +22,7 @@ const Comment = (props: any) => {
   }
 
   useEffect(() => {
+    if (!updateIsLoggedIn()) return
     httpClient.get(`/api/user/${commentContent.author_id}`)
     .then(res => {
       setAuthorName(`${res.data.first_name} ${res.data.last_name}`)

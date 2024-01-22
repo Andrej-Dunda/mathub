@@ -7,6 +7,7 @@ import { useUserData } from '../../contexts/UserDataProvider';
 import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
 import { useNav } from '../../contexts/NavigationProvider';
 import httpClient from '../../utils/httpClient';
+import { useAuth } from '../../contexts/AuthProvider';
 
 const LoginPage = () => {
   const [loginForm, setLoginForm] = useState({
@@ -20,6 +21,7 @@ const LoginPage = () => {
   const { setUser } = useUserData();
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
   const { toRegistration, toForgottenPassword, toHome } = useNav();
+  const { setIsLoggedIn } = useAuth();
   
   useEffect(() => {
     const handleKeyPress = (e: any) => {
@@ -40,6 +42,7 @@ const LoginPage = () => {
         if (response.status === 200) {
           setResponseMessage(response.data.message)
           setUser(response.data)
+          setIsLoggedIn(true)
           toHome()
         }
       }).catch((error: any) => {

@@ -5,6 +5,7 @@ from werkzeug.datastructures import CallbackDict
 from uuid import uuid4
 import json
 from neo4j import GraphDatabase
+from datetime import timedelta
 
 load_dotenv()
 
@@ -55,7 +56,8 @@ class ApplicationConfig:
     SESSION_COOKIE_SECURE=False
 
     SESSION_TYPE = 'redis'
-    SESSION_PERMANENT = False
+    SESSION_PERMANENT = True
+    PERMANENT_SESSION_LIFETIME = timedelta(minutes=1)
     SESSION_USE_SIGNer = True
     SESSION_REDIS = redis.from_url('redis://redis:6379')
 

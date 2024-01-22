@@ -3,6 +3,7 @@ import React from 'react';
 import httpClient from '../utils/httpClient';
 import { iSubject, iTopic } from '../interfaces/materials-interface';
 import { useSnackbar } from './SnackbarProvider';
+import { useAuth } from './AuthProvider';
 
 type MaterialsContextType = {
   topics: iTopic[];
@@ -42,9 +43,11 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   const [selectedSubject, setSelectedSubject] = useState<iSubject>()
 
   const { openSnackbar } = useSnackbar();
+  const { updateIsLoggedIn } = useAuth();
 
   useEffect(() => {
     selectedSubject && getSubjectTopics(selectedSubject._id)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSubject])
 
   useEffect(() => {
@@ -52,6 +55,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   }, [topics])
 
   const getSubjects = async () => {
+    if (!updateIsLoggedIn()) return
     httpClient.get('/api/get-subjects')
       .then(res => {
         setSubjects(res.data)
@@ -62,6 +66,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   }
 
   const postSubject = async (newSubjectName: string) => {
+    if (!updateIsLoggedIn()) return
     if (newSubjectName) httpClient.post('/api/post-subject', {
       subject_name: newSubjectName
     })
@@ -75,6 +80,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   }
 
   const getSubject = async (subject_id: string) => {
+    if (!updateIsLoggedIn()) return
     httpClient.get(`/api/get-subject/${subject_id}`)
       .then(res => {
         setSelectedSubject(res.data)
@@ -85,6 +91,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   }
 
   const putSubject = async (subject_id: string, subject_name: string) => {
+    if (!updateIsLoggedIn()) return
     httpClient.put(`/api/put-subject`, {
       subject_id,
       subject_name
@@ -100,6 +107,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   }
 
   const deleteSubject = async (subject_id: string) => {
+    if (!updateIsLoggedIn()) return
     httpClient.delete(`/api/delete-subject/${subject_id}`)
       .then(() => {
         getSubjects()
@@ -112,6 +120,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   }
 
   const getSubjectTopics = async (subject_id: string) => {
+    if (!updateIsLoggedIn()) return
     httpClient.get(`/api/get-subject-topics/${subject_id}`)
       .then(res => {
         setTopics(res.data)
@@ -122,6 +131,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   }
 
   const postTopic = async (subject_id: string, topic_name: string) => {
+    if (!updateIsLoggedIn()) return
     httpClient.post('/api/post-topic', {
       subject_id,
       topic_name
@@ -136,6 +146,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   }
 
   const getTopic = async (topic_id: string) => {
+    if (!updateIsLoggedIn()) return
     httpClient.get(`/api/get-topic/${topic_id}`)
       .then(res => {
         setSelectedTopic(res.data)
@@ -146,6 +157,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   }
 
   const putTopic = async (topic_id: string, topic_name: string, topic_content: string, keepTopicSelected?: boolean) => {
+    if (!updateIsLoggedIn()) return
     httpClient.put(`/api/put-topic`, {
       topic_id: topic_id,
       topic_name: topic_name,
@@ -162,6 +174,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   }
 
   const deleteTopic = async (topic_id: string) => {
+    if (!updateIsLoggedIn()) return
     httpClient.delete(`/api/delete-topic/${topic_id}`)
       .then(() => {
         selectedSubject && getSubjectTopics(selectedSubject._id)

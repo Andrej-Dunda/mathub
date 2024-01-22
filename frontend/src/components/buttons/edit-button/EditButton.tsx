@@ -8,6 +8,7 @@ import ErrorMessage from '../../error-message/ErrorMessage';
 import ModalFooter from '../../modal/modal-footer/ModalFooter';
 import FileUploader from '../file-uploader/FileUploader';
 import httpClient from '../../../utils/httpClient';
+import { useAuth } from '../../../contexts/AuthProvider';
 
 const EditPostModalContent = (props: any) => {
   const [postTitle, setPostTitle] = useState(props.postData.title)
@@ -16,6 +17,7 @@ const EditPostModalContent = (props: any) => {
   const { openSnackbar } = useSnackbar();
   const [errorMessage, setErrorMessage] = useState<string>('')
   const { closeModal } = useModal();
+  const { updateIsLoggedIn } = useAuth();
 
   useEffect(() => {
     setPostDescription(props.postData.content)
@@ -33,6 +35,7 @@ const EditPostModalContent = (props: any) => {
   }
 
   const editPost = async () => {
+    if (!updateIsLoggedIn()) return
     if (!postTitle.trim()) return setErrorMessage('Titulek příspěvku nesmí být prázdný!')
     if (!postDescription.trim()) return setErrorMessage('Popisek příspěvku nesmí být prázdný!')
 

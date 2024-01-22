@@ -57,9 +57,12 @@ def auth_status():
         if 'user_id' in session:
             return {'isLoggedIn': True}, 200
         else:
-            return {'isLoggedIn': False}, 200
+            if 'self_logout' in session and session['self_logout']:
+                session['self_logout'] = False
+                return {'isLoggedIn': False, 'reason': 'User self logged out'}, 200
+            else:
+                return {'isLoggedIn': False, 'reason': 'Session expired'}, 200
     except Exception as e:
-        print({'error': str(e)})
         return {'error': str(e)}, 400
 
 @app.route('/api/login', methods=['POST'])
@@ -94,6 +97,9 @@ def login():
 
 @app.route('/api/logout', methods=['POST'])
 def logout():
+    self_logout = request.json.get('self_logout', False)
+
+    session['self_logout'] = self_logout
     session.pop('user_id', None)
     return jsonify({'message': 'Logged out'}), 200
 

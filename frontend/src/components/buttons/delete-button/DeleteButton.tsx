@@ -5,12 +5,15 @@ import { useSnackbar } from '../../../contexts/SnackbarProvider';
 import { useModal } from '../../../contexts/ModalProvider';
 import ModalFooter from '../../modal/modal-footer/ModalFooter';
 import httpClient from '../../../utils/httpClient';
+import { useAuth } from '../../../contexts/AuthProvider';
 
 const DeleteBlogPostModalContent = (props: any) => {
   const { openSnackbar } = useSnackbar();
   const { closeModal } = useModal();
+  const { updateIsLoggedIn } = useAuth();
 
   const deleteBlogPost = () => {
+    if (!updateIsLoggedIn()) return
     httpClient.delete(`/api/delete-blog-post/${props.postId}`)
     .then(() => {
       props.getMyPosts()

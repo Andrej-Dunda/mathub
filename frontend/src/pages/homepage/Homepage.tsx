@@ -4,13 +4,16 @@ import BlogPost from "../../components/blog-post/BlogPost";
 import { useNav } from "../../contexts/NavigationProvider";
 import { iPost } from "../../interfaces/blog-interfaces";
 import httpClient from "../../utils/httpClient";
+import { useAuth } from "../../contexts/AuthProvider";
 
 const Homepage = () => {
   const [posts, setPosts] = useState<iPost[]>([])
   const { setActiveLink } = useNav();
+  const { updateIsLoggedIn } = useAuth();
 
   useEffect(() => {
     setActiveLink('/')
+    if (!updateIsLoggedIn()) return
     httpClient.get('/api/posts')
     .then(res => {
       setPosts(res.data)
@@ -22,7 +25,8 @@ const Homepage = () => {
         console.error(error.response.headers)
       }
     })
-  }, [setActiveLink])  
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="homepage">

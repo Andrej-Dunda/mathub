@@ -7,10 +7,12 @@ import { useUserData } from '../../contexts/UserDataProvider';
 import { useSnackbar } from '../../contexts/SnackbarProvider';
 import { useNav } from '../../contexts/NavigationProvider';
 import httpClient from '../../utils/httpClient';
+import { useAuth } from '../../contexts/AuthProvider';
 
 const Blog = () => {
   const { user } = useUserData();
   const { openSnackbar } = useSnackbar();
+  const { updateIsLoggedIn } = useAuth();
   const [posts, setPosts] = useState<any[]>([])
   const [postTitle, setPostTitle] = useState('')
   const [postDescription, setPostDescription] = useState('')
@@ -26,6 +28,7 @@ const Blog = () => {
   }, [])
 
   const getMyPosts = () => {
+    if (!updateIsLoggedIn()) return
     httpClient.get(`/api/get-my-posts/`)
       .then(res => {
         setPosts(res.data)
@@ -36,6 +39,7 @@ const Blog = () => {
   }
 
   const submitNewPost = async (e: any) => {
+    if (!updateIsLoggedIn()) return
     e.preventDefault()
 
     if (!postTitle.trim()) return setErrorMessage('Titulek příspěvku nesmí být prázdný!')

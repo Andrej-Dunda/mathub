@@ -1,6 +1,7 @@
 import './FriendButton.scss';
 import { useUserData } from '../../../contexts/UserDataProvider';
 import httpClient from '../../../utils/httpClient';
+import { useAuth } from '../../../contexts/AuthProvider';
 
 interface iFriendButtonData {
   url: string;
@@ -11,6 +12,7 @@ interface iFriendButtonData {
 
 const FriendButton = (props: any) => {
   const { user } = useUserData();
+  const { updateIsLoggedIn } = useAuth();
   const buttonUserId: string = props.userId
   const acceptFriendRequest: iFriendButtonData = {
     url: '/api/accept-friend-request',
@@ -57,6 +59,7 @@ const FriendButton = (props: any) => {
     : null
 
   const handleClick = () => {
+    if (!updateIsLoggedIn()) return
     buttonData && httpClient.post(buttonData.url, {
         requestor_id: buttonData.requestor_id,
         acceptor_id: buttonData.acceptor_id

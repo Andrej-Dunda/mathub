@@ -4,9 +4,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 import { useUserData } from '../../../contexts/UserDataProvider'
 import httpClient from '../../../utils/httpClient'
+import { useAuth } from '../../../contexts/AuthProvider'
 
 const LikeButton = (props: any) => {
   const { user } = useUserData();
+  const { updateIsLoggedIn } = useAuth();
   const [liked, setLiked] = useState<boolean>(false)
   const [likesCount, setLikesCount] = useState<number>(0)
 
@@ -16,6 +18,7 @@ const LikeButton = (props: any) => {
   }, [])
 
   const getLikes = () => {
+    if (!updateIsLoggedIn()) return
     httpClient.get(`/api/post-likes/${props.postId}`)
       .then(res => {
         const isLiked = res.data.some((liker: any) => liker.user_id === user._id);
@@ -26,6 +29,7 @@ const LikeButton = (props: any) => {
   }
 
   const onLikeButtonClick = () => {
+    if (!updateIsLoggedIn()) return
     httpClient.post('/api/toggle-post-like', {
       post_id: props.postId,
       user_id: user._id

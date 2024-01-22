@@ -4,6 +4,7 @@ import FriendWindow from '../../components/friend-window/FriendWindow';
 import { useUserData } from '../../contexts/UserDataProvider';
 import { useNav } from '../../contexts/NavigationProvider';
 import httpClient from '../../utils/httpClient';
+import { useAuth } from '../../contexts/AuthProvider';
 
 const Friends = () => {
   const [friendRequests, setFriendRequests] = useState<any[]>([])
@@ -12,6 +13,7 @@ const Friends = () => {
   const [friends, setFriends] = useState<any[]>([])
   const { user } = useUserData();
   const { setActiveLink } = useNav();
+  const { updateIsLoggedIn } = useAuth();
 
   useEffect(() => {
     setActiveLink('/friends')
@@ -27,6 +29,7 @@ const Friends = () => {
   }
 
   const getFriends = () => {
+    if (!updateIsLoggedIn()) return
     httpClient.post("/api/get-friends", {
       user_id: user._id
     })
@@ -42,6 +45,7 @@ const Friends = () => {
   }
 
   const getFriendRequests = () => {
+    if (!updateIsLoggedIn()) return
     httpClient.post("/api/get-friend-requests", {
       user_id: user._id
     })
@@ -57,6 +61,7 @@ const Friends = () => {
   }
 
   const getMyFriendRequests = () => {
+    if (!updateIsLoggedIn()) return
     httpClient.post("/api/get-my-friend-requests", {
       user_id: user._id
     })
@@ -72,6 +77,7 @@ const Friends = () => {
   }
 
   const getFriendSuggestions = () => {
+    if (!updateIsLoggedIn()) return
     httpClient.post("/api/get-friend-suggestions", {
       user_id: user._id
     })
