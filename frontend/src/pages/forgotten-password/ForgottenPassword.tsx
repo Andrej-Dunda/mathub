@@ -92,7 +92,7 @@ const ForgottenPassword = () => {
       </div>
       <div className="forgotten-password-window">
         <h2 className='h2 form-heading unselectable'>Resetovat heslo</h2>
-        <form>
+        <form id='forgotten-password-form'>
           <div className='forgotten-password-input'>
             <label htmlFor="email-input" className='unselectable'>E-mail:</label>
             <input
@@ -102,6 +102,7 @@ const ForgottenPassword = () => {
               value={forgottenPasswordEmail}
               name='email'
               onChange={handleChange}
+              autoComplete='email'
             />
           </div>
           <div className='forgotten-password-other-options'>

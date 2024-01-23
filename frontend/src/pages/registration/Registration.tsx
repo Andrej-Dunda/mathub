@@ -122,7 +122,7 @@ const Registration = () => {
       </div>
       <div className="registration-window">
         <h2 className='h2 form-heading unselectable'>Registrace</h2>
-        <form>
+        <form className='registration-form'>
           <div className="form-body">
             <div className='registration-input first-last-name-inputs'>
               <div className='name-input'>
@@ -135,6 +135,7 @@ const Registration = () => {
                   name='first_name'
                   onChange={handleChange}
                   ref={firstNameInputRef}
+                  autoComplete="given-name"
                 />
               </div>
               <div className='name-input'>
@@ -147,6 +148,7 @@ const Registration = () => {
                   name='last_name'
                   onChange={handleChange}
                   ref={lastNameInputRef}
+                  autoComplete="family-name"
                 />
               </div>
             </div>
@@ -160,6 +162,7 @@ const Registration = () => {
                 name='email'
                 onChange={handleChange}
                 ref={emailInputRef}
+                autoComplete="email"
               />
             </div>
             <div className='registration-input visibility-toggle'>
@@ -174,6 +177,7 @@ const Registration = () => {
                   onChange={handleChange}
                   ref={passwordInputRef}
                   title='Alespoň 8 znaků, 1 velké a malé písmeno, 1 číslo'
+                  autoComplete="new-password"
                 />
                 <FontAwesomeIcon onClick={togglePasswordVisibility} className={`eye-icon ${!showPassword && 'password-hidden'}`} icon={showPassword ? faEye : faEyeSlash} />
               </div>
@@ -189,6 +193,7 @@ const Registration = () => {
                 onChange={handleChange}
                 ref={passwordAgainInputRef}
                 title='Alespoň 8 znaků, 1 velké a malé písmeno, 1 číslo'
+                autoComplete="new-password"
               />
             </div>
           </div>

@@ -8,6 +8,7 @@ import { ReactComponent as MatHubLogo } from '../../images/mathub-logo.svg';
 import { useNav } from '../../contexts/NavigationProvider';
 import httpClient from '../../utils/httpClient';
 import { useAuth } from '../../contexts/AuthProvider';
+import { useSnackbar } from '../../contexts/SnackbarProvider';
 
 const LoginPage = () => {
   const [loginForm, setLoginForm] = useState({
@@ -22,6 +23,7 @@ const LoginPage = () => {
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
   const { toRegistration, toForgottenPassword, toHome } = useNav();
   const { setIsLoggedIn } = useAuth();
+  const { openSnackbar } = useSnackbar();
   
   useEffect(() => {
     const handleKeyPress = (e: any) => {
@@ -43,11 +45,14 @@ const LoginPage = () => {
           setResponseMessage(response.data.message)
           setUser(response.data)
           setIsLoggedIn(true)
+          openSnackbar("Přihlášení proběhlo úspěšně!")
           toHome()
         }
       }).catch((error: any) => {
         if (error.response.status === 401) {
           setResponseMessage('Nesprávné jméno nebo heslo!')
+        } else {
+          setResponseMessage('Něco se pokazilo, zkuste to znovu!')
         }
       })
 
@@ -79,7 +84,7 @@ const LoginPage = () => {
       </div>
       <div className="login-window">
         <h2 className='h2 form-heading unselectable'>Přihlášení</h2>
-        <form>
+        <form id='login-form'>
           <div className="form-body">
             <div className='login-input'>
               <label htmlFor="email-input" className='unselectable'>E-mail:</label>
@@ -91,6 +96,7 @@ const LoginPage = () => {
                 name='email'
                 onChange={handleChange}
                 ref={emailInputRef}
+                autoComplete="email"
               />
             </div>
             <div className='login-input visibility-toggle'>
@@ -104,6 +110,7 @@ const LoginPage = () => {
                   name='password'
                   onChange={handleChange}
                   ref={passwordInputRef}
+                  autoComplete="current-password"
                 />
                 <FontAwesomeIcon onClick={togglePasswordVisibility} className={`eye-icon ${!showPassword && 'password-hidden'}`} icon={showPassword ? faEye : faEyeSlash} />
               </div>
