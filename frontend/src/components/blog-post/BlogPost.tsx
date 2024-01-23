@@ -62,6 +62,7 @@ const BlogPost = (props: any) => {
         setUserName(res.data.first_name + ' ' + res.data.last_name)
       })
       .catch((err) => console.error(err))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postData.author_id])
 
   const getComments = () => {
@@ -80,7 +81,7 @@ const BlogPost = (props: any) => {
     setNewComment(e.target.value)
   }
 
-  const submitComment = () => {
+  const submitComment = async () => {
     newComment.trim() && httpClient.post('/api/add-comment', {
       post_id: postData._id,
       commenter_id: user._id,

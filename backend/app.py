@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename
 import os
 from flask_cors import CORS
 from PIL import Image
+import pytz
 from uuid import uuid4
 from init_db import init_db
 
@@ -26,6 +27,7 @@ server_session = Session(app)
 # Create an instance of Neo4j
 neo4j = Neo4jService()
 
+my_timezone = pytz.timezone('Europe/Prague')
 
 # ---------------------
 # LOGIN PAGES ENDPOINTS
@@ -57,9 +59,12 @@ def auth_status():
         if 'user_id' in session:
             return {'isLoggedIn': True}, 200
         else:
-            return {'isLoggedIn': False}, 200
+            if 'self_logout' in session and session['self_logout']:
+                session['self_logout'] = False
+                return {'isLoggedIn': False, 'reason': 'User self logged out'}, 200
+            else:
+                return {'isLoggedIn': False, 'reason': 'Session expired'}, 200
     except Exception as e:
-        print({'error': str(e)})
         return {'error': str(e)}, 400
 
 @app.route('/api/login', methods=['POST'])
@@ -94,6 +99,9 @@ def login():
 
 @app.route('/api/logout', methods=['POST'])
 def logout():
+    self_logout = request.json.get('self_logout', False)
+
+    session['self_logout'] = self_logout
     session.pop('user_id', None)
     return jsonify({'message': 'Logged out'}), 200
 
@@ -116,17 +124,17 @@ def register_new_user():
                 first_name: '{first_name}',
                 last_name: '{last_name}',
                 profile_picture: 'profile-picture-default.png',
-                registration_date: '{datetime.now().isoformat()}'
-            }})
-            (subject:SUBJECT {{ _id: '{uuid4()}', subject_name: 'DEMO Předmět', date_created: "{datetime.now().isoformat()}", date_modified: "{datetime.now().isoformat()}" }}) -[:CREATED_BY]-> (new_user)
-            (topic:TOPIC {{ _id: '{uuid4()}', topic_name: 'DEMO Materiál', topic_content: 'Obsah DEMO materiálu', date_created: "{datetime.now().isoformat()}", date_modified: "{datetime.now().isoformat()}" }}) -[:TOPIC_OF]-> (subject)
+                registration_date: '{datetime.now(my_timezone).isoformat()}'
+            }}),
+            (subject:SUBJECT {{ _id: '{uuid4()}', subject_name: 'DEMO Předmět', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:CREATED_BY]-> (new_user),
+            (topic:TOPIC {{ _id: '{uuid4()}', topic_name: 'DEMO Materiál', topic_content: 'Obsah DEMO materiálu', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (subject)
             """)
         else:
-            return {'message': 'Tento email je již registrován', 'success': False, 'email_already_registered': True}
-    except:
-        return {'message': 'Registrace se nezdařila :(', 'success': False, 'email_already_registered': False}
+            return {'message': 'Tento email je již registrován', 'success': False, 'email_already_registered': True}, 400
+    except Exception as e:
+        return {'message': 'Registrace se nezdařila :(', 'success': False, 'email_already_registered': False, 'error': str(e)}, 500
     else:
-        return {'message': 'Registrace proběhla úspěšně.', 'success': True, 'email_already_registered': False}
+        return {'message': 'Registrace proběhla úspěšně.', 'success': True, 'email_already_registered': False}, 200
     
 @app.route('/api/forgotten-password', methods=['POST'])
 def generate_new_password():
@@ -305,7 +313,7 @@ def remove_friend():
 def new_blog_post():
     try:
         user_id = request.form.get('user_id', None)
-        post_time = datetime.now().isoformat()
+        post_time = datetime.now(my_timezone).isoformat()
         post_title = request.form.get('post_title', None)
         post_description = request.form.get('post_description', None)
         post_image_name = ''
@@ -453,7 +461,7 @@ def add_comment():
         post_id = request.json.get('post_id', None)
         commenter_id = request.json.get('commenter_id', None)
         comment = request.json.get('comment', None)
-        comment_time = datetime.now().isoformat()
+        comment_time = datetime.now(my_timezone).isoformat()
         neo4j.run_query(f'''
             MATCH (author:USER {{_id: "{commenter_id}"}}), (post:BLOG_POST {{_id: "{post_id}"}})
             CREATE (author) <-[:COMMENTED_BY]- (:POST_COMMENT {{_id: "{uuid4()}", comment: "{comment}", comment_time: "{comment_time}"}}) -[:COMMENT_OF]-> (post)
@@ -576,8 +584,8 @@ def post_subject():
 
         neo4j.run_query(f'''
             MATCH (user:USER {{_id: "{user_id}"}})
-            CREATE (new_subject:SUBJECT {{_id: '{uuid4()}', subject_name: '{subject_name}', date_created: "{datetime.now().isoformat()}", date_modified: "{datetime.now().isoformat()}" }}) -[:CREATED_BY]-> (user),
-            (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: 'DEMO', topic_content: 'DEMO obsah materiálu', date_created: "{datetime.now().isoformat()}", date_modified: "{datetime.now().isoformat()}" }}) -[:TOPIC_OF]-> (new_subject)
+            CREATE (new_subject:SUBJECT {{_id: '{uuid4()}', subject_name: '{subject_name}', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:CREATED_BY]-> (user),
+            (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: 'DEMO', topic_content: 'DEMO obsah materiálu', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (new_subject)
             ''')
         return f'Subject "{subject_name}" added successfuly', 200
     except Exception as e:
@@ -602,7 +610,7 @@ def put_subject():
         neo4j.run_query(f'''
             MATCH (subject:SUBJECT {{_id: "{subject_id}"}})
             SET subject.subject_name = "{subject_name}",
-            subject.date_modified = "{datetime.now().isoformat()}"
+            subject.date_modified = "{datetime.now(my_timezone).isoformat()}"
             ''')
         return 'Subject edited successfuly', 200
     except:
@@ -654,7 +662,7 @@ def post_topic():
 
         neo4j.run_query(f'''
             MATCH (user:USER {{_id: "{user_id}"}}), (subject:SUBJECT {{_id: "{subject_id}"}})
-            CREATE (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: '{topic_name}', topic_content: 'DEMO obsah materiálu {topic_name}', date_created: "{datetime.now().isoformat()}", date_modified: "{datetime.now().isoformat()}" }}) -[:TOPIC_OF]-> (subject),
+            CREATE (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: '{topic_name}', topic_content: 'DEMO obsah materiálu {topic_name}', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (subject),
             (new_topic) -[:CREATED_BY]-> (user)
             ''')
         return 'Topic added successfuly', 200
@@ -682,7 +690,7 @@ def put_topic():
             MATCH (topic:TOPIC {{_id: "{topic_id}"}})
             SET topic.topic_name = "{topic_name}",
             topic.topic_content = "{topic_content}",
-            topic.date_modified = "{datetime.now().isoformat()}"
+            topic.date_modified = "{datetime.now(my_timezone).isoformat()}"
             ''')
         return 'Topic edited successfuly', 200
     except:

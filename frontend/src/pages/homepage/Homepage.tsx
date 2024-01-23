@@ -22,7 +22,8 @@ const Homepage = () => {
         console.error(error.response.headers)
       }
     })
-  }, [setActiveLink])  
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="homepage">

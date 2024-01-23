@@ -6,7 +6,8 @@ import httpClient from '../../utils/httpClient';
 const Comment = (props: any) => {
   const [authorName, setAuthorName] = useState('')
   const rawPostDate = new Date(props.commentContent.comment_time)
-  const dayOfMonth = rawPostDate.getDate();
+  const rawPostDateObj = new Date(rawPostDate);
+  const dayOfMonth = rawPostDateObj.getDate();
   const month = rawPostDate.getMonth() + 1;
   const hour = rawPostDate.getHours();
   const minute = rawPostDate.getMinutes();
@@ -25,6 +26,7 @@ const Comment = (props: any) => {
       setAuthorName(`${res.data.first_name} ${res.data.last_name}`)
     })
     .catch(err => console.error(err))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [commentContent.author_id])
 
 

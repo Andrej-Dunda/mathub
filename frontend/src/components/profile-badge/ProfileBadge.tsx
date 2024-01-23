@@ -56,7 +56,7 @@ const ProfileBadge = () => {
               <FontAwesomeIcon icon={faUser} color={grayscale900} />
               {`${user.first_name} ${user.last_name}`}
             </div>
-            <div className="menu-item" onClick={logout} >
+            <div className="menu-item" onClick={() => logout(true)} >
               <FontAwesomeIcon icon={faSignOut} color={grayscale900} />
               Odhlásit se
             </div>

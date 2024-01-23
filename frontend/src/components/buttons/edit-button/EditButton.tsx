@@ -7,7 +7,7 @@ import { useSnackbar } from '../../../contexts/SnackbarProvider';
 import ErrorMessage from '../../error-message/ErrorMessage';
 import ModalFooter from '../../modal/modal-footer/ModalFooter';
 import FileUploader from '../file-uploader/FileUploader';
-import httpClient from '../../../utils/httpClient';
+import { useAuth } from '../../../contexts/AuthProvider';
 
 const EditPostModalContent = (props: any) => {
   const [postTitle, setPostTitle] = useState(props.postData.title)
@@ -16,6 +16,7 @@ const EditPostModalContent = (props: any) => {
   const { openSnackbar } = useSnackbar();
   const [errorMessage, setErrorMessage] = useState<string>('')
   const { closeModal } = useModal();
+  const { protectedHttpClientInit } = useAuth();
 
   useEffect(() => {
     setPostDescription(props.postData.content)
@@ -43,7 +44,8 @@ const EditPostModalContent = (props: any) => {
     formData.append('post_title', postTitle)
     formData.append('post_description', postDescription)
 
-    httpClient.put('/api/put-blog-post', formData, {
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.put('/api/put-blog-post', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }
@@ -51,10 +53,10 @@ const EditPostModalContent = (props: any) => {
       .then(() => {
         props.getMyPosts()
         openSnackbar("Příspěvek úspěšně uložen!")
-        setErrorMessage('')
-        closeModal();
       })
       .catch(err => console.error(err))
+      setErrorMessage('')
+      closeModal();
   }
 
   return (
