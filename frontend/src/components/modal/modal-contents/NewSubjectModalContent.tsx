@@ -24,9 +24,9 @@ const NewSubjectModalContent: React.FC = () => {
 
 
   const submitNewSubject = () => {
-    if (newSubjectName) {
+    if (newSubjectName.trim()) {
       closeModal()
-      return postSubject(newSubjectName)
+      return postSubject(newSubjectName.trim())
     }
     setNewSubjectModalError('Vyplňte pole Název nového předmětu!')
     newSubjectNameInputRef.current?.focus()

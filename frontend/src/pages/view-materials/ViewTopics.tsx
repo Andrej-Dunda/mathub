@@ -114,8 +114,8 @@ const ViewTopics: React.FC = () => {
     }, [])
 
     const submitNewTopic = () => {
-      if (newTopicName && selectedSubject) {
-        postTopic(selectedSubject._id, newTopicName)
+      if (newTopicName.trim() && selectedSubject) {
+        postTopic(selectedSubject._id, newTopicName.trim())
         closeModal()
         return
       }
@@ -160,7 +160,7 @@ const ViewTopics: React.FC = () => {
                 <div
                   key={index}
                   className={`aside-button topic-button ${topic._id === selectedTopic?._id ? 'active' : ''}`}
-                  title={topic.topic_name}
+                  title={topic.topic_name.trim() && topic.topic_name.trim()}
                   onClick={() => handleTopicChange(topic._id)}
                   ref={el => (topicsRefs.current[index] = el)}
                 >
