@@ -83,21 +83,20 @@ const Registration = () => {
           })
           toLogin()
           openSnackbar('Registrace proběhla úspěšně!')
-        } else {
-          response.data.email_already_registered ? emailInputRef.current?.focus() : setRegistrationForm({
-            email: "",
-            password: "",
-            password_again: "",
-            first_name: "",
-            last_name: ""
-          })
         }
       }).catch((error: any) => {
-        if (error.response) {
-          console.error(error.response)
-          console.error(error.response.status)
-          console.error(error.response.headers)
-        }
+        setResponseMessage(error.response.data.message)
+        if (error.response.data.email_already_registered) {
+          emailInputRef.current?.focus()
+        } else {
+         setRegistrationForm({
+           email: "",
+           password: "",
+           password_again: "",
+           first_name: "",
+           last_name: ""
+         })
+       }
       })
 
     event.preventDefault()

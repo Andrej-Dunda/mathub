@@ -130,11 +130,11 @@ def register_new_user():
             (topic:TOPIC {{ _id: '{uuid4()}', topic_name: 'DEMO Materiál', topic_content: 'Obsah DEMO materiálu', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (subject)
             """)
         else:
-            return {'message': 'Tento email je již registrován', 'success': False, 'email_already_registered': True}, 400
+            return {'message': 'Tento email je již registrován!', 'success': False, 'email_already_registered': True}, 400
     except Exception as e:
         return {'message': 'Registrace se nezdařila :(', 'success': False, 'email_already_registered': False, 'error': str(e)}, 500
     else:
-        return {'message': 'Registrace proběhla úspěšně.', 'success': True, 'email_already_registered': False}, 200
+        return {'message': 'Registrace proběhla úspěšně!', 'success': True, 'email_already_registered': False}, 200
     
 @app.route('/api/forgotten-password', methods=['POST'])
 def generate_new_password():
