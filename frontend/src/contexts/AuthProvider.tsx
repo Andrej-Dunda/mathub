@@ -40,6 +40,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         else if (response.data.reason === 'Session expired') openSnackbar('Byli jste odhlášeni z důvodu neaktivity!');
         return false;
       } else {
+        console.log(`Set user logged in to ${response.data.isLoggedIn}`);
         setIsLoggedIn(response.data.isLoggedIn);
         return true;
       }
@@ -56,6 +57,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (response.status === 200) {
           setIsLoggedIn(false)
           toLogin()
+          console.log('Logout successful')
         }
       }).catch((error: any) => {
         if (error.response.status === 401) {

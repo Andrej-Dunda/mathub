@@ -22,7 +22,7 @@ const LoginPage = () => {
   const { setUser } = useUserData();
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
   const { toRegistration, toForgottenPassword, toHome } = useNav();
-  const { setIsLoggedIn } = useAuth();
+  const { updateIsLoggedIn } = useAuth();
   const { openSnackbar } = useSnackbar();
   
   useEffect(() => {
@@ -44,7 +44,7 @@ const LoginPage = () => {
         if (response.status === 200) {
           setResponseMessage(response.data.message)
           setUser(response.data)
-          setIsLoggedIn(true)
+          updateIsLoggedIn()
           openSnackbar("Přihlášení proběhlo úspěšně!")
           toHome()
         }
