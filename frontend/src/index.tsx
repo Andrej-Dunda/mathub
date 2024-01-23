@@ -19,13 +19,13 @@ root.render(
       <SnackbarProvider>
         <NavigationProvider>
           <AuthProvider>
-            <ModalProvider>
-              <UserDataProvider>
-                <MaterialsProvider>
+            <UserDataProvider>
+              <MaterialsProvider>
+                <ModalProvider>
                   <AppRouter />
-                </MaterialsProvider>
-              </UserDataProvider>
-            </ModalProvider>
+                </ModalProvider>
+              </MaterialsProvider>
+            </UserDataProvider>
           </AuthProvider>
         </NavigationProvider>
       </SnackbarProvider>
