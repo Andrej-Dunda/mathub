@@ -118,15 +118,15 @@ const Registration = () => {
     <div className="registration-page">
       <div className="logo-and-title">
         <MatHubLogo color={grayscale900} className='mathub-logo' />
-        <h1 className="mathub-title">MatHub</h1>
+        <h1 className="mathub-title unselectable">MatHub</h1>
       </div>
       <div className="registration-window">
-        <h2 className='h2 form-heading'>Registrace</h2>
+        <h2 className='h2 form-heading unselectable'>Registrace</h2>
         <form>
           <div className="form-body">
             <div className='registration-input first-last-name-inputs'>
               <div className='name-input'>
-                <label htmlFor="first-name-input">Jméno:</label>
+                <label htmlFor="first-name-input" className='unselectable'>Jméno:</label>
                 <input
                   type="text"
                   className='first-name-input'
@@ -138,7 +138,7 @@ const Registration = () => {
                 />
               </div>
               <div className='name-input'>
-                <label htmlFor="last-name-input">Příjmení:</label>
+                <label htmlFor="last-name-input" className='unselectable'>Příjmení:</label>
                 <input
                   type="text"
                   className='last-name-input'
@@ -151,7 +151,7 @@ const Registration = () => {
               </div>
             </div>
             <div className='registration-input'>
-              <label htmlFor="email-input">E-mail:</label>
+              <label htmlFor="email-input" className='unselectable'>E-mail:</label>
               <input
                 type="email"
                 className='email-input'
@@ -163,7 +163,7 @@ const Registration = () => {
               />
             </div>
             <div className='registration-input visibility-toggle'>
-              <label htmlFor="password-input">Heslo:</label>
+              <label htmlFor="password-input" className='unselectable'>Heslo:</label>
               <div>
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -179,7 +179,7 @@ const Registration = () => {
               </div>
             </div>
             <div className='registration-input'>
-              <label htmlFor="password-again-input">Heslo znovu:</label>
+              <label htmlFor="password-again-input" className='unselectable'>Heslo znovu:</label>
               <input
                 type={showPassword ? 'text' : 'password'}
                 className='password-again-input'
@@ -194,8 +194,8 @@ const Registration = () => {
           </div>
           <div className="form-footer">
             <div className='registration-other-options'>
-              <span onClick={toLogin}>zpět na přihlášení</span>
-              <span onClick={toForgottenPassword}>zapomenuté heslo</span>
+              <span onClick={toLogin} className='unselectable'>zpět na přihlášení</span>
+              <span onClick={toForgottenPassword} className='unselectable'>zapomenuté heslo</span>
             </div>
             <ErrorMessage content={responseMessage} />
             <div className='registration-submit'>

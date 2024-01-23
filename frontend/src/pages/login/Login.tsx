@@ -75,14 +75,14 @@ const LoginPage = () => {
     <div className="login-page">
       <div className="logo-and-title">
         <MatHubLogo color={grayscale900} className='mathub-logo' />
-        <h1 className="mathub-title">MatHub</h1>
+        <h1 className="mathub-title unselectable">MatHub</h1>
       </div>
       <div className="login-window">
-        <h2 className='h2 form-heading'>Přihlášení</h2>
+        <h2 className='h2 form-heading unselectable'>Přihlášení</h2>
         <form>
           <div className="form-body">
             <div className='login-input'>
-              <label htmlFor="email-input">E-mail:</label>
+              <label htmlFor="email-input" className='unselectable'>E-mail:</label>
               <input
                 type="email"
                 className='email-input'
@@ -94,7 +94,7 @@ const LoginPage = () => {
               />
             </div>
             <div className='login-input visibility-toggle'>
-              <label htmlFor="password-input">Heslo:</label>
+              <label htmlFor="password-input" className='unselectable'>Heslo:</label>
               <div>
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -111,8 +111,8 @@ const LoginPage = () => {
           </div>
           <div className="form-footer">
             <div className='login-other-options'>
-              <span onClick={toRegistration}>registrovat se</span>
-              <span onClick={toForgottenPassword}>zapomenuté heslo</span>
+              <span onClick={toRegistration} className='unselectable'>registrovat se</span>
+              <span onClick={toForgottenPassword} className='unselectable'>zapomenuté heslo</span>
             </div>
             <ErrorMessage content={responseMessage} />
             <div className='login-submit'>
