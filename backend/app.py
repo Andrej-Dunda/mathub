@@ -144,22 +144,22 @@ def generate_new_password():
       characters = string.ascii_letters + string.digits
       new_password = ''.join(random.choice(characters) for _ in range(12))
 
-      existing_user = neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) RETURN user')[0]
+      existing_user = neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) RETURN user')
 
-      if existing_user is None:
-        return jsonify({'console_message': 'User profile does not exist', 'response_message': 'Tento profil neexistuje', 'result': False})
+      if not len(existing_user):
+        return jsonify({'console_message': 'User profile does not exist', 'response_message': 'Tento email není registrován!', 'result': False}), 400
       
       password_hash = Bcrypt().generate_password_hash(new_password).decode('utf-8')  # Hash the password
       neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) SET user.user_password = "{password_hash}"')
     except:
-      return jsonify({'console_message': 'Failed to reset password', 'response_message': 'Heslo nemohlo být resetováno', 'result': False})
+      return jsonify({'console_message': 'Failed to reset password', 'response_message': 'Heslo nemohlo být resetováno :(', 'result': False}), 500
     else:
       return jsonify({
          'console_message': 'Password reset successfully',
          'new_password': new_password,
-         'response_message': 'Heslo úspěšně resetováno',
+         'response_message': 'Heslo úspěšně resetováno!',
          'result': True
-         })
+         }), 200
     
 
 # -----------------
