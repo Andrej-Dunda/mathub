@@ -57,7 +57,7 @@ class ApplicationConfig:
 
     SESSION_TYPE = 'redis'
     SESSION_PERMANENT = True
-    PERMANENT_SESSION_LIFETIME = timedelta(minutes=1)
+    PERMANENT_SESSION_LIFETIME = timedelta(hours=1)
     SESSION_USE_SIGNer = True
     SESSION_REDIS = redis.from_url('redis://redis:6379')
 
