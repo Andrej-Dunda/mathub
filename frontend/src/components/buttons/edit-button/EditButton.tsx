@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './EditButton.scss'
 import { useModal } from '../../../contexts/ModalProvider';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSnackbar } from '../../../contexts/SnackbarProvider';
 import ErrorMessage from '../../error-message/ErrorMessage';
 import ModalFooter from '../../modal/modal-footer/ModalFooter';
@@ -10,20 +10,13 @@ import FileUploader from '../file-uploader/FileUploader';
 import { useAuth } from '../../../contexts/AuthProvider';
 
 const EditPostModalContent = (props: any) => {
-  const [postTitle, setPostTitle] = useState(props.postData.title)
-  const [postDescription, setPostDescription] = useState(props.postData.content)
+  const [postTitle, setPostTitle] = useState<string>(props.postData.title || '')
+  const [postDescription, setPostDescription] = useState<string>(props.postData.content || '')
   const [postImage, setPostImage] = useState<File | null>(null);
   const { openSnackbar } = useSnackbar();
   const [errorMessage, setErrorMessage] = useState<string>('')
   const { closeModal } = useModal();
   const { protectedHttpClientInit } = useAuth();
-
-  useEffect(() => {
-    setPostDescription(props.postData.content)
-    setPostTitle(props.postData.title)
-    setErrorMessage('')
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const handlePostDescChange = (e: any) => {
     setPostDescription(e.target.value)
