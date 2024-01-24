@@ -10,8 +10,8 @@ import FileUploader from '../file-uploader/FileUploader';
 import { useAuth } from '../../../contexts/AuthProvider';
 
 const EditPostModalContent = (props: any) => {
-  const [postTitle, setPostTitle] = useState<string>(props.postData.title || '')
-  const [postDescription, setPostDescription] = useState<string>(props.postData.content || '')
+  const [postTitle, setPostTitle] = useState<string>(props.postData.post_title || '')
+  const [postDescription, setPostDescription] = useState<string>(props.postData.post_description || '')
   const [postImage, setPostImage] = useState<File | null>(null);
   const { openSnackbar } = useSnackbar();
   const [errorMessage, setErrorMessage] = useState<string>('')
@@ -33,7 +33,7 @@ const EditPostModalContent = (props: any) => {
     const formData = new FormData()
 
     if (postImage) formData.append('post_image', postImage)
-    formData.append('post_id', props.postData.id.toString())
+    formData.append('post_id', props.postData._id.toString())
     formData.append('post_title', postTitle)
     formData.append('post_description', postDescription)
 
