@@ -14,21 +14,19 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <Router>
-      <SnackbarProvider>
-        <NavigationProvider>
-          <AuthProvider>
-            <UserDataProvider>
-              <MaterialsProvider>
-                <ModalProvider>
-                  <AppRouter />
-                </ModalProvider>
-              </MaterialsProvider>
-            </UserDataProvider>
-          </AuthProvider>
-        </NavigationProvider>
-      </SnackbarProvider>
-    </Router>
-  </React.StrictMode>
+  <Router>
+    <SnackbarProvider>
+      <NavigationProvider>
+        <AuthProvider>
+          <UserDataProvider>
+            <MaterialsProvider>
+              <ModalProvider>
+                <AppRouter />
+              </ModalProvider>
+            </MaterialsProvider>
+          </UserDataProvider>
+        </AuthProvider>
+      </NavigationProvider>
+    </SnackbarProvider>
+  </Router>
 );

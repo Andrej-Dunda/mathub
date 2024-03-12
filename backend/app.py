@@ -686,15 +686,21 @@ def put_topic():
         topic_id = request.json.get('topic_id', None)
         topic_name = request.json.get('topic_name', None)
         topic_content = request.json.get('topic_content', None)
-        neo4j.run_query(f'''
-            MATCH (topic:TOPIC {{_id: "{topic_id}"}})
-            SET topic.topic_name = "{topic_name}",
-            topic.topic_content = "{topic_content}",
-            topic.date_modified = "{datetime.now(my_timezone).isoformat()}"
-            ''')
-        return 'Topic edited successfuly', 200
-    except:
-        return 'Topic could not be edited', 400
+
+        neo4j.run_query('''
+            MATCH (topic:TOPIC {_id: $topic_id})
+            SET topic.topic_name = $topic_name,
+            topic.topic_content = $topic_content,
+            topic.date_modified = $date_modified
+            ''', {
+                'topic_id': topic_id,
+                'topic_name': topic_name,
+                'topic_content': topic_content,
+                'date_modified': datetime.now(my_timezone).isoformat()
+            })
+        return 'Topic edited successfully', 200
+    except Exception as e:
+        return str(e), 400
     
 @app.route('/api/delete-topic/<topic_id>', methods=['DELETE'])
 def delete_topic(topic_id):
