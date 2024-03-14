@@ -165,8 +165,8 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
       topic_content: topic_content
     })
       .then(() => {
-        keepTopicSelected && getTopic(topic_id)
         openSnackbar('Materiál úspěšně uložen!')
+        keepTopicSelected && getTopic(topic_id)
       })
       .catch(err => {
         console.error(err)

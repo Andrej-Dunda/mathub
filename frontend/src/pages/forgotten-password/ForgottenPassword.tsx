@@ -88,13 +88,13 @@ const ForgottenPassword = () => {
     <div className="forgotten-password-page">
       <div className="logo-and-title">
         <MatHubLogo color={grayscale900} className='mathub-logo' />
-        <h1 className="mathub-title">MatHub</h1>
+        <h1 className="mathub-title unselectable">MatHub</h1>
       </div>
       <div className="forgotten-password-window">
-        <h2 className='h2 form-heading'>Resetovat heslo</h2>
-        <form>
+        <h2 className='h2 form-heading unselectable'>Resetovat heslo</h2>
+        <form id='forgotten-password-form'>
           <div className='forgotten-password-input'>
-            <label htmlFor="email-input">E-mail:</label>
+            <label htmlFor="email-input" className='unselectable'>E-mail:</label>
             <input
               type="email"
               className='email-input'
@@ -102,13 +102,14 @@ const ForgottenPassword = () => {
               value={forgottenPasswordEmail}
               name='email'
               onChange={handleChange}
+              autoComplete='email'
             />
           </div>
-          <ErrorMessage content={errorResponseMessage} />
           <div className='forgotten-password-other-options'>
-            <span onClick={toLogin}>zpět na přihlášení</span>
-            <span onClick={toRegistration}>registrovat se</span>
+            <span onClick={toLogin} className='unselectable'>zpět na přihlášení</span>
+            <span onClick={toRegistration} className='unselectable'>registrovat se</span>
           </div>
+          <ErrorMessage content={errorResponseMessage} />
           <div className='forgotten-password-submit'>
             <button type='button' className='get-new-password-button' onClick={submitForgottenPassword}>Získat nové heslo</button>
           </div>

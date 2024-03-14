@@ -130,11 +130,11 @@ def register_new_user():
             (topic:TOPIC {{ _id: '{uuid4()}', topic_name: 'DEMO Materiál', topic_content: 'Obsah DEMO materiálu', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (subject)
             """)
         else:
-            return {'message': 'Tento email je již registrován', 'success': False, 'email_already_registered': True}, 400
+            return {'message': 'Tento email je již registrován!', 'success': False, 'email_already_registered': True}, 400
     except Exception as e:
         return {'message': 'Registrace se nezdařila :(', 'success': False, 'email_already_registered': False, 'error': str(e)}, 500
     else:
-        return {'message': 'Registrace proběhla úspěšně.', 'success': True, 'email_already_registered': False}, 200
+        return {'message': 'Registrace proběhla úspěšně!', 'success': True, 'email_already_registered': False}, 200
     
 @app.route('/api/forgotten-password', methods=['POST'])
 def generate_new_password():
@@ -144,22 +144,22 @@ def generate_new_password():
       characters = string.ascii_letters + string.digits
       new_password = ''.join(random.choice(characters) for _ in range(12))
 
-      existing_user = neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) RETURN user')[0]
+      existing_user = neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) RETURN user')
 
-      if existing_user is None:
-        return jsonify({'console_message': 'User profile does not exist', 'response_message': 'Tento profil neexistuje', 'result': False})
+      if not len(existing_user):
+        return jsonify({'console_message': 'User profile does not exist', 'response_message': 'Tento email není registrován!', 'result': False}), 400
       
       password_hash = Bcrypt().generate_password_hash(new_password).decode('utf-8')  # Hash the password
       neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) SET user.user_password = "{password_hash}"')
     except:
-      return jsonify({'console_message': 'Failed to reset password', 'response_message': 'Heslo nemohlo být resetováno', 'result': False})
+      return jsonify({'console_message': 'Failed to reset password', 'response_message': 'Heslo nemohlo být resetováno :(', 'result': False}), 500
     else:
       return jsonify({
          'console_message': 'Password reset successfully',
          'new_password': new_password,
-         'response_message': 'Heslo úspěšně resetováno',
+         'response_message': 'Heslo úspěšně resetováno!',
          'result': True
-         })
+         }), 200
     
 
 # -----------------
@@ -585,7 +585,7 @@ def post_subject():
         neo4j.run_query(f'''
             MATCH (user:USER {{_id: "{user_id}"}})
             CREATE (new_subject:SUBJECT {{_id: '{uuid4()}', subject_name: '{subject_name}', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:CREATED_BY]-> (user),
-            (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: 'DEMO', topic_content: 'DEMO obsah materiálu', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (new_subject)
+            (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: 'DEMO', topic_content: '<p>DEMO obsah materiálu</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (new_subject)
             ''')
         return f'Subject "{subject_name}" added successfuly', 200
     except Exception as e:
@@ -662,12 +662,11 @@ def post_topic():
 
         neo4j.run_query(f'''
             MATCH (user:USER {{_id: "{user_id}"}}), (subject:SUBJECT {{_id: "{subject_id}"}})
-            CREATE (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: '{topic_name}', topic_content: 'DEMO obsah materiálu {topic_name}', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (subject),
-            (new_topic) -[:CREATED_BY]-> (user)
+            CREATE (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: '{topic_name}', topic_content: '<p>DEMO obsah materiálu {topic_name}</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (subject)
             ''')
         return 'Topic added successfuly', 200
-    except:
-        return 'Topic could not be added', 400
+    except Exception as e:
+        return f'Topic could not be added:\n{e}', 400
     
 @app.route('/api/get-topic/<topic_id>', methods=['GET'])
 def get_topic(topic_id):
@@ -686,15 +685,21 @@ def put_topic():
         topic_id = request.json.get('topic_id', None)
         topic_name = request.json.get('topic_name', None)
         topic_content = request.json.get('topic_content', None)
-        neo4j.run_query(f'''
-            MATCH (topic:TOPIC {{_id: "{topic_id}"}})
-            SET topic.topic_name = "{topic_name}",
-            topic.topic_content = "{topic_content}",
-            topic.date_modified = "{datetime.now(my_timezone).isoformat()}"
-            ''')
-        return 'Topic edited successfuly', 200
-    except:
-        return 'Topic could not be edited', 400
+
+        neo4j.run_query('''
+            MATCH (topic:TOPIC {_id: $topic_id})
+            SET topic.topic_name = $topic_name,
+            topic.topic_content = $topic_content,
+            topic.date_modified = $date_modified
+            ''', {
+                'topic_id': topic_id,
+                'topic_name': topic_name,
+                'topic_content': topic_content,
+                'date_modified': datetime.now(my_timezone).isoformat()
+            })
+        return 'Topic edited successfully', 200
+    except Exception as e:
+        return str(e), 400
     
 @app.route('/api/delete-topic/<topic_id>', methods=['DELETE'])
 def delete_topic(topic_id):

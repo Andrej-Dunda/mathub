@@ -27,6 +27,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const { openSnackbar } = useSnackbar();
 
   useEffect(() => {
+    updateIsLoggedIn();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
     isLoggedIn && updateIsLoggedIn();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
@@ -34,13 +39,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const updateIsLoggedIn: () => Promise<boolean> = async () => {
     try {
       const response = await httpClient.get('/api/auth-status');
+      setIsLoggedIn(response.data.isLoggedIn)
       if (!response.data.isLoggedIn) {
-        logout();
+        toLogin()
         if (response.data.reason === 'User self logged out') openSnackbar('Odhlášení proběhlo úspěšně!');
         else if (response.data.reason === 'Session expired') openSnackbar('Byli jste odhlášeni z důvodu neaktivity!');
         return false;
       } else {
-        setIsLoggedIn(response.data.isLoggedIn);
         return true;
       }
     } catch (error) {
@@ -54,8 +59,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     httpClient.post('/api/logout', { self_logout: selfLogout ? selfLogout : false })
       .then((response: any) => {
         if (response.status === 200) {
-          setIsLoggedIn(false)
-          toLogin()
+          updateIsLoggedIn()
         }
       }).catch((error: any) => {
         if (error.response.status === 401) {

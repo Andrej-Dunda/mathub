@@ -43,11 +43,11 @@ const SubjectDropdown: FC<SubjectDropdownProps> = ({ isAsideMenuOpen, onEditorTo
   }, [subjects])
 
   const handleChange = (subject: iSubject) => {
-    onEditorTopicSwitch && onEditorTopicSwitch(() => {
+    subject._id !== selectedSubject?._id ? onEditorTopicSwitch && onEditorTopicSwitch(() => {
       setSelectedSubject(subject);
       setIsSubjectDropdownOpen(false)
       onChange && onChange(subject)
-    })
+    }) : setIsSubjectDropdownOpen(false)
   };
 
   const toggleDropdown = (e: any) => {

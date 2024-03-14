@@ -36,11 +36,11 @@ const UserProfile = () => {
           <div className="user-info-fields-wrapper">
             <div className="user-info-field">
               <span className='email-label label'>E-mail</span>
-              <span className='email'>{user.email}</span>
+              <span className='email info'>{user.email}</span>
             </div>
             <div className="user-info-field">
               <span className='registration-date-label label'>Datum registrace</span>
-              <span className='registration-date'>{registrationDate}</span>
+              <span className='registration-date info'>{registrationDate}</span>
             </div>
           </div><hr/>
         </div>

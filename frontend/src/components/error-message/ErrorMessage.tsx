@@ -7,7 +7,7 @@ interface iErrorMessage {
 const ErrorMessage: React.FC<iErrorMessage> = ({ content }) => {
   return (
     <>
-      {content && <span className={`error-message ${content ? 'active' : 'inactive'}`}>{content}</span>}
+      {content && <span className={`error-message unselectable ${content ? 'active' : 'inactive'}`}>{content}</span>}
     </>
   )
 }
