@@ -12,7 +12,7 @@ const ProfileBadge = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const profileBadgeRef = useRef<HTMLImageElement>(null);
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
-  const { toUserProfile } = useNav();
+  const { toMyProfile } = useNav();
   const { logout } = useAuth();
 
   useEffect(() => {
@@ -47,12 +47,13 @@ const ProfileBadge = () => {
         <ProfilePicture
           className='small radius-100'
           userId={user._id}
+          redirect={false}
         />
       </div>
       {
         isMenuOpen && (
           <div className="popup-menu">
-            <div className="menu-item user-profile" onClick={toUserProfile} >
+            <div className="menu-item user-profile" onClick={toMyProfile} >
               <FontAwesomeIcon icon={faUser} color={grayscale900} />
               {`${user.first_name} ${user.last_name}`}
             </div>

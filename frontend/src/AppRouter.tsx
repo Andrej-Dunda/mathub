@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 import { useAuth } from './contexts/AuthProvider'
 import Layout from './pages/layout/Layout';
 import Homepage from './pages/homepage/Homepage';
+import MyProfile from './pages/my-profile/MyProfile';
 import UserProfile from './pages/user-profile/UserProfile';
 import Friends from './pages/friends/Friends';
 import Blog from './pages/blog/Blog';
@@ -22,6 +23,7 @@ const AppRouter = () => {
         isLoggedIn ? (
           <Route path="/" element={<Layout />}>
             <Route index element={<Homepage />} />
+            <Route path="my-profile" element={<MyProfile />} />
             <Route path="user-profile" element={<UserProfile />} />
             <Route path="friends" element={<Friends />} />
             <Route path="blog" element={<Blog />} />

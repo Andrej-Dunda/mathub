@@ -6,7 +6,8 @@ interface iNavigationContext {
   toRegistration: () => void;
   toForgottenPassword: () => void;
   toHome: () => void;
-  toUserProfile: () => void;
+  toMyProfile: () => void;
+  toUserProfile: (user_id: string) => void;
   toFriends: () => void;
   toBlog: () => void;
   toSubjects: () => void;
@@ -44,8 +45,12 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
     navigate('/');
     setActiveLink('/')
   }
-  const toUserProfile = () => {
-    navigate('/user-profile');
+  const toMyProfile = () => {
+    navigate('/my-profile');
+    setActiveLink('/my-profile')
+  }
+  const toUserProfile = (user_id: string) => {
+    navigate(`/user-profile?user_id=${user_id}`);
     setActiveLink('/user-profile')
   }
   const toFriends = () => {
@@ -79,6 +84,7 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
       toRegistration,
       toForgottenPassword,
       toHome,
+      toMyProfile,
       toUserProfile,
       toFriends,
       toBlog,

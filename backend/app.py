@@ -481,7 +481,7 @@ def get_user(id):
         user = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user')[0]['user']
         return user
     except:
-        return {}
+        return 400
 
 def crop_image_to_square(image_path):
     with Image.open(image_path) as img:
