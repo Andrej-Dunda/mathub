@@ -127,20 +127,17 @@ const ViewTopics: React.FC = () => {
     getSubjects()
     setTimeout(() => setIsAsideMenuOpen(false), 200);
 
-    window.addEventListener('keydown', (e) => {
-      if (e.ctrlKey && e.key === 's' && selectedTopic?.topic_content !== activeTopicContent) {
+    const saveShortcut = (e: any) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's' && selectedTopic?.topic_content !== activeTopicContent) {
         e.preventDefault()
         saveTopic()
       }
-    })
+    }
+
+    window.addEventListener('keydown', saveShortcut)
 
     return () => {
-      window.removeEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.key === 's') {
-          e.preventDefault()
-          saveTopic()
-        }
-      })
+      window.removeEventListener('keydown', saveShortcut)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -163,11 +160,13 @@ const ViewTopics: React.FC = () => {
       setActiveTopicContent(selectedTopic.topic_content)
       setEditorTopicContent(EditorState.createWithContent(ContentState.createFromBlockArray(htmlToDraft(selectedTopic.topic_content || '<p></p>').contentBlocks)));
     }
-  }, [selectedTopic])
+    console.log(selectedTopic?._id)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTopic?._id])
 
   useEffect(() => {
-    console.log('activeTopicContent', activeTopicContent)
-  }, [activeTopicContent])
+    console.log(selectedTopic?.topic_content, '\n\n', activeTopicContent)
+  }, [activeTopicContent, selectedTopic])
 
   const onEditorTopicSwitch = (onFinish?: any) => {
     if (selectedTopic?.topic_content !== activeTopicContent) {
@@ -179,7 +178,6 @@ const ViewTopics: React.FC = () => {
   const saveTopic = (keepTopicSelected?: boolean) => {
     if (selectedTopic) {
       putTopic(selectedTopic._id, selectedTopic.topic_name, activeTopicContent, keepTopicSelected)
-      // setActiveTopicContent(selectedTopic.topic_content)
     }
   }
 
@@ -193,7 +191,7 @@ const ViewTopics: React.FC = () => {
   }
 
   const handleTopicChange = (topic_id: string) => {
-    onEditorTopicSwitch(() => getTopic(topic_id))
+    topic_id !== selectedTopic?._id && onEditorTopicSwitch(() => getTopic(topic_id))
   }
 
   const NewTopicModalContent: React.FC = () => {

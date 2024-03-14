@@ -585,7 +585,7 @@ def post_subject():
         neo4j.run_query(f'''
             MATCH (user:USER {{_id: "{user_id}"}})
             CREATE (new_subject:SUBJECT {{_id: '{uuid4()}', subject_name: '{subject_name}', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:CREATED_BY]-> (user),
-            (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: 'DEMO', topic_content: 'DEMO obsah materiálu', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (new_subject)
+            (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: 'DEMO', topic_content: '<p>DEMO obsah materiálu</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (new_subject)
             ''')
         return f'Subject "{subject_name}" added successfuly', 200
     except Exception as e:
@@ -662,12 +662,11 @@ def post_topic():
 
         neo4j.run_query(f'''
             MATCH (user:USER {{_id: "{user_id}"}}), (subject:SUBJECT {{_id: "{subject_id}"}})
-            CREATE (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: '{topic_name}', topic_content: 'DEMO obsah materiálu {topic_name}', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (subject),
-            (new_topic) -[:CREATED_BY]-> (user)
+            CREATE (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: '{topic_name}', topic_content: '<p>DEMO obsah materiálu {topic_name}</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (subject)
             ''')
         return 'Topic added successfuly', 200
-    except:
-        return 'Topic could not be added', 400
+    except Exception as e:
+        return f'Topic could not be added:\n{e}', 400
     
 @app.route('/api/get-topic/<topic_id>', methods=['GET'])
 def get_topic(topic_id):
