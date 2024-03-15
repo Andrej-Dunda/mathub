@@ -487,11 +487,24 @@ def get_user(id):
 def get_user_profile(id):
     try:
         user_data = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user')[0]['user']
-        users_posts = neo4j.run_query(f'MATCH (post:BLOG_POST) -[:POSTED_BY]-> (user:USER {{_id: "{id}"}}) RETURN post')
-        user_subjects = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) <-[:CREATED_BY]- (subject:SUBJECT) RETURN subject')
+        user_posts_data = neo4j.run_query(f'MATCH (post:BLOG_POST) -[:POSTED_BY]-> (user:USER {{_id: "{id}"}}) RETURN post, user._id AS author_id ORDER BY post.post_time DESC')
+        user_subjects_data = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) <-[:CREATED_BY]- (subject:SUBJECT) RETURN subject')
+
+        user_posts = []
+        for post_data in user_posts_data:
+            post = post_data['post']
+            post['author_id'] = post_data['author_id']
+            user_posts.append(post)
+
+        user_subjects = []
+        for subject_data in user_subjects_data:
+            subject = subject_data['subject']
+            subject['author_id'] = id
+            user_subjects.append(subject)
+
         user = {
             'user': user_data,
-            'posts': users_posts,
+            'posts': user_posts,
             'subjects': user_subjects
         }
         return user
