@@ -33,7 +33,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     isLoggedIn && updateIsLoggedIn();
-    console.log('Location changed')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
 

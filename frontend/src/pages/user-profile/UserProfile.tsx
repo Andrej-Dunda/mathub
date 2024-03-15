@@ -22,7 +22,6 @@ const UserProfile = () => {
   }, [searchParams])
 
   useEffect(() => {
-    console.log(userId, '\n\n', user._id)
     if (userId && user._id && userId === user._id) toMyProfile();
     else userId && httpClient.get(`/api/user/${userId}`)
       .then(res => {

@@ -2,8 +2,12 @@ import { useEffect, useState } from 'react';
 import './Comment.scss'
 import ProfilePicture from '../profile-picture/ProfilePicture';
 import httpClient from '../../utils/httpClient';
+import { useUserData } from '../../contexts/UserDataProvider';
+import { useNav } from '../../contexts/NavigationProvider';
 
 const Comment = (props: any) => {
+  const { user } = useUserData();
+  const { toUserProfile, toMyProfile } = useNav();
   const [authorName, setAuthorName] = useState('')
   const rawPostDate = new Date(props.commentContent.comment_time)
   const rawPostDateObj = new Date(rawPostDate);
@@ -29,13 +33,17 @@ const Comment = (props: any) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [commentContent.author_id])
 
+  const redirectToUserProfile = () => {
+    if (commentContent.author_id === user._id) toMyProfile()
+    else toUserProfile(commentContent.author_id)
+  }
 
   return (
     <div className='comment'>
       <div className="comment-header">
         <ProfilePicture className='xsmall radius-100' userId={commentContent.author_id} />
         <div className="author-and-comment-time">
-          <span className='comment-author'>{authorName}</span>
+          <span className='comment-author' onClick={redirectToUserProfile}>{authorName}</span>
           <span className='comment-time'>{commentContent.comment_time}</span>
         </div>
       </div>

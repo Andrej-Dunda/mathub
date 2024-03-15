@@ -18,7 +18,7 @@ const Friends = () => {
     setActiveLink('/friends')
     updateFriends()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [user._id])
 
   const updateFriends = () => {
     getFriendSuggestions()

@@ -12,6 +12,7 @@ import { useUserData } from '../../contexts/UserDataProvider'
 import TextParagraph from '../text-paragraph/TextParagraph'
 import httpClient from '../../utils/httpClient'
 import { iPost } from '../../interfaces/blog-interfaces'
+import { useNav } from '../../contexts/NavigationProvider'
 
 const BlogPost = (props: any) => {
   const { user } = useUserData();
@@ -44,6 +45,7 @@ const BlogPost = (props: any) => {
   const commentsRef = useRef<HTMLDivElement>(null);
   const grayscale100 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-100').trim();
   const [height, setHeight] = useState<number>(postContentRef.current?.getBoundingClientRect().height || 0);
+  const { toUserProfile, toMyProfile } = useNav();
 
   useEffect(() => {
     getComments()
@@ -104,6 +106,11 @@ const BlogPost = (props: any) => {
     }
   };
 
+  const redirectToUserProfile = () => {
+    if (postData.author_id === user._id) toMyProfile()
+    else toUserProfile(postData.author_id)
+  }
+
   return (
     <div className={`blog-post ${!showComments && 'no-comments'}`}>
       <main className={`blog-post-main ${showComments && 'border-right-grey'}`} ref={postContentRef} >
@@ -111,7 +118,10 @@ const BlogPost = (props: any) => {
           <div className="blog-info">
             <ProfilePicture className='post-size radius-100 border box-shadow-dark' userId={postData.author_id} />
             <div className="user-name-and-post-time">
-              <h5 className='user-name'>{userName}</h5>
+              <h5
+                className='user-name'
+                onClick={redirectToUserProfile}
+              >{userName}</h5>
               <span className='blog-post-time'>{postData.post_time}</span>
             </div>
             <div className="blog-post-buttons">
