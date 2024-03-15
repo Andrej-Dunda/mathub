@@ -25,6 +25,8 @@
       -webkit-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
       -moz-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
 
+      overflow: hidden;
+
       header {
         height: 32px;
         width: 100%;
@@ -40,32 +42,57 @@
         overflow: hidden;
       }
 
-      main {
+      .subject-button-body {
         height: calc(100% - 32px);
         max-height: calc(100% - 32px);
         width: 100%;
 
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        padding: 8px;
-
-        font-weight: 500;
-
         cursor: pointer;
 
-        border-bottom-left-radius: 8px;
-        border-bottom-right-radius: 8px;
-          
-        &:hover {
+        &:hover main {
           background-color: var(--hover-white);
         }
 
-        span {
-          text-wrap: nowrap;
+        main {
+          height: 136px;
+          max-height: 136px;
+          width: 100%;
+
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          padding: 8px;
+
+          font-weight: 500;
+
+          span {
+            text-wrap: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+
+        .subject-button-footer {
+          height: 32px;
+          width: 100%;
+
+          display: flex;
+          justify-content: space-between;
+
+          background-color: var(--grayscale-900);
+          color: var(--grayscale-100);
+
+          padding: 0 4px;
+
+          border-bottom-left-radius: 8px;
+          border-bottom-right-radius: 8px;
           overflow: hidden;
-          text-overflow: ellipsis;
+
+          span {
+            display: flex;
+            align-items: center;
+          }
         }
       }
     }

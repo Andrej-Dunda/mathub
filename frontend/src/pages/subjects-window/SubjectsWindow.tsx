@@ -61,11 +61,21 @@ const SubjectsWindow = () => {
                     }
                   ]}/>
                 </header>
-                <main onClick={() => openSubject(subject)} title={subject.subject_name}>
-                  <span>
-                    {subject.subject_name}
-                  </span>
-                </main>
+                <div className="subject-button-body" onClick={() => openSubject(subject)} title={subject.subject_name}>
+                  <main>
+                    <h5>
+                      {subject.subject_name}
+                    </h5>
+                  </main>
+                  <footer className='subject-button-footer'>
+                    <span className='subject-type'>
+                      {subject.subject_type}
+                    </span>
+                    <span className='subject-grade'>
+                      {subject.subject_grade}
+                    </span>
+                  </footer>
+                </div>
               </div>
             )
           })

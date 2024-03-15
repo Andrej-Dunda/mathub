@@ -13,7 +13,9 @@ const Modal: React.FC<iModal> = ({ children }) => {
 
   useEffect(() => {
     const preventScroll = (e: WheelEvent) => {
-      e.preventDefault();
+      if (!document.querySelector('.modal')?.contains(e.target as Node)) {
+        e.preventDefault();
+      }
     };
 
     document.body.addEventListener('wheel', preventScroll, { passive: false });

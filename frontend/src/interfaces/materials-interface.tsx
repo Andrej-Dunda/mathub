@@ -4,6 +4,8 @@ export interface iSubject {
   subject_name: string;
   date_created: string;
   date_modified: string;
+  subject_type: string;
+  subject_grade: string;
 }
 
 export interface iTopic {

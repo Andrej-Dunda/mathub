@@ -16,7 +16,7 @@ type MaterialsContextType = {
   setSelectedSubject: React.Dispatch<React.SetStateAction<iSubject | undefined>>;
 
   getSubjects: () => void;
-  postSubject: (newSubjectName: string) => void;
+  postSubject: (newSubjectName: string, subject_type: string, subject_grade: string) => void;
   getSubject: (subject_id: string) => void;
   putSubject: (subject_id: string, subject_name: string) => void;
   deleteSubject: (subject_id: string) => void;
@@ -64,11 +64,13 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
       })
   }
 
-  const postSubject = async (newSubjectName: string) => {
+  const postSubject = async (newSubjectName: string, selectedSubjectType: string, selectedSubjectGrade: string) => {
     if (newSubjectName) {
       const protectedHttpClient = await protectedHttpClientInit();
       protectedHttpClient?.post('/api/post-subject', {
-        subject_name: newSubjectName
+        subject_name: newSubjectName,
+        subject_type: selectedSubjectType,
+        subject_grade: selectedSubjectGrade
       })
         .then(() => {
           getSubjects()

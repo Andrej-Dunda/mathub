@@ -133,9 +133,9 @@ init_db_query = f'''
 
     // Subjects
     CREATE
-    (subject1:SUBJECT {{ _id: '{uuid4()}', subject_name: 'DEMO Ekonomie', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:CREATED_BY]-> (admin),
-    (subject2:SUBJECT {{ _id: '{uuid4()}', subject_name: 'DEMO Matematika', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:CREATED_BY]-> (admin),
-    (subject3:SUBJECT {{ _id: '{uuid4()}', subject_name: 'DEMO Informatika', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:CREATED_BY]-> (admin)
+    (subject1:SUBJECT {{ _id: '{uuid4()}', subject_name: 'DEMO Ekonomie', date_created: "{random_time()}", date_modified: "{random_time()}", subject_type: "Ekonomie", subject_grade: "4. ročník SŠ" }}) -[:CREATED_BY]-> (admin),
+    (subject2:SUBJECT {{ _id: '{uuid4()}', subject_name: 'DEMO Matematika', date_created: "{random_time()}", date_modified: "{random_time()}", subject_type: "Matematika", subject_grade: "3. ročník SŠ" }}) -[:CREATED_BY]-> (admin),
+    (subject3:SUBJECT {{ _id: '{uuid4()}', subject_name: 'DEMO Informatika', date_created: "{random_time()}", date_modified: "{random_time()}", subject_type: "Informatika", subject_grade: "9. ročník ZŠ" }}) -[:CREATED_BY]-> (admin)
 
     // Topics
     CREATE

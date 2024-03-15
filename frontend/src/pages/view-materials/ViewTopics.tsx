@@ -160,13 +160,8 @@ const ViewTopics: React.FC = () => {
       setActiveTopicContent(selectedTopic.topic_content)
       setEditorTopicContent(EditorState.createWithContent(ContentState.createFromBlockArray(htmlToDraft(selectedTopic.topic_content || '<p></p>').contentBlocks)));
     }
-    console.log(selectedTopic?._id)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTopic?._id])
-
-  useEffect(() => {
-    console.log(selectedTopic?.topic_content, '\n\n', activeTopicContent)
-  }, [activeTopicContent, selectedTopic])
 
   const onEditorTopicSwitch = (onFinish?: any) => {
     if (selectedTopic?.topic_content !== activeTopicContent) {

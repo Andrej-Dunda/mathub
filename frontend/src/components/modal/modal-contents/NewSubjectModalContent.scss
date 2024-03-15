@@ -1,9 +1,24 @@
 .new-subject-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 16px;
 
-  label {
-    font-weight: 500;
+  padding: 16px 0;
+
+  .name-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    label {
+      font-weight: 500;
+    }
+  }
+
+  .new-subject-classification {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
   }
 }

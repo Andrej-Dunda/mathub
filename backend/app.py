@@ -482,6 +482,21 @@ def get_user(id):
         return user
     except:
         return 400
+    
+@app.route('/api/user-profile/<id>', methods=['GET'])
+def get_user_profile(id):
+    try:
+        user_data = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user')[0]['user']
+        users_posts = neo4j.run_query(f'MATCH (post:BLOG_POST) -[:POSTED_BY]-> (user:USER {{_id: "{id}"}}) RETURN post')
+        user_subjects = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) <-[:CREATED_BY]- (subject:SUBJECT) RETURN subject')
+        user = {
+            'user': user_data,
+            'posts': users_posts,
+            'subjects': user_subjects
+        }
+        return user
+    except:
+        return 400
 
 def crop_image_to_square(image_path):
     with Image.open(image_path) as img:
@@ -574,7 +589,9 @@ def get_subjects():
 @app.route('/api/post-subject', methods=['POST'])
 def post_subject():
     try:
-        subject_name = request.json.get('subject_name', 'NoName Předmět')
+        subject_name = request.json.get('subject_name', 'Nepojmenovaný Předmět')
+        subject_type = request.json.get('subject_type', 'Jiné')
+        subject_grade = request.json.get('subject_grade', 'Jiné')
         user_id = session.get('user_id')
 
         if user_id is None:
@@ -584,8 +601,8 @@ def post_subject():
 
         neo4j.run_query(f'''
             MATCH (user:USER {{_id: "{user_id}"}})
-            CREATE (new_subject:SUBJECT {{_id: '{uuid4()}', subject_name: '{subject_name}', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:CREATED_BY]-> (user),
-            (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: 'DEMO', topic_content: '<p>DEMO obsah materiálu</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (new_subject)
+            CREATE (new_subject:SUBJECT {{_id: '{uuid4()}', subject_name: '{subject_name}', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}", subject_type: "{subject_type}", subject_grade: "{subject_grade}" }}) -[:CREATED_BY]-> (user),
+            (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: 'DEMO materiál', topic_content: '<p>DEMO obsah materiálu</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (new_subject)
             ''')
         return f'Subject "{subject_name}" added successfuly', 200
     except Exception as e:
