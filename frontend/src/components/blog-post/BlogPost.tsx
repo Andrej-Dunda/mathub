@@ -13,26 +13,15 @@ import TextParagraph from '../text-paragraph/TextParagraph'
 import httpClient from '../../utils/httpClient'
 import { iPost } from '../../interfaces/blog-interfaces'
 import { useNav } from '../../contexts/NavigationProvider'
+import { normalizeDateHours } from '../../utils/normalizeDate'
 
 const BlogPost = (props: any) => {
   const { user } = useUserData();
   const [userName, setUserName] = useState<string>('')
-  const rawPostDate = new Date(props.postData.post_time)
-  const czechMonthNames = [
-    'ledna', 'února', 'března', 'dubna', 'května', 'června',
-    'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'
-  ];
-  // Custom format for Czech date string
-  const dayOfMonth = rawPostDate.getDate();
-  const monthName = czechMonthNames[rawPostDate.getMonth()];
-  const hour = rawPostDate.getHours();
-  const minute = rawPostDate.getMinutes();
-  const addLeadingZero = (num: number) => (num < 10 ? `0${num}` : num);
-  const customDateFormat = `${dayOfMonth}. ${monthName} v ${hour}:${addLeadingZero(minute)}`;
   const postData: iPost = {
     _id: props.postData._id,
     author_id: props.postData.author_id,
-    post_time: customDateFormat,
+    post_time: normalizeDateHours(props.postData.post_time),
     post_title: props.postData.post_title,
     post_description: props.postData.post_description,
     post_image: props.postData.post_image ? props.postData.post_image : null

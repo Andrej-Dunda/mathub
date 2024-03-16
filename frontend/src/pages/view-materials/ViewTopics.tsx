@@ -33,7 +33,7 @@ const ViewTopics: React.FC = () => {
   } = useMaterials();
   const [oldTopicsLength, setOldTopicsLength] = useState<number>(topics.length)
   const topicsRefs = useRef<Array<HTMLElement | null>>([]);
-  const [editorTopicContent, setEditorTopicContent] = useState<EditorState>(EditorState.createEmpty())
+  const [topicEditorState, setTopicEditorState] = useState<EditorState>(EditorState.createEmpty())
   const [activeTopicContent, setActiveTopicContent] = useState<string>('')
 
   const [isAsideMenuOpen, setIsAsideMenuOpen] = useState<boolean>(true)
@@ -158,7 +158,7 @@ const ViewTopics: React.FC = () => {
   useEffect(() => {
     if (selectedTopic) {
       setActiveTopicContent(selectedTopic.topic_content)
-      setEditorTopicContent(EditorState.createWithContent(ContentState.createFromBlockArray(htmlToDraft(selectedTopic.topic_content || '<p></p>').contentBlocks)));
+      setTopicEditorState(EditorState.createWithContent(ContentState.createFromBlockArray(htmlToDraft(selectedTopic.topic_content || '<p></p>').contentBlocks)));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTopic?._id])
@@ -230,7 +230,7 @@ const ViewTopics: React.FC = () => {
   }
 
   const onEditorStateChange = (newState: any) => {
-    setEditorTopicContent(newState);
+    setTopicEditorState(newState);
     setActiveTopicContent(draftToHtml(convertToRaw(newState.getCurrentContent())));
   }
 
@@ -295,7 +295,7 @@ const ViewTopics: React.FC = () => {
         <div className="main-content-body">
           <div className="wysiwyg-wrapper">
             <WysiwygEditor
-              editorState={editorTopicContent}
+              editorState={topicEditorState}
               toolbarClassName="topic-editor-toolbar"
               wrapperClassName="topic-editor-wrapper"
               editorClassName="topic-editor-content"

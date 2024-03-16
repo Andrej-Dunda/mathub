@@ -13,6 +13,7 @@ import LoginPage from './pages/login/Login';
 import Registration from './pages/registration/Registration';
 import ForgottenPassword from './pages/forgotten-password/ForgottenPassword';
 import PageNotFound from './pages/page-not-found/PageNotFound';
+import PreviewMaterial from './pages/preview-material/PreviewMaterial';
 
 const AppRouter = () => {
   const { isLoggedIn } = useAuth()
@@ -30,6 +31,7 @@ const AppRouter = () => {
             <Route path="subjects" element={<SubjectsWindow />} />
             <Route path="view-materials" element={<ViewTopics />} />
             <Route path="new-book-analysis" element={<NewBookAnalysis />} />
+            <Route path="preview-material" element={<PreviewMaterial />} />
             <Route path="*" element={<PageNotFound />} />
           </Route>
         ) : (

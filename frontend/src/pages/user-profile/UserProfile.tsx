@@ -10,6 +10,7 @@ import { useUserData } from '../../contexts/UserDataProvider';
 import { iSubject } from '../../interfaces/materials-interface';
 import { iPost } from '../../interfaces/blog-interfaces';
 import BlogPost from '../../components/blog-post/BlogPost';
+import { normalizeDate } from '../../utils/normalizeDate';
 
 const UserProfile = () => {
   const { user } = useUserData();
@@ -18,7 +19,7 @@ const UserProfile = () => {
   const [viewedUser, setViewedUser] = useState<iUser | null>(null);
   const [subjects, setSubjects] = useState<iSubject[]>([]);
   const [posts, setPosts] = useState<iPost[]>([]);
-  const { toMyProfile } = useNav()
+  const { toMyProfile, toPreviewMaterial } = useNav()
 
   useEffect(() => {
     let paramUserId = searchParams.get("user_id");
@@ -32,7 +33,7 @@ const UserProfile = () => {
       .then(res => {
         setViewedUser({
           _id: res.data.user._id,
-          email: res.data.user.user_email,
+          user_email: res.data.user.user_email,
           first_name: res.data.user.first_name,
           last_name: res.data.user.last_name,
           profile_picture: res.data.user.profile_picture,
@@ -45,19 +46,6 @@ const UserProfile = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, user._id])
 
-  const normalizeDate = (date: string) => {
-    const registrationDateRaw = new Date(date)
-    const czechMonthNames = [
-      'ledna', 'února', 'března', 'dubna', 'května', 'června',
-      'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'
-    ];
-    // Custom format for Czech date string
-    const dayOfMonth = registrationDateRaw.getDate();
-    const monthName = czechMonthNames[registrationDateRaw.getMonth()];
-    const year = registrationDateRaw.getFullYear();
-    return `${dayOfMonth}. ${monthName} ${year}`;
-  }
-
   return (
     <>
       {viewedUser ? (
@@ -69,7 +57,7 @@ const UserProfile = () => {
               <div className="user-info-fields-wrapper">
                 <div className="user-info-field">
                   <span className='email-label label'>E-mail</span>
-                  <span className='email info'>{viewedUser.email}</span>
+                  <span className='email info'>{viewedUser.user_email}</span>
                 </div>
                 <div className="user-info-field">
                   <span className='registration-date-label label'>Datum registrace</span>
@@ -82,30 +70,34 @@ const UserProfile = () => {
           <h2 className="h2">Materiály uživatele</h2>
           <div className="user-materials">
             {
-              subjects.length > 0 ? subjects.map((subject, index) => {
-                return (
-                  <div className="subject-button" key={index}>
-                    <div className="subject-button-header">
-                      <span className="date-created">{normalizeDate(subject.date_created)}</span>
-                    </div>
-                    <div className="subject-button-body" title={subject.subject_name}>
-                      <main>
-                        <h5>
-                          {subject.subject_name}
-                        </h5>
-                      </main>
-                      <footer className='subject-button-footer'>
-                        <span className='subject-type'>
-                          {subject.subject_type}
-                        </span>
-                        <span className='subject-grade'>
-                          {subject.subject_grade}
-                        </span>
-                      </footer>
-                    </div>
-                  </div>
-                )
-              }) : (
+              subjects.length > 0 ? (
+                <div className="user-materials-windows">
+                  {subjects.map((subject, index) => {
+                    return (
+                      <div className="subject-button" key={index} onClick={() => toPreviewMaterial(subject._id)}>
+                        <div className="subject-button-header">
+                          <span className="date-created">{normalizeDate(subject.date_created)}</span>
+                        </div>
+                        <div className="subject-button-body" title={subject.subject_name}>
+                          <main>
+                            <h5>
+                              {subject.subject_name}
+                            </h5>
+                          </main>
+                          <footer className='subject-button-footer'>
+                            <span className='subject-type'>
+                              {subject.subject_type}
+                            </span>
+                            <span className='subject-grade'>
+                              {subject.subject_grade}
+                            </span>
+                          </footer>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
                 <span className='no-materials'>Uživatel zatím nemá žádné materiály :(</span>
               )
             }

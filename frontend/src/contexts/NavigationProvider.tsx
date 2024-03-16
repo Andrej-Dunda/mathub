@@ -13,6 +13,7 @@ interface iNavigationContext {
   toSubjects: () => void;
   toViewMaterials: () => void;
   toNewBookAnalysis: () => void;
+  toPreviewMaterial: (subject_id: string) => void;
   activeLink: string;
   setActiveLink: React.Dispatch<React.SetStateAction<string>>;
   toPreviousPage: () => void;
@@ -74,6 +75,11 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
     setActiveLink('/new-book-analysis')
   }
 
+  const toPreviewMaterial = (subject_id: string) => {
+    navigate(`/preview-material?subject_id=${subject_id}`);
+    setActiveLink('/preview-material')
+  }
+
   const toPreviousPage = () => {
     navigate(activeLink);
   }
@@ -91,6 +97,7 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
       toSubjects,
       toViewMaterials,
       toNewBookAnalysis,
+      toPreviewMaterial,
       activeLink,
       setActiveLink,
       toPreviousPage

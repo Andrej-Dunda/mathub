@@ -40,12 +40,14 @@ const ChangeProfilePictureModalContent: React.FC = () => {
           headers: {
             'Content-Type': 'multipart/form-data',
           }
-        });
-
-        updateUser()
-        openSnackbar('Obrázek úspěšně nahrán!');
-        closeModal()
-        setErrorMessage('')
+        })
+        .then(() => {
+          updateUser()
+          openSnackbar('Obrázek úspěšně nahrán!');
+          closeModal()
+          setErrorMessage('')
+        })
+        .catch(err => console.error(err))
       } else closeModal();
     } catch (error) {
       setErrorMessage('Chyba při nahrávání obrázku :(');

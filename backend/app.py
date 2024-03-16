@@ -126,8 +126,8 @@ def register_new_user():
                 profile_picture: 'profile-picture-default.png',
                 registration_date: '{datetime.now(my_timezone).isoformat()}'
             }}),
-            (subject:SUBJECT {{ _id: '{uuid4()}', subject_name: 'DEMO Předmět', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:CREATED_BY]-> (new_user),
-            (topic:TOPIC {{ _id: '{uuid4()}', topic_name: 'DEMO Materiál', topic_content: 'Obsah DEMO materiálu', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (subject)
+            (subject:SUBJECT {{ _id: '{uuid4()}', subject_name: 'DEMO Předmět', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}", subject_type: "Jiné", subject_grade: "Jiné" }}) -[:CREATED_BY]-> (new_user),
+            (topic:TOPIC {{ _id: '{uuid4()}', topic_name: 'DEMO Materiál', topic_content: '<p>Obsah DEMO materiálu</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (subject)
             """)
         else:
             return {'message': 'Tento email je již registrován!', 'success': False, 'email_already_registered': True}, 400
@@ -678,6 +678,41 @@ def delete_subject(subject_id):
         return 'Subject deleted successfuly', 200
     except:
         return 'Subject could not be deleted', 400
+    
+@app.route('/api/preview-subject/<subject_id>', methods=['GET'])
+def preview_subject(subject_id):
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        return jsonify({
+            'error': 'Not logged in'
+            }), 401
+
+    try:
+        subject_preview_data = neo4j.run_query(f'''
+            MATCH (user:USER {{_id: "{user_id}"}}), (author:USER) <-[:CREATED_BY]- (subject:SUBJECT {{_id: "{subject_id}"}}) <-[:TOPIC_OF]- (topic:TOPIC)
+            RETURN subject, COLLECT(topic) AS topics, author, EXISTS((user)-[:FRIEND_WITH]-(author)) AS isFriend
+            ''')[0]
+        
+        # Remove the 'user_password' attribute from the author
+        if 'user_password' in subject_preview_data['author']:
+            del subject_preview_data['author']['user_password']
+
+        if not subject_preview_data['isFriend']:
+            return {
+                    "isFriend": False,
+                    "validSubjectId": True,
+                    "author": subject_preview_data['author']
+                }
+        
+        if subject_preview_data['subject'] is not None:
+            subject_preview_data['validSubjectId'] = True
+        else:
+            subject_preview_data['validSubjectId'] = False
+
+        return subject_preview_data
+    except:
+        return {"validSubjectId": False}, 400
 
 
 # ----------------

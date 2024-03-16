@@ -4,6 +4,7 @@ import { useUserData } from '../../contexts/UserDataProvider';
 import { useModal } from '../../contexts/ModalProvider';
 import ChangePasswordModalContent from '../../components/modal/modal-contents/ChangePasswordModalContent';
 import ChangeProfilePictureModalContent from '../../components/modal/modal-contents/ChangeProfilePictureModalContent';
+import { normalizeDate } from '../../utils/normalizeDate';
 
 const MyProfile = () => {
   const { user } = useUserData();
@@ -17,19 +18,6 @@ const MyProfile = () => {
     showModal(<ChangeProfilePictureModalContent />)
   }
 
-  const normalizeDate = (date: string) => {
-    const registrationDateRaw = new Date(date)
-    const czechMonthNames = [
-      'ledna', 'února', 'března', 'dubna', 'května', 'června',
-      'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'
-    ];
-    // Custom format for Czech date string
-    const dayOfMonth = registrationDateRaw.getDate();
-    const monthName = czechMonthNames[registrationDateRaw.getMonth()];
-    const year = registrationDateRaw.getFullYear();
-    return `${dayOfMonth}. ${monthName} ${year}`;
-  }
-
   return (
         <div className="my-profile">
           <div className="user-wrapper">
@@ -39,7 +27,7 @@ const MyProfile = () => {
               <div className="user-info-fields-wrapper">
                 <div className="user-info-field">
                   <span className='email-label label'>E-mail</span>
-                  <span className='email info'>{user.email}</span>
+                  <span className='email info'>{user.user_email}</span>
                 </div>
                 <div className="user-info-field">
                   <span className='registration-date-label label'>Datum registrace</span>
