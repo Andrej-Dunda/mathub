@@ -134,7 +134,15 @@
   .user-materials {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fill, 200px);
+
+    @media (min-width: 961px) {
+      grid-template-columns: repeat(4, 200px);
+    }
+    
+    @media (max-width: 960px) {
+      grid-template-columns: repeat(auto-fill, 200px);
+    }
+
     gap: 16px;
 
     padding: 16px;
