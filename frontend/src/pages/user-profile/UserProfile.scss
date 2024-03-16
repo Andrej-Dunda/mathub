@@ -166,18 +166,15 @@
 
         overflow: hidden;
 
-        cursor: pointer;
-
-        &:hover .subject-button-body main {
-          background-color: var(--hover-white);
-        }
-
         .subject-button-header {
           height: 32px;
           width: 100%;
 
           display: flex;
-          justify-content: flex-end;
+          justify-content: space-between;
+          gap: 8px;
+
+          padding: 8px;
 
           background-color: var(--grayscale-900);
           color: var(--grayscale-100);
@@ -186,10 +183,9 @@
           border-top-right-radius: 8px;
           overflow: hidden;
 
-          .date-created {
+          span {
             display: flex;
             align-items: center;
-            padding: 0 4px;
           }
         }
 
@@ -211,33 +207,38 @@
 
             font-weight: 500;
 
+            cursor: pointer;
+
             span {
               text-wrap: nowrap;
               overflow: hidden;
               text-overflow: ellipsis;
             }
+
+            &:hover {
+              background-color: var(--hover-white);
+            }
           }
 
           .subject-button-footer {
+            display: flex;
+            align-items: center;
+
             height: 32px;
             width: 100%;
 
             display: flex;
             justify-content: space-between;
 
-            background-color: var(--grayscale-900);
-            color: var(--grayscale-100);
+            padding: 0 8px;
 
-            padding: 0 4px;
+            border-top: 1px solid var(--grayscale-200);
 
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
             border-bottom-left-radius: 8px;
             border-bottom-right-radius: 8px;
             overflow: hidden;
-
-            span {
-              display: flex;
-              align-items: center;
-            }
           }
         }
       }

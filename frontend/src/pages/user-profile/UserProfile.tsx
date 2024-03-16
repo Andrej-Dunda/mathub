@@ -11,6 +11,10 @@ import { iSubject } from '../../interfaces/materials-interface';
 import { iPost } from '../../interfaces/blog-interfaces';
 import BlogPost from '../../components/blog-post/BlogPost';
 import { normalizeDate } from '../../utils/normalizeDate';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faEye } from '@fortawesome/free-solid-svg-icons';
+import { useAuth } from '../../contexts/AuthProvider';
+import MaterialFollowButton from '../../components/buttons/material-follow-button/MaterialFollowButton';
 
 const UserProfile = () => {
   const { user } = useUserData();
@@ -20,6 +24,10 @@ const UserProfile = () => {
   const [subjects, setSubjects] = useState<iSubject[]>([]);
   const [posts, setPosts] = useState<iPost[]>([]);
   const { toMyProfile, toPreviewMaterial } = useNav()
+  const { protectedHttpClientInit } = useAuth();
+
+  const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
+  const grayscale100 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-100').trim();
 
   useEffect(() => {
     let paramUserId = searchParams.get("user_id");
@@ -45,6 +53,15 @@ const UserProfile = () => {
       .catch(() => setViewedUser(null))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, user._id])
+
+  const followingSubject = async (subjectId: string) => {
+    const httpClient = await protectedHttpClientInit();
+    httpClient?.get(`/api/follows-subject/${subjectId}`)
+      .then(res => {
+        return res.data.followsSubject;
+      })
+      .catch(err => console.error(err));
+  }
 
   return (
     <>
@@ -74,24 +91,22 @@ const UserProfile = () => {
                 <div className="user-materials-windows">
                   {subjects.map((subject, index) => {
                     return (
-                      <div className="subject-button" key={index} onClick={() => toPreviewMaterial(subject._id)}>
+                      <div className="subject-button" key={index}>
                         <div className="subject-button-header">
-                          <span className="date-created">{normalizeDate(subject.date_created)}</span>
+                          <span className='subject-type'>
+                            {subject.subject_type}
+                          </span>
+                          <span className='subject-grade'>
+                            {subject.subject_grade}
+                          </span>
                         </div>
                         <div className="subject-button-body" title={subject.subject_name}>
-                          <main>
+                          <main onClick={() => toPreviewMaterial(subject._id)}>
                             <h5>
                               {subject.subject_name}
                             </h5>
                           </main>
-                          <footer className='subject-button-footer'>
-                            <span className='subject-type'>
-                              {subject.subject_type}
-                            </span>
-                            <span className='subject-grade'>
-                              {subject.subject_grade}
-                            </span>
-                          </footer>
+                          <MaterialFollowButton subject={subject} className='subject-button-footer' />
                         </div>
                       </div>
                     )
