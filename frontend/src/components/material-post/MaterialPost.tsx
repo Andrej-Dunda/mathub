@@ -7,8 +7,10 @@ import { useUserData } from '../../contexts/UserDataProvider'
 import { useNav } from '../../contexts/NavigationProvider'
 import { normalizeDateHours } from '../../utils/normalizeDate'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBookOpen, faEye, faFolderOpen } from '@fortawesome/free-solid-svg-icons'
+import { faBookOpen, faCheck, faEye, faFolderOpen } from '@fortawesome/free-solid-svg-icons'
 import ToggleTopicsButton from '../buttons/toggle-topics-button/ToggleTopicsButton'
+import { useAuth } from '../../contexts/AuthProvider'
+import { useSnackbar } from '../../contexts/SnackbarProvider'
 
 type MaterialPostProps = {
   subject: iSubject;
@@ -19,6 +21,8 @@ type MaterialPostProps = {
 const MaterialPost = ({ subject, author, topicNames }: MaterialPostProps) => {
   const { user } = useUserData();
   const { toMyProfile, toUserProfile, toPreviewMaterial } = useNav();
+  const { protectedHttpClientInit } = useAuth();
+  const { openSnackbar } = useSnackbar();
 
   const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
   const grayscale100 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-100').trim();
@@ -28,6 +32,12 @@ const MaterialPost = ({ subject, author, topicNames }: MaterialPostProps) => {
   const topicsRef = useRef<HTMLDivElement>(null);
   const postContentRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>(topicsListRef.current?.getBoundingClientRect().height || 0);
+  const [followsSubject, setFollowsSubject] = useState<boolean>(false);
+
+  useEffect(() => {
+    updateSubjectFollowing();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     updateHeight();
@@ -48,6 +58,25 @@ const MaterialPost = ({ subject, author, topicNames }: MaterialPostProps) => {
       setHeight(rect.height);
     }
   };
+
+  const toggleSubjectFollowing = async () => {
+    const httpClient = await protectedHttpClientInit();
+    httpClient?.post(`/api/toggle-follow-subject/${subject._id}`)
+      .then(res => {
+        setFollowsSubject(res.data.followsSubject);
+        openSnackbar(res.data.followsSubject ? 'Přidáno do sledovaných materiálů' : 'Odebráno ze sledovaných materiálů')
+      })
+      .catch(err => console.error(err));
+  }
+
+  const updateSubjectFollowing = async () => {
+    const httpClient = await protectedHttpClientInit();
+    httpClient?.get(`/api/follows-subject/${subject._id}`)
+      .then(res => {
+        setFollowsSubject(res.data.followsSubject);
+      })
+      .catch(err => console.error(err));
+  }
 
   return (
     <div className='material-post'>
@@ -76,15 +105,15 @@ const MaterialPost = ({ subject, author, topicNames }: MaterialPostProps) => {
                 <span>Otevřít</span>
                 <FontAwesomeIcon icon={faFolderOpen} color={grayscale100} />
               </button>
-              <button className="light box-shadow">
-                <span>Sledovat</span>
-                <FontAwesomeIcon icon={faEye} color={grayscale900} />
+              <button className={`box-shadow ${followsSubject ? 'dark' : 'light'}`} onClick={toggleSubjectFollowing}>
+                <span>{followsSubject ? "Sledujete" : "Sledovat"}</span>
+                <FontAwesomeIcon icon={followsSubject ? faCheck : faEye} color={followsSubject ? grayscale100 : grayscale900} />
               </button>
             </div>
           </div>
           <div className="material-classification">
             <div className='material-post-type'>
-              <span className='label'>Typ materiálu:</span>
+              <span className='label'>Předmět:</span>
               <span className='info'>{subject.subject_type}</span>
             </div>
             <div className='material-post-grade'>

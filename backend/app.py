@@ -713,6 +713,46 @@ def preview_subject(subject_id):
         return subject_preview_data
     except:
         return {"validSubjectId": False}, 400
+    
+@app.route('/api/toggle-follow-subject/<subject_id>', methods=['POST'])
+def toggle_follow_subject(subject_id):
+    try:
+        user_id = session.get('user_id')
+
+        if user_id is None:
+            return jsonify({
+                'error': 'Not logged in'
+                }), 401
+
+        follow_data = neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}) -[:FOLLOWS]-> (subject:SUBJECT {{_id: "{subject_id}"}}) RETURN user._id AS user_id')
+
+        if len(follow_data):
+            neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}) -[follow:FOLLOWS]-> (subject:SUBJECT {{_id: "{subject_id}"}}) DELETE follow')
+            return {"followsSubject": False}, 200
+        else:
+            neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}), (subject:SUBJECT {{_id: "{subject_id}"}}) CREATE (user) -[:FOLLOWS]-> (subject)')
+            return {"followsSubject": True}, 200
+    except:
+        return 'Follow could not be toggled', 400
+    
+@app.route('/api/follows-subject/<subject_id>', methods=['GET'])
+def get_if_follows_subject(subject_id):
+    try:
+        user_id = session.get('user_id')
+
+        if user_id is None:
+            return jsonify({
+                'error': 'Not logged in'
+                }), 401
+
+        follow_data = neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}) -[:FOLLOWS]-> (subject:SUBJECT {{_id: "{subject_id}"}}) RETURN user._id AS user_id')
+
+        if len(follow_data):
+            return {"followsSubject": True}
+        else:
+            return {"followsSubject": False}
+    except:
+        return 'Could not get follow status', 400
 
 
 # ----------------
