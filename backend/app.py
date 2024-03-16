@@ -170,7 +170,7 @@ def generate_new_password():
 def get_friend_suggestions():
     try:
         user_id = request.json.get('user_id', None)
-        friend_suggestions_data = neo4j.run_query(f'''
+        primary_friend_suggestions_data = neo4j.run_query(f'''
             MATCH (subject:USER {{_id: '{user_id}'}}) -[:FRIEND_WITH]-> (common_friends:USER) -[:FRIEND_WITH]-> (recommended_to_subject:USER)
 
             WHERE NOT (recommended_to_subject) -[:FRIEND_WITH]- (subject)
@@ -181,8 +181,30 @@ def get_friend_suggestions():
             RETURN recommended_to_subject._id AS _id, recommended_to_subject.first_name AS first_name, recommended_to_subject.last_name AS last_name, COUNT(common_friends) as common_friends_count
             ORDER BY common_friends_count DESC
             ''')
+        
+        secondary_friend_suggestions_data = neo4j.run_query(f'''
+            MATCH (subject:USER {{_id: '{user_id}'}})
+
+            MATCH (recommended_to_subject:USER)
+
+            WHERE NOT (recommended_to_subject) -[:FRIEND_WITH]- (subject)
+            AND NOT (recommended_to_subject) -[:FRIEND_REQUEST]- (subject)
+            AND NOT (subject) -[:DONT_SUGGEST]-> (recommended_to_subject)
+            AND recommended_to_subject <> subject
+
+            RETURN recommended_to_subject._id AS _id, recommended_to_subject.first_name AS first_name, recommended_to_subject.last_name AS last_name
+            ''')
+
         friend_suggestions = []
-        for friend_suggestion_data in friend_suggestions_data:
+        for friend_suggestion_data in primary_friend_suggestions_data:
+            friend_suggestion = {
+                '_id': friend_suggestion_data['_id'],
+                'first_name': friend_suggestion_data['first_name'],
+                'last_name': friend_suggestion_data['last_name']
+            }
+            friend_suggestions.append(friend_suggestion)
+
+        for friend_suggestion_data in secondary_friend_suggestions_data:
             friend_suggestion = {
                 '_id': friend_suggestion_data['_id'],
                 'first_name': friend_suggestion_data['first_name'],
@@ -190,8 +212,8 @@ def get_friend_suggestions():
             }
             friend_suggestions.append(friend_suggestion)
         return friend_suggestions
-    except:
-        return []
+    except Exception as e:
+        return str(e), 400
    
 @app.route('/api/get-friends', methods=['POST'])
 def get_friends():
