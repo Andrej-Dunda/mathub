@@ -1,0 +1,207 @@
+.material-post {
+  display: flex;
+  flex-direction: row;
+
+  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);  
+  -webkit-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+  -moz-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+
+  border-radius: 16px;
+  overflow: hidden;
+
+  width: fit-content;
+
+  background-color: var(--grayscale-100);
+
+  .material-post-main {
+    box-sizing: border-box;
+    min-width: 500px;
+    width: 500px;
+    height: fit-content;
+
+    &.border-right-grey {
+      border-right: 1px solid var(--grayscale-200);
+    }
+
+    .material-post-header {
+      border-bottom: 1px solid var(--grayscale-200);
+      padding: 16px 16px 8px 16px;
+
+      .material-info {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        align-items: center;
+
+        .user-name-and-post-time {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          align-items: flex-start;
+          width: 100%;
+          
+          .user-name:hover {
+            text-decoration: underline;
+            cursor: pointer;
+          }
+
+          .user-name, .material-post-time {
+            max-width: 100%;
+            overflow: hidden;
+            text-wrap: nowrap;
+            text-overflow: ellipsis;
+          }
+        }
+      }
+    }
+
+    .material-post-body {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 32px;
+
+      padding: 8px 16px 16px 16px;
+
+      .material-name-and-actions {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 16px;
+
+        flex-grow: 2;
+        height: 100%;
+
+        .material-name {
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+
+          span {
+            text-wrap: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+          }
+
+          .label {
+            font-size: 14px;
+            color: var(--grayscale-500)
+          }
+        }
+
+        .material-post-actions {
+          width: 100%;
+          display: flex;
+          gap: 8px;
+
+          button {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            font-weight: 500;
+          }
+        }
+      }
+
+      .material-classification {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .material-post-type, .material-post-grade {
+          display: flex;
+          flex-direction: column;
+
+          span {
+            text-wrap: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+          }
+
+          .label {
+            font-size: 14px;
+            color: var(--grayscale-500)
+          }
+
+          .info {
+            font-weight: 500;
+            font-size: 16px;
+          }
+        }
+      }
+    }
+  }
+  
+  .material-post-topics {
+    display: flex;
+    flex-direction: column;
+
+    width: 300px;
+    height: 100%;
+    box-sizing: border-box;
+
+    transition: width 0.3s;
+    overflow: hidden;
+
+    &.topics-hidden {
+      width: 0;
+    }
+
+    .topics-header {
+      border-bottom: 1px solid var(--grayscale-200);
+      width: 300px;
+      height: 3rem;
+      padding: 8px;
+
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+
+      align-items: center;
+
+      .h3 {
+        margin-bottom: 0!important;
+      }
+
+      .book-icon {
+        height: 1.5rem;
+        width: auto;
+        color: var(--grayscale-900)
+      }
+    }
+
+    .topics {
+      height: 100%;
+      padding: 8px 8px 8px 8px;
+
+      overflow: auto;
+
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      width: 300px;
+
+      .topic {
+        display: flex;
+        align-items: center;
+
+        padding: 4px 8px;
+        border-radius: 8px;
+
+        width: fit-content;
+
+        box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);  
+        -webkit-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+        -moz-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.31);
+      }
+    }
+  }
+}

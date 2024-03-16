@@ -652,7 +652,7 @@ def get_subject(subject_id):
             ''')[0]['subject']
         return subject
     except:
-        return {}
+        return 400
     
 @app.route('/api/put-subject', methods=['PUT'])
 def put_subject():
