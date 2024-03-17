@@ -802,6 +802,30 @@ def get_if_follows_material(material_id):
     except:
         return 'Could not get follow status', 400
 
+@app.route('/api/get-followed-materials', methods=['GET'])
+def get_followed_materials():
+    try:
+        user_id = session.get('user_id')
+
+        if user_id is None:
+            return jsonify({
+                'error': 'Not logged in'
+                }), 401
+
+        materials_data = neo4j.run_query(f'''
+            MATCH (user:USER {{_id: "{user_id}"}}) -[:FOLLOWS]-> (material:MATERIAL) -[:CREATED_BY]-> (author:USER)
+            WHERE (user) -[:FRIEND_WITH]- (author)
+            RETURN material, author._id AS author_id
+            ''')
+        materials = []
+        for material_data in materials_data:
+            material = material_data['material']
+            material['author_id'] = material_data['author_id']
+            materials.append(material)
+        return materials
+    except:
+        return 400
+
 
 # ----------------
 # TOPICS ENDPOINTS

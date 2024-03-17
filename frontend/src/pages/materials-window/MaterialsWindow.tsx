@@ -1,7 +1,7 @@
 import './MaterialsWindow.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { iMaterial } from '../../interfaces/materials-interface';
 import EllipsisMenuButton from '../../components/buttons/ellipsis-menu-button/EllipsisMenuButton';
 import { useNav } from '../../contexts/NavigationProvider';
@@ -9,9 +9,12 @@ import { useModal } from '../../contexts/ModalProvider';
 import NewMaterialModalContent from '../../components/modal/modal-contents/NewMaterialModalContent';
 import { useMaterials } from '../../contexts/MaterialsProvider';
 import DeleteModalContent from '../../components/modal/modal-contents/DeleteModalContent';
+import httpClient from '../../utils/httpClient';
+import MaterialPost from '../../components/material-post/MaterialPost';
 
 const MaterialsWindow = () => {
   const { materials, getMaterials, setSelectedMaterial, deleteMaterial } = useMaterials();
+  const [followedMaterials, setFollowedMaterials] = useState<iMaterial[]>([])
   const newMaterialNameInputRef = useRef<HTMLInputElement>(null)
   const grayscale300 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-300').trim();
   const { toViewMaterials, setActiveLink } = useNav();
@@ -20,12 +23,21 @@ const MaterialsWindow = () => {
   useEffect(() => {
     setActiveLink('/materials')
     getMaterials()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    getFollowedMaterials()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setActiveLink])
 
   useEffect(() => {
     newMaterialNameInputRef.current?.focus()
   }, [modalOpen])
+
+  const getFollowedMaterials = () => {
+    httpClient.get('/api/get-followed-materials')
+      .then(res => {
+        setFollowedMaterials(res.data)
+      })
+      .catch(err => console.error(err))
+  }
 
   const openNewMaterialModal = () => {
     showModal(<NewMaterialModalContent />)
@@ -59,7 +71,7 @@ const MaterialsWindow = () => {
                         />
                       )
                     }
-                  ]}/>
+                  ]} />
                 </header>
                 <div className="material-button-body" onClick={() => openMaterial(material)} title={material.material_name}>
                   <main>
@@ -83,6 +95,17 @@ const MaterialsWindow = () => {
         <button type='button' className="add-material-button" onClick={openNewMaterialModal}>
           <FontAwesomeIcon icon={faPlus} className='edit-icon' size="2x" color={grayscale300} />
         </button>
+      </div>
+      <hr />
+      <h1 className='h1'>Sledované materiály</h1>
+      <div className="followed-materials">
+        {
+          followedMaterials.map((material: iMaterial, index: number) => {
+            return (
+              <MaterialPost key={index} material={material} onStopFollowing={getFollowedMaterials} />
+            )
+          })
+        }
       </div>
     </div>
   )

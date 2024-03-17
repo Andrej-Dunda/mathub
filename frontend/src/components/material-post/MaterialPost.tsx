@@ -14,9 +14,10 @@ import httpClient from '../../utils/httpClient'
 
 type MaterialPostProps = {
   material: iMaterial;
+  onStopFollowing?: () => void;
 }
 
-const MaterialPost = ({ material }: MaterialPostProps) => {
+const MaterialPost = ({ material, onStopFollowing }: MaterialPostProps) => {
   const { user } = useUserData();
   const { toMyProfile, toUserProfile, toPreviewMaterial } = useNav();
 
@@ -92,7 +93,7 @@ const MaterialPost = ({ material }: MaterialPostProps) => {
                 <span>Otevřít</span>
                 <FontAwesomeIcon icon={faFolderOpen} color={grayscale100} />
               </button>
-              <MaterialFollowButton material={material} className='box-shadow' />
+              <MaterialFollowButton material={material} className='box-shadow' onStopFollowing={onStopFollowing} />
             </div>
           </div>
           <div className="material-classification">
