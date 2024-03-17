@@ -2,8 +2,12 @@ import React from "react";
 import './FriendWindow.scss'
 import FriendButton from "../buttons/friend-button/FriendButton";
 import ProfilePicture from "../profile-picture/ProfilePicture";
+import { useUserData } from "../../contexts/UserDataProvider";
+import { useNav } from "../../contexts/NavigationProvider";
 
 const FriendWindow = (props: any) => {
+  const { user } = useUserData();
+  const { toUserProfile, toMyProfile } = useNav();
   const {_id, first_name, last_name} = props.userData
 
   const windowTypeData = props.type === 'friend-request' ? {
@@ -20,10 +24,15 @@ const FriendWindow = (props: any) => {
     secondButtonType: undefined
   }
 
+  const redirectToUserProfile = () => {
+    if (_id === user._id) toMyProfile()
+    else toUserProfile(_id)
+  }
+
   return (
     <div className={`friend-window ${props.className}`}>
       <ProfilePicture className='friend-window-profile-picture' userId={_id} />
-      <h4 className="h4 friend-name" title={`${first_name} ${last_name}`}>
+      <h4 className="h4 friend-name" title={`${first_name} ${last_name}`} onClick={redirectToUserProfile}>
         {`${first_name} ${last_name}`}
       </h4>
       <div className="buttons">

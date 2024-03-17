@@ -7,9 +7,17 @@ import { useAuth } from '../../contexts/AuthProvider';
 
 const Friends = () => {
   const [friendRequests, setFriendRequests] = useState<any[]>([])
+  const [friendRequestsShowCount, setFriendRequestsShowCount] = useState<number>(5)
+
   const [myFriendRequests, setMyFriendRequests] = useState<any[]>([])
+  const [myFriendRequestsShowCount, setMyFriendRequestsShowCount] = useState<number>(5)
+
   const [friendSuggestions, setFriendSuggestions] = useState<any[]>([])
+  const [friendSuggestionsShowCount, setFriendSuggestionsShowCount] = useState<number>(5)
+
   const [friends, setFriends] = useState<any[]>([])
+  const [friendsShowCount, setFriendsShowCount] = useState<number>(5)
+
   const { user } = useUserData();
   const { setActiveLink } = useNav();
   const { protectedHttpClientInit } = useAuth();
@@ -18,7 +26,7 @@ const Friends = () => {
     setActiveLink('/friends')
     updateFriends()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [user._id])
 
   const updateFriends = () => {
     getFriendSuggestions()
@@ -99,11 +107,12 @@ const Friends = () => {
             <h3 className='h3'>Žádosti o přátelství</h3>
             <div className="friend-requests-windows friends-windows">
               {
-                friendRequests.map((user, index) => {
+                friendRequests.slice(0, friendRequestsShowCount).map((user, index) => {
                   return <FriendWindow className='friend-window' key={index} userData={user} type='friend-request' updateFriends={updateFriends} />
                 })
               }
             </div>
+            {friendRequests.length > friendRequestsShowCount && <button className='show-more-button' onClick={() => setFriendRequestsShowCount(friendRequestsShowCount + 5)}>Zobrazit více</button>}
           </div>
           <hr />
         </> : null}
@@ -113,11 +122,12 @@ const Friends = () => {
             <h3 className='h3'>Moje žádosti o přátelství</h3>
             <div className="my-friend-requests-windows friends-windows">
               {
-                myFriendRequests.map((user, index) => {
+                myFriendRequests.slice(0, myFriendRequestsShowCount).map((user, index) => {
                   return <FriendWindow className='friend-window' key={index} userData={user} type='my-friend-request' updateFriends={updateFriends} />
                 })
               }
             </div>
+            {myFriendRequests.length > myFriendRequestsShowCount && <button className='show-more-button' onClick={() => setMyFriendRequestsShowCount(myFriendRequestsShowCount + 5)}>Zobrazit více</button>}
           </div>
           <hr />
         </>
@@ -126,22 +136,24 @@ const Friends = () => {
         <h3 className='h3'>Lidé, které možná znáte</h3>
         {friendSuggestions.length !== 0 ? <div className="friend-suggestions-windows friends-windows">
           {
-            friendSuggestions.map((user, index) => {
+            friendSuggestions.slice(0, friendSuggestionsShowCount).map((user, index) => {
               return <FriendWindow className='friend-window' key={index} userData={user} type='friend-suggestion' updateFriends={updateFriends} />
             })
           }
         </div> : <span>Nemáte žádná doporučení</span>}
+        {friendSuggestions.length > friendSuggestionsShowCount && <button className='show-more-button' onClick={() => setFriendSuggestionsShowCount(friendSuggestionsShowCount + 5)}>Zobrazit více</button>}
       </div>
       <hr />
       <div className="my-friends friends-section">
         <h3 className='h3'>Vaši přátelé</h3>
         {friends?.length !== 0 ? <div className="my-friends-windows friends-windows">
           {
-            friends.map((user, index) => {
+            friends.slice(0, friendsShowCount).map((user, index) => {
               return <FriendWindow className='friend-window' key={index} userData={user} type='friend' updateFriends={updateFriends} />
             })
           }
         </div> : <span>Nemáte žádné přátele :(</span>}
+        {friends.length > friendsShowCount && <button className='show-more-button' onClick={() => setFriendsShowCount(friendsShowCount + 5)}>Zobrazit více</button>}
       </div>
     </div>
   )

@@ -1,9 +1,11 @@
-export interface iSubject {
+export interface iMaterial {
   _id: string;
   author_id: string;
-  subject_name: string;
+  material_name: string;
   date_created: string;
   date_modified: string;
+  material_subject: string;
+  material_grade: string;
 }
 
 export interface iTopic {

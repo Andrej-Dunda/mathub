@@ -156,13 +156,11 @@
       .wysiwyg-wrapper {
         width: 100%;
         height: 100%;
-        overflow: auto;
 
         .topic-editor-wrapper {
           width: 100%;
           height: 100%;
 
-          overflow: auto;
           display: flex;
           flex-direction: column;
 
@@ -186,8 +184,7 @@
 
             .DraftEditor-root {
               width: 794px!important;
-              height: fit-content;
-              min-height: 1123px;
+              height: auto;
 
               padding: 48px;
               padding-bottom: 1036px;

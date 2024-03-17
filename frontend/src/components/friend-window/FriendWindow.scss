@@ -16,6 +16,11 @@
     text-wrap: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    &:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
   }
 
   .buttons {

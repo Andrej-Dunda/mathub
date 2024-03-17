@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFolderOpen, faHome, faPen, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 
 const Navigation = () => {
-  const { toHome, toFriends, toBlog, toSubjects, activeLink } = useNav()
+  const { toHome, toFriends, toBlog, toMaterials, activeLink } = useNav()
   const grayscale100 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-100').trim();
 
   return (
@@ -27,7 +27,7 @@ const Navigation = () => {
           <div onClick={toBlog} className={`link ${activeLink === '/blog' ? 'active' : ''}`}>
             <FontAwesomeIcon className='nav-icon' icon={faPen} color={grayscale100} />
           </div>
-          <div onClick={toSubjects} className={`link ${activeLink === '/subjects' ? 'active' : ''}`}>
+          <div onClick={toMaterials} className={`link ${activeLink === '/materials' ? 'active' : ''}`}>
             <FontAwesomeIcon className='nav-icon' icon={faFolderOpen} color={grayscale100} />
           </div>
         </div>

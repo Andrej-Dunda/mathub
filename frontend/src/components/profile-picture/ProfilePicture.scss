@@ -1,9 +1,17 @@
 .profile-picture {
+  cursor: pointer;
+  pointer-events: auto;
+
   &.friend-window-profile-picture {
     min-width: 200px;
     max-width: 250px;
     width: 100%;
     height: auto;
+  }
+
+  &.not-clickable {
+    cursor: default!important;
+    pointer-events: none!important;
   }
 
   &.radius-100 {
@@ -18,9 +26,14 @@
     border-radius: 25%;
   }
 
-  &.xsmall {
+  &.xxsmall {
     width: 20px;
     height: 20px;
+  }
+
+  &.xsmall {
+    width: 30px;
+    height: 30px;
   }
 
   &.small {
