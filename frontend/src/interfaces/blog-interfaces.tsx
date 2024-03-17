@@ -1,4 +1,4 @@
-export interface iPost {
+export interface iBlogPost {
   _id: string;
   author_id: string;
   post_description: string;

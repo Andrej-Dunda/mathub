@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './MaterialPost.scss'
 import ProfilePicture from '../profile-picture/ProfilePicture'
-import { iSubject } from '../../interfaces/materials-interface'
+import { iSubject, iTopic } from '../../interfaces/materials-interface'
 import { iUser } from '../../interfaces/user-interface'
 import { useUserData } from '../../contexts/UserDataProvider'
 import { useNav } from '../../contexts/NavigationProvider'
@@ -10,14 +10,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBookOpen, faFolderOpen } from '@fortawesome/free-solid-svg-icons'
 import ToggleTopicsButton from '../buttons/toggle-topics-button/ToggleTopicsButton'
 import MaterialFollowButton from '../buttons/material-follow-button/MaterialFollowButton'
+import httpClient from '../../utils/httpClient'
 
 type MaterialPostProps = {
   subject: iSubject;
-  author: iUser;
-  topicNames: string[];
 }
 
-const MaterialPost = ({ subject, author, topicNames }: MaterialPostProps) => {
+const MaterialPost = ({ subject }: MaterialPostProps) => {
   const { user } = useUserData();
   const { toMyProfile, toUserProfile, toPreviewMaterial } = useNav();
 
@@ -29,6 +28,22 @@ const MaterialPost = ({ subject, author, topicNames }: MaterialPostProps) => {
   const topicsRef = useRef<HTMLDivElement>(null);
   const postContentRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>(topicsListRef.current?.getBoundingClientRect().height || 0);
+  const [author, setAuthor] = useState<iUser>();
+  const [topics, setTopics] = useState<iTopic[]>([]);
+
+  useEffect(() => {
+    httpClient.get(`/api/get-subject-topics/${subject._id}`)
+      .then(res => setTopics(res.data))
+      .catch(err => console.error(err))
+  }, [subject])
+
+  useEffect(() => {
+    if (subject.author_id) {
+      httpClient.get(`/api/user/${subject.author_id}`)
+        .then(res => setAuthor(res.data))
+        .catch(err => console.error(err))
+    }
+  }, [subject.author_id])
 
   useEffect(() => {
     updateHeight();
@@ -37,8 +52,8 @@ const MaterialPost = ({ subject, author, topicNames }: MaterialPostProps) => {
   }, [topicsVisible]);
 
   const redirectToUserProfile = () => {
-    if (author._id === user._id) toMyProfile()
-    else toUserProfile(author._id)
+    if (subject.author_id === user._id) toMyProfile()
+    else toUserProfile(subject.author_id)
   }
 
   // Function to update height off the comment section
@@ -55,12 +70,12 @@ const MaterialPost = ({ subject, author, topicNames }: MaterialPostProps) => {
       <main className={`material-post-main ${topicsVisible && 'border-right-grey'}`} ref={postContentRef}>
         <div className="material-post-header">
           <div className="material-info">
-            <ProfilePicture className='post-size radius-100 border box-shadow-dark' userId={author._id} />
+            <ProfilePicture className='post-size radius-100 border box-shadow-dark' userId={subject.author_id} />
             <div className="user-name-and-post-time">
               <h5
                 className='user-name'
                 onClick={redirectToUserProfile}
-              >{author.first_name} {author.last_name}</h5>
+              >{author?.first_name} {author?.last_name}</h5>
               <span className='material-post-time'>{normalizeDateHours(subject.date_created)}</span>
             </div>
             <ToggleTopicsButton topicsVisible={topicsVisible} setTopicsVisible={setTopicsVisible} />
@@ -99,11 +114,11 @@ const MaterialPost = ({ subject, author, topicNames }: MaterialPostProps) => {
         </div>
         <div className="topics" ref={topicsRef} >
           {
-            !topicNames ? (
+            !topics ? (
               <span>Žádné komentáře</span>
             ) : (
-              topicNames.map((topic, index) => {
-                return <div key={index} className='topic'><span>{topic}</span></div>
+              topics.map((topic, index) => {
+                return <div key={index} className='topic'><span>{topic.topic_name}</span></div>
               })
             )
           }

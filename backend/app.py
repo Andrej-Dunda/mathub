@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from flask import Flask, request, jsonify, send_from_directory, session
 from flask_bcrypt import Bcrypt
 from flask_session import Session
@@ -178,21 +178,22 @@ def get_friend_suggestions():
             AND NOT (subject) -[:DONT_SUGGEST]-> (recommended_to_subject)
             AND recommended_to_subject <> subject
 
-            RETURN recommended_to_subject._id AS _id, recommended_to_subject.first_name AS first_name, recommended_to_subject.last_name AS last_name, COUNT(common_friends) as common_friends_count
+            RETURN DISTINCT recommended_to_subject._id AS _id, recommended_to_subject.first_name AS first_name, recommended_to_subject.last_name AS last_name, COUNT(common_friends) as common_friends_count
             ORDER BY common_friends_count DESC
             ''')
         
         secondary_friend_suggestions_data = neo4j.run_query(f'''
-            MATCH (subject:USER {{_id: '{user_id}'}})
+            MATCH (subject:USER {{_id: '{user_id}'}}) -[:FRIEND_WITH]-> (common_friend:USER)
 
             MATCH (recommended_to_subject:USER)
 
             WHERE NOT (recommended_to_subject) -[:FRIEND_WITH]- (subject)
+            AND NOT (recommended_to_subject) -[:FRIEND_WITH]- (common_friend)
             AND NOT (recommended_to_subject) -[:FRIEND_REQUEST]- (subject)
             AND NOT (subject) -[:DONT_SUGGEST]-> (recommended_to_subject)
             AND recommended_to_subject <> subject
 
-            RETURN recommended_to_subject._id AS _id, recommended_to_subject.first_name AS first_name, recommended_to_subject.last_name AS last_name
+            RETURN DISTINCT recommended_to_subject._id AS _id, recommended_to_subject.first_name AS first_name, recommended_to_subject.last_name AS last_name
             ''')
 
         friend_suggestions = []
@@ -393,20 +394,49 @@ def get_post(id):
         post_data = neo4j.run_query(f'MATCH (post:BLOG_POST {{_id: "{id}"}}) RETURN post LIMIT 1')[0]['post']
         return post_data
     except:
-        return {}
+        return 400
 
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
     try:
-        posts_data = neo4j.run_query('MATCH (post:BLOG_POST) -[:POSTED_BY]-> (author:USER) RETURN post, author._id AS author_id ORDER BY post.post_time DESC')
+        user_id = session.get('user_id')
+
+        if user_id is None:
+            return jsonify({
+                'error': 'Not logged in'
+                }), 401
+
+        blog_posts_data = neo4j.run_query('MATCH (post:BLOG_POST) -[:POSTED_BY]-> (author:USER) RETURN post, author._id AS author_id ORDER BY post.post_time DESC')
+        materials_posts_data = neo4j.run_query(f'''
+            MATCH (user:USER {{_id: "{user_id}"}}) -[:FRIEND_WITH]- (author:USER) <-[:CREATED_BY]- (subject:SUBJECT)
+            RETURN DISTINCT author._id AS author_id, subject
+            ''')
+        
         posts = []
-        for post_data in posts_data:
+        for post_data in blog_posts_data:
             post = post_data['post']
             post['author_id'] = post_data['author_id']
-            posts.append(post)
+            posts.append({
+                    "post": post,
+                    "type": "blog",
+                    "date_created": post['post_time']
+                })
+            
+        for post_data in materials_posts_data:
+            post = post_data['subject']
+            post['author_id'] = post_data['author_id']
+            posts.append({
+                    "post": post,
+                    "type": "material",
+                    "date_created": post['date_created']
+                })
+
+        # Sort the posts by date_created
+        posts.sort(key=lambda x: datetime.fromisoformat(x['date_created']).replace(tzinfo=pytz.timezone('CET')), reverse=True)
+
         return posts
-    except:
-        return []
+    except Exception as e:
+        return str(e), 400
 
 @app.route('/api/get-my-posts/', methods=['GET'])
 def get_my_posts():
@@ -595,7 +625,7 @@ def change_password():
         return {'success': False}
 
 
-# ------------------   
+# ------------------
 # SUBJECTS ENDPOINTS
 # ------------------
 

@@ -8,12 +8,9 @@ import { useNav } from '../../contexts/NavigationProvider';
 import ProfilePicture from '../../components/profile-picture/ProfilePicture';
 import { useUserData } from '../../contexts/UserDataProvider';
 import { iSubject } from '../../interfaces/materials-interface';
-import { iPost } from '../../interfaces/blog-interfaces';
+import { iBlogPost } from '../../interfaces/blog-interfaces';
 import BlogPost from '../../components/blog-post/BlogPost';
 import { normalizeDate } from '../../utils/normalizeDate';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faEye } from '@fortawesome/free-solid-svg-icons';
-import { useAuth } from '../../contexts/AuthProvider';
 import MaterialFollowButton from '../../components/buttons/material-follow-button/MaterialFollowButton';
 
 const UserProfile = () => {
@@ -22,12 +19,8 @@ const UserProfile = () => {
   const [userId, setUserId] = useState<string>('');
   const [viewedUser, setViewedUser] = useState<iUser | null>(null);
   const [subjects, setSubjects] = useState<iSubject[]>([]);
-  const [posts, setPosts] = useState<iPost[]>([]);
+  const [posts, setPosts] = useState<iBlogPost[]>([]);
   const { toMyProfile, toPreviewMaterial } = useNav()
-  const { protectedHttpClientInit } = useAuth();
-
-  const grayscale900 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-900').trim();
-  const grayscale100 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-100').trim();
 
   useEffect(() => {
     let paramUserId = searchParams.get("user_id");
@@ -53,15 +46,6 @@ const UserProfile = () => {
       .catch(() => setViewedUser(null))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, user._id])
-
-  const followingSubject = async (subjectId: string) => {
-    const httpClient = await protectedHttpClientInit();
-    httpClient?.get(`/api/follows-subject/${subjectId}`)
-      .then(res => {
-        return res.data.followsSubject;
-      })
-      .catch(err => console.error(err));
-  }
 
   return (
     <>

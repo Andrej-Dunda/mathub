@@ -11,14 +11,14 @@ import DeleteButton from '../buttons/delete-button/DeleteButton'
 import { useUserData } from '../../contexts/UserDataProvider'
 import TextParagraph from '../text-paragraph/TextParagraph'
 import httpClient from '../../utils/httpClient'
-import { iPost } from '../../interfaces/blog-interfaces'
+import { iBlogPost } from '../../interfaces/blog-interfaces'
 import { useNav } from '../../contexts/NavigationProvider'
 import { normalizeDateHours } from '../../utils/normalizeDate'
 
 const BlogPost = (props: any) => {
   const { user } = useUserData();
   const [userName, setUserName] = useState<string>('')
-  const postData: iPost = {
+  const postData: iBlogPost = {
     _id: props.postData._id,
     author_id: props.postData.author_id,
     post_time: normalizeDateHours(props.postData.post_time),
