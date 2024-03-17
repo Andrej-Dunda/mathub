@@ -126,8 +126,8 @@ def register_new_user():
                 profile_picture: 'profile-picture-default.png',
                 registration_date: '{datetime.now(my_timezone).isoformat()}'
             }}),
-            (subject:SUBJECT {{ _id: '{uuid4()}', subject_name: 'DEMO Předmět', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}", subject_type: "Jiné", subject_grade: "Jiné" }}) -[:CREATED_BY]-> (new_user),
-            (topic:TOPIC {{ _id: '{uuid4()}', topic_name: 'DEMO Materiál', topic_content: '<p>Obsah DEMO materiálu</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (subject)
+            (material:MATERIAL {{ _id: '{uuid4()}', material_name: 'DEMO Předmět', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}", material_subject: "Jiné", material_grade: "Jiné" }}) -[:CREATED_BY]-> (new_user),
+            (topic:TOPIC {{ _id: '{uuid4()}', topic_name: 'DEMO Materiál', topic_content: '<p>Obsah DEMO materiálu</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (material)
             """)
         else:
             return {'message': 'Tento email je již registrován!', 'success': False, 'email_already_registered': True}, 400
@@ -408,8 +408,8 @@ def get_posts():
 
         blog_posts_data = neo4j.run_query('MATCH (post:BLOG_POST) -[:POSTED_BY]-> (author:USER) RETURN post, author._id AS author_id ORDER BY post.post_time DESC')
         materials_posts_data = neo4j.run_query(f'''
-            MATCH (user:USER {{_id: "{user_id}"}}) -[:FRIEND_WITH]- (author:USER) <-[:CREATED_BY]- (subject:SUBJECT)
-            RETURN DISTINCT author._id AS author_id, subject
+            MATCH (user:USER {{_id: "{user_id}"}}) -[:FRIEND_WITH]- (author:USER) <-[:CREATED_BY]- (material:MATERIAL)
+            RETURN DISTINCT author._id AS author_id, material
             ''')
         
         posts = []
@@ -423,7 +423,7 @@ def get_posts():
                 })
             
         for post_data in materials_posts_data:
-            post = post_data['subject']
+            post = post_data['material']
             post['author_id'] = post_data['author_id']
             posts.append({
                     "post": post,
@@ -540,7 +540,7 @@ def get_user_profile(id):
     try:
         user_data = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user')[0]['user']
         user_posts_data = neo4j.run_query(f'MATCH (post:BLOG_POST) -[:POSTED_BY]-> (user:USER {{_id: "{id}"}}) RETURN post, user._id AS author_id ORDER BY post.post_time DESC')
-        user_subjects_data = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) <-[:CREATED_BY]- (subject:SUBJECT) RETURN subject')
+        user_materials_data = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) <-[:CREATED_BY]- (material:MATERIAL) RETURN material')
 
         user_posts = []
         for post_data in user_posts_data:
@@ -548,16 +548,16 @@ def get_user_profile(id):
             post['author_id'] = post_data['author_id']
             user_posts.append(post)
 
-        user_subjects = []
-        for subject_data in user_subjects_data:
-            subject = subject_data['subject']
-            subject['author_id'] = id
-            user_subjects.append(subject)
+        user_materials = []
+        for material_data in user_materials_data:
+            material = material_data['material']
+            material['author_id'] = id
+            user_materials.append(material)
 
         user = {
             'user': user_data,
             'posts': user_posts,
-            'subjects': user_subjects
+            'materials': user_materials
         }
         return user
     except:
@@ -586,14 +586,16 @@ def upload_profile_picture(id):
         if 'profile_picture' in request.files:
             file = request.files['profile_picture']
             filename = secure_filename(file.filename)
+            if filename == '':
+                return 'No selected file', 400
             file.save(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], filename))
             neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) SET user.profile_picture = "{filename}"')
             crop_image_to_square(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], filename))
             return 'File uploaded successfully', 200
         else:
             return 'No file part', 400
-    except:
-        return 'File could not be uploaded', 400
+    except Exception as e:
+        return str(e), 400
 
 @app.route('/api/profile-picture/<id>', methods=['GET'])
 def get_user_profile_picture(id):
@@ -626,11 +628,11 @@ def change_password():
 
 
 # ------------------
-# SUBJECTS ENDPOINTS
+# MATERIALS ENDPOINTS
 # ------------------
 
-@app.route('/api/get-subjects', methods=['GET'])
-def get_subjects():
+@app.route('/api/get-materials', methods=['GET'])
+def get_materials():
     try:
         user_id = session.get('user_id')
 
@@ -639,24 +641,24 @@ def get_subjects():
                 'error': 'Not logged in'
                 }), 401
 
-        subjects_data = neo4j.run_query(f'''
-            MATCH (user:USER {{_id: "{user_id}"}}) <-[:CREATED_BY]- (subject:SUBJECT)
-            RETURN subject
+        materials_data = neo4j.run_query(f'''
+            MATCH (user:USER {{_id: "{user_id}"}}) <-[:CREATED_BY]- (material:MATERIAL)
+            RETURN material
             ''')
-        subjects = []
-        for subject_data in subjects_data:
-            subject = subject_data['subject']
-            subjects.append(subject)
-        return subjects
+        materials = []
+        for material_data in materials_data:
+            material = material_data['material']
+            materials.append(material)
+        return materials
     except:
         return []
 
-@app.route('/api/post-subject', methods=['POST'])
-def post_subject():
+@app.route('/api/post-material', methods=['POST'])
+def post_material():
     try:
-        subject_name = request.json.get('subject_name', 'Nepojmenovaný Předmět')
-        subject_type = request.json.get('subject_type', 'Jiné')
-        subject_grade = request.json.get('subject_grade', 'Jiné')
+        material_name = request.json.get('material_name', 'Nepojmenovaný Předmět')
+        material_subject = request.json.get('material_subject', 'Jiné')
+        material_grade = request.json.get('material_grade', 'Jiné')
         user_id = session.get('user_id')
 
         if user_id is None:
@@ -666,51 +668,51 @@ def post_subject():
 
         neo4j.run_query(f'''
             MATCH (user:USER {{_id: "{user_id}"}})
-            CREATE (new_subject:SUBJECT {{_id: '{uuid4()}', subject_name: '{subject_name}', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}", subject_type: "{subject_type}", subject_grade: "{subject_grade}" }}) -[:CREATED_BY]-> (user),
-            (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: 'DEMO materiál', topic_content: '<p>DEMO obsah materiálu</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (new_subject)
+            CREATE (new_material:MATERIAL {{_id: '{uuid4()}', material_name: '{material_name}', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}", material_subject: "{material_subject}", material_grade: "{material_grade}" }}) -[:CREATED_BY]-> (user),
+            (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: 'DEMO materiál', topic_content: '<p>DEMO obsah materiálu</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (new_material)
             ''')
-        return f'Subject "{subject_name}" added successfuly', 200
+        return f'Material "{material_name}" added successfuly', 200
     except Exception as e:
-        return 'Subject could not be added:\n' + str(e), 400
+        return 'Material could not be added:\n' + str(e), 400
     
-@app.route('/api/get-subject/<subject_id>', methods=['GET'])
-def get_subject(subject_id):
+@app.route('/api/get-material/<material_id>', methods=['GET'])
+def get_material(material_id):
     try:
-        subject = neo4j.run_query(f'''
-            MATCH (subject:SUBJECT {{_id: "{subject_id}"}})
-            RETURN subject
-            ''')[0]['subject']
-        return subject
+        material = neo4j.run_query(f'''
+            MATCH (material:MATERIAL {{_id: "{material_id}"}})
+            RETURN material
+            ''')[0]['material']
+        return material
     except:
         return 400
     
-@app.route('/api/put-subject', methods=['PUT'])
-def put_subject():
+@app.route('/api/put-material', methods=['PUT'])
+def put_material():
     try:
-        subject_id = request.json.get('subject_id', None)
-        subject_name = request.json.get('subject_name', None)
+        material_id = request.json.get('material_id', None)
+        material_name = request.json.get('material_name', None)
         neo4j.run_query(f'''
-            MATCH (subject:SUBJECT {{_id: "{subject_id}"}})
-            SET subject.subject_name = "{subject_name}",
-            subject.date_modified = "{datetime.now(my_timezone).isoformat()}"
+            MATCH (material:MATERIAL {{_id: "{material_id}"}})
+            SET material.material_name = "{material_name}",
+            material.date_modified = "{datetime.now(my_timezone).isoformat()}"
             ''')
-        return 'Subject edited successfuly', 200
+        return 'Material edited successfuly', 200
     except:
-        return 'Subject could not be edited', 400
+        return 'Material could not be edited', 400
 
-@app.route('/api/delete-subject/<subject_id>', methods=['DELETE'])
-def delete_subject(subject_id):
+@app.route('/api/delete-material/<material_id>', methods=['DELETE'])
+def delete_material(material_id):
     try:
         neo4j.run_query(f'''
-            MATCH (subject:SUBJECT {{_id: "{subject_id}"}}) <-[:TOPIC_OF]- (topic:TOPIC)
-            DETACH DELETE subject, topic
+            MATCH (material:MATERIAL {{_id: "{material_id}"}}) <-[:TOPIC_OF]- (topic:TOPIC)
+            DETACH DELETE material, topic
             ''')
-        return 'Subject deleted successfuly', 200
+        return 'Material deleted successfuly', 200
     except:
-        return 'Subject could not be deleted', 400
+        return 'Material could not be deleted', 400
     
-@app.route('/api/preview-subject/<subject_id>', methods=['GET'])
-def preview_subject(subject_id):
+@app.route('/api/preview-material/<material_id>', methods=['GET'])
+def preview_material(material_id):
     user_id = session.get('user_id')
 
     if user_id is None:
@@ -719,33 +721,33 @@ def preview_subject(subject_id):
             }), 401
 
     try:
-        subject_preview_data = neo4j.run_query(f'''
-            MATCH (user:USER {{_id: "{user_id}"}}), (author:USER) <-[:CREATED_BY]- (subject:SUBJECT {{_id: "{subject_id}"}}) <-[:TOPIC_OF]- (topic:TOPIC)
-            RETURN subject, COLLECT(topic) AS topics, author, EXISTS((user)-[:FRIEND_WITH]-(author)) AS isFriend
+        material_preview_data = neo4j.run_query(f'''
+            MATCH (user:USER {{_id: "{user_id}"}}), (author:USER) <-[:CREATED_BY]- (material:MATERIAL {{_id: "{material_id}"}}) <-[:TOPIC_OF]- (topic:TOPIC)
+            RETURN material, COLLECT(topic) AS topics, author, EXISTS((user)-[:FRIEND_WITH]-(author)) AS isFriend
             ''')[0]
         
         # Remove the 'user_password' attribute from the author
-        if 'user_password' in subject_preview_data['author']:
-            del subject_preview_data['author']['user_password']
+        if 'user_password' in material_preview_data['author']:
+            del material_preview_data['author']['user_password']
 
-        if not subject_preview_data['isFriend']:
+        if not material_preview_data['isFriend']:
             return {
                     "isFriend": False,
-                    "validSubjectId": True,
-                    "author": subject_preview_data['author']
+                    "validMaterialId": True,
+                    "author": material_preview_data['author']
                 }
         
-        if subject_preview_data['subject'] is not None:
-            subject_preview_data['validSubjectId'] = True
+        if material_preview_data['material'] is not None:
+            material_preview_data['validMaterialId'] = True
         else:
-            subject_preview_data['validSubjectId'] = False
+            material_preview_data['validMaterialId'] = False
 
-        return subject_preview_data
+        return material_preview_data
     except:
-        return {"validSubjectId": False}, 400
+        return {"validMaterialId": False}, 400
     
-@app.route('/api/toggle-follow-subject/<subject_id>', methods=['POST'])
-def toggle_follow_subject(subject_id):
+@app.route('/api/toggle-follow-material/<material_id>', methods=['POST'])
+def toggle_follow_material(material_id):
     try:
         user_id = session.get('user_id')
 
@@ -754,19 +756,19 @@ def toggle_follow_subject(subject_id):
                 'error': 'Not logged in'
                 }), 401
 
-        follow_data = neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}) -[:FOLLOWS]-> (subject:SUBJECT {{_id: "{subject_id}"}}) RETURN user._id AS user_id')
+        follow_data = neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}) -[:FOLLOWS]-> (material:MATERIAL {{_id: "{material_id}"}}) RETURN user._id AS user_id')
 
         if len(follow_data):
-            neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}) -[follow:FOLLOWS]-> (subject:SUBJECT {{_id: "{subject_id}"}}) DELETE follow')
-            return {"followsSubject": False}, 200
+            neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}) -[follow:FOLLOWS]-> (material:MATERIAL {{_id: "{material_id}"}}) DELETE follow')
+            return {"followsMaterial": False}, 200
         else:
-            neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}), (subject:SUBJECT {{_id: "{subject_id}"}}) CREATE (user) -[:FOLLOWS]-> (subject)')
-            return {"followsSubject": True}, 200
+            neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}), (material:MATERIAL {{_id: "{material_id}"}}) CREATE (user) -[:FOLLOWS]-> (material)')
+            return {"followsMaterial": True}, 200
     except:
         return 'Follow could not be toggled', 400
     
-@app.route('/api/follows-subject/<subject_id>', methods=['GET'])
-def get_if_follows_subject(subject_id):
+@app.route('/api/follows-material/<material_id>', methods=['GET'])
+def get_if_follows_material(material_id):
     try:
         user_id = session.get('user_id')
 
@@ -775,12 +777,12 @@ def get_if_follows_subject(subject_id):
                 'error': 'Not logged in'
                 }), 401
 
-        follow_data = neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}) -[:FOLLOWS]-> (subject:SUBJECT {{_id: "{subject_id}"}}) RETURN user._id AS user_id')
+        follow_data = neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}) -[:FOLLOWS]-> (material:MATERIAL {{_id: "{material_id}"}}) RETURN user._id AS user_id')
 
         if len(follow_data):
-            return {"followsSubject": True}
+            return {"followsMaterial": True}
         else:
-            return {"followsSubject": False}
+            return {"followsMaterial": False}
     except:
         return 'Could not get follow status', 400
 
@@ -789,11 +791,11 @@ def get_if_follows_subject(subject_id):
 # TOPICS ENDPOINTS
 # ----------------
 
-@app.route('/api/get-subject-topics/<subject_id>', methods=['GET'])
-def get_subject_topics(subject_id):
+@app.route('/api/get-material-topics/<material_id>', methods=['GET'])
+def get_material_topics(material_id):
     try:
         topics_data = neo4j.run_query(f'''
-            MATCH (subject:SUBJECT {{_id: "{subject_id}"}}) <-[:TOPIC_OF]- (topic:TOPIC)
+            MATCH (material:MATERIAL {{_id: "{material_id}"}}) <-[:TOPIC_OF]- (topic:TOPIC)
             RETURN topic
             ORDER BY topic.topic_name
             ''')
@@ -809,7 +811,7 @@ def get_subject_topics(subject_id):
 def post_topic():
     try:
         topic_name = request.json.get('topic_name', None)
-        subject_id = request.json.get('subject_id', None)
+        material_id = request.json.get('material_id', None)
         user_id = session.get('user_id')
 
         if user_id is None:
@@ -818,8 +820,8 @@ def post_topic():
                 }), 401
 
         neo4j.run_query(f'''
-            MATCH (user:USER {{_id: "{user_id}"}}), (subject:SUBJECT {{_id: "{subject_id}"}})
-            CREATE (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: '{topic_name}', topic_content: '<p>DEMO obsah materiálu {topic_name}</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (subject)
+            MATCH (user:USER {{_id: "{user_id}"}}), (material:MATERIAL {{_id: "{material_id}"}})
+            CREATE (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: '{topic_name}', topic_content: '<p>DEMO obsah materiálu {topic_name}</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (material)
             ''')
         return 'Topic added successfuly', 200
     except Exception as e:

@@ -1,11 +1,11 @@
-.subjects-window {
+.materials-window {
   padding: 32px;
 
   .h1 {
     text-align: center;
   }
 
-  .subjects {
+  .my-materials {
     display: grid;
 
     @media (min-width: 961px) {
@@ -22,7 +22,7 @@
 
     justify-content: center;
 
-    .subject-button {
+    .material-button {
       display: flex;
       flex-direction: column;
 
@@ -50,7 +50,7 @@
         overflow: hidden;
       }
 
-      .subject-button-body {
+      .material-button-body {
         height: calc(100% - 32px);
         max-height: calc(100% - 32px);
         width: 100%;
@@ -81,7 +81,7 @@
           }
         }
 
-        .subject-button-footer {
+        .material-button-footer {
           height: 32px;
           width: 100%;
 
@@ -105,7 +105,7 @@
       }
     }
 
-    .add-subject-button {
+    .add-material-button {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -138,12 +138,12 @@
     }
   }
 
-  .new-subject-form {
+  .new-material-form {
     display: flex;
     flex-direction: column;
     gap: 16px;
   
-    .new-subject-wrapper {
+    .new-material-wrapper {
       display: flex;
       flex-direction: column;
       gap: 4px;

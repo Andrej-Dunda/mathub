@@ -5,7 +5,7 @@ import MainContent from '../../components/layout-components/main-content/MainCon
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash, faSave } from '@fortawesome/free-solid-svg-icons';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
-import SubjectDropdown from '../../components/subject-dropdown/SubjectDropdown';
+import MaterialDropdown from '../../components/material-dropdown/MaterialDropdown';
 import { iTopic } from '../../interfaces/materials-interface';
 import { useModal } from '../../contexts/ModalProvider';
 import ModalFooter from '../../components/modal/modal-footer/ModalFooter';
@@ -22,8 +22,8 @@ import htmlToDraft from 'html-to-draftjs';
 
 const ViewTopics: React.FC = () => {
   const {
-    getSubjects,
-    selectedSubject,
+    getMaterials,
+    selectedMaterial,
     topics,
     selectedTopic,
     getTopic,
@@ -124,7 +124,7 @@ const ViewTopics: React.FC = () => {
   };
 
   useEffect(() => {
-    getSubjects()
+    getMaterials()
     setTimeout(() => setIsAsideMenuOpen(false), 200);
 
     const saveShortcut = (e: any) => {
@@ -200,8 +200,8 @@ const ViewTopics: React.FC = () => {
     }, [])
 
     const submitNewTopic = () => {
-      if (newTopicName.trim() && selectedSubject) {
-        postTopic(selectedSubject._id, newTopicName.trim())
+      if (newTopicName.trim() && selectedMaterial) {
+        postTopic(selectedMaterial._id, newTopicName.trim())
         closeModal()
         return
       }
@@ -238,10 +238,10 @@ const ViewTopics: React.FC = () => {
     <div className={`view-topics ${isAsideMenuOpen ? 'aside-menu-open' : ''}`}>
       <AsideMenu isAsideMenuOpen={isAsideMenuOpen} setIsAsideMenuOpen={setIsAsideMenuOpen} >
         <div className="aside-header">
-          <SubjectDropdown isAsideMenuOpen={isAsideMenuOpen} onEditorTopicSwitch={onEditorTopicSwitch} />
+          <MaterialDropdown isAsideMenuOpen={isAsideMenuOpen} onEditorTopicSwitch={onEditorTopicSwitch} />
           <div className="aside-button new-topic-button" onClick={openNewTopicModal}>
             <FontAwesomeIcon icon={faPlus} color={grayscale400} className='plus-icon' />
-            <span className='new-topic-label'>Nový materiál</span>
+            <span className='new-topic-label'>Nové téma</span>
           </div>
         </div>
         <div className="aside-body">

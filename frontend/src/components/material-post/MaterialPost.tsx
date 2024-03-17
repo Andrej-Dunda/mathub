@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './MaterialPost.scss'
 import ProfilePicture from '../profile-picture/ProfilePicture'
-import { iSubject, iTopic } from '../../interfaces/materials-interface'
+import { iMaterial, iTopic } from '../../interfaces/materials-interface'
 import { iUser } from '../../interfaces/user-interface'
 import { useUserData } from '../../contexts/UserDataProvider'
 import { useNav } from '../../contexts/NavigationProvider'
@@ -13,10 +13,10 @@ import MaterialFollowButton from '../buttons/material-follow-button/MaterialFoll
 import httpClient from '../../utils/httpClient'
 
 type MaterialPostProps = {
-  subject: iSubject;
+  material: iMaterial;
 }
 
-const MaterialPost = ({ subject }: MaterialPostProps) => {
+const MaterialPost = ({ material }: MaterialPostProps) => {
   const { user } = useUserData();
   const { toMyProfile, toUserProfile, toPreviewMaterial } = useNav();
 
@@ -32,18 +32,18 @@ const MaterialPost = ({ subject }: MaterialPostProps) => {
   const [topics, setTopics] = useState<iTopic[]>([]);
 
   useEffect(() => {
-    httpClient.get(`/api/get-subject-topics/${subject._id}`)
+    httpClient.get(`/api/get-material-topics/${material._id}`)
       .then(res => setTopics(res.data))
       .catch(err => console.error(err))
-  }, [subject])
+  }, [material])
 
   useEffect(() => {
-    if (subject.author_id) {
-      httpClient.get(`/api/user/${subject.author_id}`)
+    if (material.author_id) {
+      httpClient.get(`/api/user/${material.author_id}`)
         .then(res => setAuthor(res.data))
         .catch(err => console.error(err))
     }
-  }, [subject.author_id])
+  }, [material.author_id])
 
   useEffect(() => {
     updateHeight();
@@ -52,8 +52,8 @@ const MaterialPost = ({ subject }: MaterialPostProps) => {
   }, [topicsVisible]);
 
   const redirectToUserProfile = () => {
-    if (subject.author_id === user._id) toMyProfile()
-    else toUserProfile(subject.author_id)
+    if (material.author_id === user._id) toMyProfile()
+    else toUserProfile(material.author_id)
   }
 
   // Function to update height off the comment section
@@ -70,13 +70,13 @@ const MaterialPost = ({ subject }: MaterialPostProps) => {
       <main className={`material-post-main ${topicsVisible && 'border-right-grey'}`} ref={postContentRef}>
         <div className="material-post-header">
           <div className="material-info">
-            <ProfilePicture className='post-size radius-100 border box-shadow-dark' userId={subject.author_id} />
+            <ProfilePicture className='post-size radius-100 border box-shadow-dark' userId={material.author_id} />
             <div className="user-name-and-post-time">
               <h5
                 className='user-name'
                 onClick={redirectToUserProfile}
               >{author?.first_name} {author?.last_name}</h5>
-              <span className='material-post-time'>{normalizeDateHours(subject.date_created)}</span>
+              <span className='material-post-time'>{normalizeDateHours(material.date_created)}</span>
             </div>
             <ToggleTopicsButton topicsVisible={topicsVisible} setTopicsVisible={setTopicsVisible} />
           </div>
@@ -85,24 +85,24 @@ const MaterialPost = ({ subject }: MaterialPostProps) => {
           <div className="material-name-and-actions">
             <div className="material-name">
               <span className='label'>Název materiálu:</span>
-              <h5 className='h4'>{subject.subject_name}</h5>
+              <h5 className='h4'>{material.material_name}</h5>
             </div>
             <div className="material-post-actions">
-              <button className="dark box-shadow" onClick={() => toPreviewMaterial(subject._id)}>
+              <button className="dark box-shadow" onClick={() => toPreviewMaterial(material._id)}>
                 <span>Otevřít</span>
                 <FontAwesomeIcon icon={faFolderOpen} color={grayscale100} />
               </button>
-              <MaterialFollowButton subject={subject} className='box-shadow' />
+              <MaterialFollowButton material={material} className='box-shadow' />
             </div>
           </div>
           <div className="material-classification">
             <div className='material-post-type'>
               <span className='label'>Předmět:</span>
-              <span className='info'>{subject.subject_type}</span>
+              <span className='info'>{material.material_subject}</span>
             </div>
             <div className='material-post-grade'>
               <span className='label'>Ročník:</span>
-              <span className='info'>{subject.subject_grade}</span>
+              <span className='info'>{material.material_grade}</span>
             </div>
           </div>
         </div>

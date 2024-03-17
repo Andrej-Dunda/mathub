@@ -1,4 +1,4 @@
-.subject-dropdown {
+.material-dropdown {
   display: flex;
   flex-direction: column;
 
@@ -35,7 +35,7 @@
     }
   }
 
-  .new-subject-button {
+  .new-material-button {
     gap: 8px;
     cursor: pointer;
     color: var(--grayscale-400);

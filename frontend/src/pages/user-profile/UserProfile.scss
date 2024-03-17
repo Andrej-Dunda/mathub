@@ -153,7 +153,7 @@
 
       justify-content: center;
 
-      .subject-button {
+      .material-button {
         display: flex;
         flex-direction: column;
 
@@ -166,7 +166,7 @@
 
         overflow: hidden;
 
-        .subject-button-header {
+        .material-button-header {
           height: 32px;
           width: 100%;
 
@@ -189,7 +189,7 @@
           }
         }
 
-        .subject-button-body {
+        .material-button-body {
           height: calc(100% - 32px);
           max-height: calc(100% - 32px);
           width: 100%;
@@ -220,7 +220,7 @@
             }
           }
 
-          .subject-button-footer {
+          .material-button-footer {
             display: flex;
             align-items: center;
 

@@ -10,10 +10,10 @@ interface iNavigationContext {
   toUserProfile: (user_id: string) => void;
   toFriends: () => void;
   toBlog: () => void;
-  toSubjects: () => void;
+  toMaterials: () => void;
   toViewMaterials: () => void;
   toNewBookAnalysis: () => void;
-  toPreviewMaterial: (subject_id: string) => void;
+  toPreviewMaterial: (material_id: string) => void;
   activeLink: string;
   setActiveLink: React.Dispatch<React.SetStateAction<string>>;
   toPreviousPage: () => void;
@@ -62,9 +62,9 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
     navigate('/blog');
     setActiveLink('/blog')
   }
-  const toSubjects = () => {
-    navigate('/subjects');
-    setActiveLink('/subjects')
+  const toMaterials = () => {
+    navigate('/materials');
+    setActiveLink('/materials')
   }
   const toViewMaterials = () => {
     navigate('/view-materials');
@@ -75,8 +75,8 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
     setActiveLink('/new-book-analysis')
   }
 
-  const toPreviewMaterial = (subject_id: string) => {
-    navigate(`/preview-material?subject_id=${subject_id}`);
+  const toPreviewMaterial = (material_id: string) => {
+    navigate(`/preview-material?material_id=${material_id}`);
     setActiveLink('/preview-material')
   }
 
@@ -94,7 +94,7 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
       toUserProfile,
       toFriends,
       toBlog,
-      toSubjects,
+      toMaterials,
       toViewMaterials,
       toNewBookAnalysis,
       toPreviewMaterial,

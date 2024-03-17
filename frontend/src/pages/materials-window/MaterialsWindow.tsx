@@ -1,49 +1,49 @@
-import './SubjectsWindow.scss'
+import './MaterialsWindow.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useRef, useEffect } from 'react';
-import { iSubject } from '../../interfaces/materials-interface';
+import { iMaterial } from '../../interfaces/materials-interface';
 import EllipsisMenuButton from '../../components/buttons/ellipsis-menu-button/EllipsisMenuButton';
 import { useNav } from '../../contexts/NavigationProvider';
 import { useModal } from '../../contexts/ModalProvider';
-import NewSubjectModalContent from '../../components/modal/modal-contents/NewSubjectModalContent';
+import NewMaterialModalContent from '../../components/modal/modal-contents/NewMaterialModalContent';
 import { useMaterials } from '../../contexts/MaterialsProvider';
 import DeleteModalContent from '../../components/modal/modal-contents/DeleteModalContent';
 
-const SubjectsWindow = () => {
-  const { subjects, getSubjects, setSelectedSubject, deleteSubject } = useMaterials();
-  const newSubjectNameInputRef = useRef<HTMLInputElement>(null)
+const MaterialsWindow = () => {
+  const { materials, getMaterials, setSelectedMaterial, deleteMaterial } = useMaterials();
+  const newMaterialNameInputRef = useRef<HTMLInputElement>(null)
   const grayscale300 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-300').trim();
   const { toViewMaterials, setActiveLink } = useNav();
   const { showModal, modalOpen } = useModal();
 
   useEffect(() => {
-    setActiveLink('/subjects')
-    getSubjects()
+    setActiveLink('/materials')
+    getMaterials()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setActiveLink])
 
   useEffect(() => {
-    newSubjectNameInputRef.current?.focus()
+    newMaterialNameInputRef.current?.focus()
   }, [modalOpen])
 
-  const openNewSubjectModal = () => {
-    showModal(<NewSubjectModalContent />)
+  const openNewMaterialModal = () => {
+    showModal(<NewMaterialModalContent />)
   }
 
-  const openSubject = (subject: iSubject) => {
-    setSelectedSubject(subject)
+  const openMaterial = (material: iMaterial) => {
+    setSelectedMaterial(material)
     toViewMaterials()
   }
 
   return (
-    <div className="subjects-window">
-      <h1 className='h1'>Moje předměty</h1>
-      <div className="subjects">
+    <div className="materials-window">
+      <h1 className='h1'>Moje materiály</h1>
+      <div className="my-materials">
         {
-          subjects.map((subject: iSubject, index: number) => {
+          materials.map((material: iMaterial, index: number) => {
             return (
-              <div key={index} className="subject-button">
+              <div key={index} className="material-button">
                 <header>
                   <EllipsisMenuButton menuOptions={[
                     {
@@ -51,28 +51,28 @@ const SubjectsWindow = () => {
                       icon: faTrash,
                       onClick: () => showModal(
                         <DeleteModalContent
-                          onSubmit={() => deleteSubject(subject._id)}
+                          onSubmit={() => deleteMaterial(material._id)}
                           submitButtonLabel='Smazat'
                           cancelButtonLabel='Zrušit'
-                          title={`Smazat předmět "${subject.subject_name}"?`}
+                          title={`Smazat předmět "${material.material_name}"?`}
                           content='Opravdu chcete smazat tento předmět? Tato akce je nevratná!'
                         />
                       )
                     }
                   ]}/>
                 </header>
-                <div className="subject-button-body" onClick={() => openSubject(subject)} title={subject.subject_name}>
+                <div className="material-button-body" onClick={() => openMaterial(material)} title={material.material_name}>
                   <main>
                     <h5>
-                      {subject.subject_name}
+                      {material.material_name}
                     </h5>
                   </main>
-                  <footer className='subject-button-footer'>
-                    <span className='subject-type'>
-                      {subject.subject_type}
+                  <footer className='material-button-footer'>
+                    <span className='material-subject'>
+                      {material.material_subject}
                     </span>
-                    <span className='subject-grade'>
-                      {subject.subject_grade}
+                    <span className='material-grade'>
+                      {material.material_grade}
                     </span>
                   </footer>
                 </div>
@@ -80,11 +80,11 @@ const SubjectsWindow = () => {
             )
           })
         }
-        <button type='button' className="add-subject-button" onClick={openNewSubjectModal}>
+        <button type='button' className="add-material-button" onClick={openNewMaterialModal}>
           <FontAwesomeIcon icon={faPlus} className='edit-icon' size="2x" color={grayscale300} />
         </button>
       </div>
     </div>
   )
 }
-export default SubjectsWindow;
+export default MaterialsWindow;

@@ -5,7 +5,7 @@ import DOMPurify from 'dompurify'
 import "./react-draft-wysiwyg.css";
 import { useSearchParams } from 'react-router-dom'
 import httpClient from '../../utils/httpClient'
-import { iSubject, iTopic } from '../../interfaces/materials-interface'
+import { iMaterial, iTopic } from '../../interfaces/materials-interface'
 import { iUser } from '../../interfaces/user-interface'
 import AsideMenu from '../../components/layout-components/aside-menu/AsideMenu';
 import MainContent from '../../components/layout-components/main-content/MainContent';
@@ -19,42 +19,42 @@ const PreviewMaterial = () => {
 
   const [searchParams] = useSearchParams();
   const [convertedContent, setConvertedContent] = useState<string>('');
-  const [subjectId, setSubjectId] = useState<string>(searchParams.get("subject_id") ?? '');
+  const [materialId, setMaterialId] = useState<string>(searchParams.get("material_id") ?? '');
 
-  const [validSubjectId, setValidSubjectId] = useState<boolean>(false);
+  const [validMaterialId, setValidMaterialId] = useState<boolean>(false);
   const [isFriend, setIsFriend] = useState<boolean>(false);
   const [topics, setTopics] = useState<iTopic[]>([]);
-  const [subject, setSubject] = useState<iSubject | null>(null);
+  const [material, setMaterial] = useState<iMaterial | null>(null);
   const [author, setAuthor] = useState<iUser | null>(null);
 
   const [selectedTopic, setSelectedTopic] = useState<iTopic | null>(null);
   const [isAsideMenuOpen, setIsAsideMenuOpen] = useState<boolean>(true)
 
   useEffect(() => {
-    let paramSubjectId = searchParams.get("subject_id");
-    setSubjectId(paramSubjectId ?? '')
+    let paramMaterialId = searchParams.get("material_id");
+    setMaterialId(paramMaterialId ?? '')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams])
 
   useEffect(() => {
     // Fetch data from the API
-    httpClient.get(`/api/preview-subject/${subjectId}`)
+    httpClient.get(`/api/preview-material/${materialId}`)
       .then(res => {
         console.log(res.data)
-        setValidSubjectId(res.data.validSubjectId)
-        if (res.data.validSubjectId) {
+        setValidMaterialId(res.data.validMaterialId)
+        if (res.data.validMaterialId) {
           setIsFriend(res.data.isFriend)
           setAuthor(res.data.author)
           if (res.data.isFriend) {
             setTopics(res.data.topics.sort((a: iTopic, b: iTopic) => a.topic_name.localeCompare(b.topic_name)))
-            setSubject(res.data.subject)
+            setMaterial(res.data.material)
           }
         }
       })
       .catch((err) => {
         console.error(err)
       })
-  }, [subjectId])
+  }, [materialId])
 
   useEffect(() => {
     if (topics.length > 0) {
@@ -91,14 +91,14 @@ const PreviewMaterial = () => {
   return (
     <>
       {
-        validSubjectId ?
+        validMaterialId ?
           (
             isFriend ? (
               <div className={`preview-material ${isAsideMenuOpen ? 'aside-menu-open' : ''}`}>
                 <AsideMenu isAsideMenuOpen={isAsideMenuOpen} setIsAsideMenuOpen={setIsAsideMenuOpen} >
                   <div className="aside-header">
-                    <div className="subject-title">
-                      <span title={subject?.subject_name}>{subject?.subject_name}</span>
+                    <div className="material-title">
+                      <span title={material?.material_name}>{material?.material_name}</span>
                     </div>
                   </div>
                   <div className="aside-body">
@@ -135,7 +135,7 @@ const PreviewMaterial = () => {
                     <div className="material-meta-data">
                       <div className="meta-data-wrapper">
                         {selectedTopic && <span className="date-modified">Upraveno {normalizeDateHours(selectedTopic.date_modified)}</span>}
-                        {subject && <span className='subject-type-and-grade'>{subject.subject_type} pro {subject.subject_grade}</span>}
+                        {material && <span className='material-subject-and-grade'>{material.material_subject} pro {material.material_grade}</span>}
                       </div>
                     </div>
                     <div className="preview-wrapper">

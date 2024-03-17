@@ -5,12 +5,12 @@ import { useNav } from "../../contexts/NavigationProvider";
 import { iBlogPost } from "../../interfaces/blog-interfaces";
 import httpClient from "../../utils/httpClient";
 import MaterialPost from "../../components/material-post/MaterialPost";
-import { iSubject } from "../../interfaces/materials-interface";
+import { iMaterial } from "../../interfaces/materials-interface";
 
 interface iPost {
   date_created: string;
   type: string;
-  post: iSubject | iBlogPost;
+  post: iMaterial | iBlogPost;
 }
 
 const Homepage = () => {
@@ -42,7 +42,7 @@ const Homepage = () => {
                   post.type === 'blog' ? (
                     <BlogPost postData={post.post as iBlogPost} showComments={false} blogFormat={false} />
                   ) : (
-                    <MaterialPost subject={post.post as iSubject} />
+                    <MaterialPost material={post.post as iMaterial} />
                   )
                 }
               </div>

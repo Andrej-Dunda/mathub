@@ -7,7 +7,7 @@ import { iUser } from '../../interfaces/user-interface';
 import { useNav } from '../../contexts/NavigationProvider';
 import ProfilePicture from '../../components/profile-picture/ProfilePicture';
 import { useUserData } from '../../contexts/UserDataProvider';
-import { iSubject } from '../../interfaces/materials-interface';
+import { iMaterial } from '../../interfaces/materials-interface';
 import { iBlogPost } from '../../interfaces/blog-interfaces';
 import BlogPost from '../../components/blog-post/BlogPost';
 import { normalizeDate } from '../../utils/normalizeDate';
@@ -18,7 +18,7 @@ const UserProfile = () => {
   const [searchParams] = useSearchParams();
   const [userId, setUserId] = useState<string>('');
   const [viewedUser, setViewedUser] = useState<iUser | null>(null);
-  const [subjects, setSubjects] = useState<iSubject[]>([]);
+  const [materials, setMaterials] = useState<iMaterial[]>([]);
   const [posts, setPosts] = useState<iBlogPost[]>([]);
   const { toMyProfile, toPreviewMaterial } = useNav()
 
@@ -40,7 +40,7 @@ const UserProfile = () => {
           profile_picture: res.data.user.profile_picture,
           registration_date: res.data.user.registration_date
         })
-        setSubjects(res.data.subjects)
+        setMaterials(res.data.materials)
         setPosts(res.data.posts)
       })
       .catch(() => setViewedUser(null))
@@ -71,26 +71,26 @@ const UserProfile = () => {
           <h2 className="h2">Materiály uživatele</h2>
           <div className="user-materials">
             {
-              subjects.length > 0 ? (
+              materials.length > 0 ? (
                 <div className="user-materials-windows">
-                  {subjects.map((subject, index) => {
+                  {materials.map((material, index) => {
                     return (
-                      <div className="subject-button" key={index}>
-                        <div className="subject-button-header">
-                          <span className='subject-type'>
-                            {subject.subject_type}
+                      <div className="material-button" key={index}>
+                        <div className="material-button-header">
+                          <span className='material-type'>
+                            {material.material_subject}
                           </span>
-                          <span className='subject-grade'>
-                            {subject.subject_grade}
+                          <span className='material-grade'>
+                            {material.material_grade}
                           </span>
                         </div>
-                        <div className="subject-button-body" title={subject.subject_name}>
-                          <main onClick={() => toPreviewMaterial(subject._id)}>
+                        <div className="material-button-body" title={material.material_name}>
+                          <main onClick={() => toPreviewMaterial(material._id)}>
                             <h5>
-                              {subject.subject_name}
+                              {material.material_name}
                             </h5>
                           </main>
-                          <MaterialFollowButton subject={subject} className='subject-button-footer' />
+                          <MaterialFollowButton material={material} className='material-button-footer' />
                         </div>
                       </div>
                     )
