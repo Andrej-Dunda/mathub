@@ -171,30 +171,26 @@ def get_friend_suggestions():
     try:
         user_id = request.json.get('user_id', None)
         primary_friend_suggestions_data = neo4j.run_query(f'''
-            MATCH (subject:USER {{_id: '{user_id}'}}) -[:FRIEND_WITH]-> (common_friends:USER) -[:FRIEND_WITH]-> (recommended_to_subject:USER)
-
+            MATCH (subject:USER {{_id: '{user_id}'}}) -[:FRIEND_WITH]- (common_friends:USER) -[:FRIEND_WITH]- (recommended_to_subject:USER)
             WHERE NOT (recommended_to_subject) -[:FRIEND_WITH]- (subject)
             AND NOT (recommended_to_subject) -[:FRIEND_REQUEST]- (subject)
             AND NOT (subject) -[:DONT_SUGGEST]-> (recommended_to_subject)
             AND recommended_to_subject <> subject
-
             RETURN DISTINCT recommended_to_subject._id AS _id, recommended_to_subject.first_name AS first_name, recommended_to_subject.last_name AS last_name, COUNT(common_friends) as common_friends_count
             ORDER BY common_friends_count DESC
-            ''')
-        
+        ''')
+
+        primary_friend_suggestions_ids = [data['_id'] for data in primary_friend_suggestions_data]
+
         secondary_friend_suggestions_data = neo4j.run_query(f'''
-            MATCH (subject:USER {{_id: '{user_id}'}}) -[:FRIEND_WITH]-> (common_friend:USER)
-
-            MATCH (recommended_to_subject:USER)
-
+            MATCH (subject:USER {{_id: '{user_id}'}}), (recommended_to_subject:USER)
             WHERE NOT (recommended_to_subject) -[:FRIEND_WITH]- (subject)
-            AND NOT (recommended_to_subject) -[:FRIEND_WITH]- (common_friend)
             AND NOT (recommended_to_subject) -[:FRIEND_REQUEST]- (subject)
             AND NOT (subject) -[:DONT_SUGGEST]-> (recommended_to_subject)
             AND recommended_to_subject <> subject
-
+            AND NOT recommended_to_subject._id IN {primary_friend_suggestions_ids}
             RETURN DISTINCT recommended_to_subject._id AS _id, recommended_to_subject.first_name AS first_name, recommended_to_subject.last_name AS last_name
-            ''')
+        ''')
 
         friend_suggestions = []
         for friend_suggestion_data in primary_friend_suggestions_data:
@@ -281,7 +277,7 @@ def accept_friend_request():
     try:
         acceptor_id = request.json.get('acceptor_id', None)
         requestor_id = request.json.get('requestor_id', None)
-        neo4j.run_query(f'MATCH (requestor:USER {{_id: "{requestor_id}"}}) -[request:FRIEND_REQUEST]-> (acceptor:USER {{_id: "{acceptor_id}"}}) DELETE request')
+        neo4j.run_query(f'MATCH (requestor:USER {{_id: "{requestor_id}"}}) -[request:FRIEND_REQUEST]- (acceptor:USER {{_id: "{acceptor_id}"}}) DELETE request')
         neo4j.run_query(f'MATCH (requestor:USER {{_id: "{requestor_id}"}}), (acceptor:USER {{_id: "{acceptor_id}"}}) CREATE (requestor) -[:FRIEND_WITH]-> (acceptor), (acceptor) -[:FRIEND_WITH]-> (requestor)')
         return {'msg': 'Friendship accepted succesfuly'}
     except:
@@ -322,7 +318,7 @@ def remove_friend():
     try:
         requestor_id = request.json.get('requestor_id', None)
         acceptor_id = request.json.get('acceptor_id', None)
-        neo4j.run_query(f'MATCH (requestor:USER {{_id: "{requestor_id}"}}) -[friendship:FRIEND_WITH]-> (acceptor:USER {{_id: "{acceptor_id}"}}) DELETE friendship')
+        neo4j.run_query(f'MATCH (requestor:USER {{_id: "{requestor_id}"}}) -[friendship:FRIEND_WITH]- (acceptor:USER {{_id: "{acceptor_id}"}}) DELETE friendship')
         return {'msg': 'Friendship removed succesfuly'}
     except:
         return {'msg': 'Friendship could not be removed'}
@@ -538,9 +534,23 @@ def get_user(id):
 @app.route('/api/user-profile/<id>', methods=['GET'])
 def get_user_profile(id):
     try:
+        user_id = session.get('user_id')
+
+        if user_id is None:
+            return jsonify({
+                'error': 'Not logged in'
+                }), 401
+
         user_data = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user')[0]['user']
         user_posts_data = neo4j.run_query(f'MATCH (post:BLOG_POST) -[:POSTED_BY]-> (user:USER {{_id: "{id}"}}) RETURN post, user._id AS author_id ORDER BY post.post_time DESC')
         user_materials_data = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) <-[:CREATED_BY]- (material:MATERIAL) RETURN material')
+
+        friendStatus = neo4j.run_query(f'''MATCH (user:USER {{_id: "{user_id}"}}), (author:USER {{_id: "{id}"}})
+                                       RETURN
+                                       EXISTS((user) -[:FRIEND_WITH]- (author)) AS isFriend,
+                                       EXISTS((user) -[:FRIEND_REQUEST]-> (author)) AS friendRequestAcceptor,
+                                       EXISTS((author) -[:FRIEND_REQUEST]-> (user)) AS friendRequestRequestor
+                                       ''')
 
         user_posts = []
         for post_data in user_posts_data:
@@ -557,11 +567,17 @@ def get_user_profile(id):
         user = {
             'user': user_data,
             'posts': user_posts,
-            'materials': user_materials
+            'isFriend': friendStatus[0]['isFriend'],
+            'friendRequestAcceptor': friendStatus[0]['friendRequestAcceptor'],
+            'friendRequestRequestor': friendStatus[0]['friendRequestRequestor']
         }
+
+        if friendStatus[0]['isFriend']:
+            user['materials'] = user_materials
+
         return user
-    except:
-        return 400
+    except Exception as e:
+        return str(e), 400
 
 def crop_image_to_square(image_path):
     with Image.open(image_path) as img:

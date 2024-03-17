@@ -21,9 +21,7 @@ const Homepage = () => {
     setActiveLink('/')
     httpClient.get('/api/posts')
     .then(res => {
-      // setPosts(res.data.sort((a: iPost, b: iPost) => (new Date(a.date_created).toString()).localeCompare(new Date(b.date_created).toString())))
       setPosts(res.data)
-      console.log(res.data)
     })
     .catch(err => console.error(err))
   // eslint-disable-next-line react-hooks/exhaustive-deps
