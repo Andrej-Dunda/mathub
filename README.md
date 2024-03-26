@@ -7,14 +7,6 @@
 - Backend: Flask API a Redis server pro relační přihlašovací systém
 - Databáze: Neo4j
 
-## Cíle
-Cílem je vytvořit full-stack webovou aplikaci, která bude splňovat následující funkcionality:
-- Registrace uživatelského účtu a přihlašování pomocí něj (možnost změny hesla, profilového obrázku a smazání účtu)
-- Systém pro studenty sloužící k přehlednému zpracování svých materiálů k maturitě (nebo jiným účelům)
-- Možnost vytvořené materiály sdílet s ostatními uživateli
-- Možnost čerpat z materiálů sdílených ostatními uživateli
-- Možnost sledovat ostatní uživatele ("přidat si je do přátel") a spravovat tato "přátelství"
-
 ## Co aplikace umí?
 Aktuálně aplikace podporuje:
 - Přihlašovací a registrační systém pomocí relací na straně serveru
