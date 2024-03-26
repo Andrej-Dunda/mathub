@@ -6,12 +6,14 @@ interface iNavigationContext {
   toRegistration: () => void;
   toForgottenPassword: () => void;
   toHome: () => void;
-  toUserProfile: () => void;
+  toMyProfile: () => void;
+  toUserProfile: (user_id: string) => void;
   toFriends: () => void;
   toBlog: () => void;
-  toSubjects: () => void;
+  toMaterials: () => void;
   toViewMaterials: () => void;
   toNewBookAnalysis: () => void;
+  toPreviewMaterial: (material_id: string) => void;
   activeLink: string;
   setActiveLink: React.Dispatch<React.SetStateAction<string>>;
   toPreviousPage: () => void;
@@ -44,8 +46,12 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
     navigate('/');
     setActiveLink('/')
   }
-  const toUserProfile = () => {
-    navigate('/user-profile');
+  const toMyProfile = () => {
+    navigate('/my-profile');
+    setActiveLink('/my-profile')
+  }
+  const toUserProfile = (user_id: string) => {
+    navigate(`/user-profile?user_id=${user_id}`);
     setActiveLink('/user-profile')
   }
   const toFriends = () => {
@@ -56,9 +62,9 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
     navigate('/blog');
     setActiveLink('/blog')
   }
-  const toSubjects = () => {
-    navigate('/subjects');
-    setActiveLink('/subjects')
+  const toMaterials = () => {
+    navigate('/materials');
+    setActiveLink('/materials')
   }
   const toViewMaterials = () => {
     navigate('/view-materials');
@@ -67,6 +73,11 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
   const toNewBookAnalysis = () => {
     navigate('/new-book-analysis');
     setActiveLink('/new-book-analysis')
+  }
+
+  const toPreviewMaterial = (material_id: string) => {
+    navigate(`/preview-material?material_id=${material_id}`);
+    setActiveLink('/preview-material')
   }
 
   const toPreviousPage = () => {
@@ -79,12 +90,14 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
       toRegistration,
       toForgottenPassword,
       toHome,
+      toMyProfile,
       toUserProfile,
       toFriends,
       toBlog,
-      toSubjects,
+      toMaterials,
       toViewMaterials,
       toNewBookAnalysis,
+      toPreviewMaterial,
       activeLink,
       setActiveLink,
       toPreviousPage

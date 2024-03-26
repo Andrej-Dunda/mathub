@@ -11,27 +11,17 @@ import DeleteButton from '../buttons/delete-button/DeleteButton'
 import { useUserData } from '../../contexts/UserDataProvider'
 import TextParagraph from '../text-paragraph/TextParagraph'
 import httpClient from '../../utils/httpClient'
-import { iPost } from '../../interfaces/blog-interfaces'
+import { iBlogPost } from '../../interfaces/blog-interfaces'
+import { useNav } from '../../contexts/NavigationProvider'
+import { normalizeDateHours } from '../../utils/normalizeDate'
 
 const BlogPost = (props: any) => {
   const { user } = useUserData();
   const [userName, setUserName] = useState<string>('')
-  const rawPostDate = new Date(props.postData.post_time)
-  const czechMonthNames = [
-    'ledna', 'února', 'března', 'dubna', 'května', 'června',
-    'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'
-  ];
-  // Custom format for Czech date string
-  const dayOfMonth = rawPostDate.getDate();
-  const monthName = czechMonthNames[rawPostDate.getMonth()];
-  const hour = rawPostDate.getHours();
-  const minute = rawPostDate.getMinutes();
-  const addLeadingZero = (num: number) => (num < 10 ? `0${num}` : num);
-  const customDateFormat = `${dayOfMonth}. ${monthName} v ${hour}:${addLeadingZero(minute)}`;
-  const postData: iPost = {
+  const postData: iBlogPost = {
     _id: props.postData._id,
     author_id: props.postData.author_id,
-    post_time: customDateFormat,
+    post_time: normalizeDateHours(props.postData.post_time),
     post_title: props.postData.post_title,
     post_description: props.postData.post_description,
     post_image: props.postData.post_image ? props.postData.post_image : null
@@ -44,6 +34,7 @@ const BlogPost = (props: any) => {
   const commentsRef = useRef<HTMLDivElement>(null);
   const grayscale100 = getComputedStyle(document.documentElement).getPropertyValue('--grayscale-100').trim();
   const [height, setHeight] = useState<number>(postContentRef.current?.getBoundingClientRect().height || 0);
+  const { toUserProfile, toMyProfile } = useNav();
 
   useEffect(() => {
     getComments()
@@ -62,6 +53,7 @@ const BlogPost = (props: any) => {
         setUserName(res.data.first_name + ' ' + res.data.last_name)
       })
       .catch((err) => console.error(err))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postData.author_id])
 
   const getComments = () => {
@@ -80,7 +72,7 @@ const BlogPost = (props: any) => {
     setNewComment(e.target.value)
   }
 
-  const submitComment = () => {
+  const submitComment = async () => {
     newComment.trim() && httpClient.post('/api/add-comment', {
       post_id: postData._id,
       commenter_id: user._id,
@@ -103,6 +95,11 @@ const BlogPost = (props: any) => {
     }
   };
 
+  const redirectToUserProfile = () => {
+    if (postData.author_id === user._id) toMyProfile()
+    else toUserProfile(postData.author_id)
+  }
+
   return (
     <div className={`blog-post ${!showComments && 'no-comments'}`}>
       <main className={`blog-post-main ${showComments && 'border-right-grey'}`} ref={postContentRef} >
@@ -110,7 +107,10 @@ const BlogPost = (props: any) => {
           <div className="blog-info">
             <ProfilePicture className='post-size radius-100 border box-shadow-dark' userId={postData.author_id} />
             <div className="user-name-and-post-time">
-              <h5 className='user-name'>{userName}</h5>
+              <h5
+                className='user-name'
+                onClick={redirectToUserProfile}
+              >{userName}</h5>
               <span className='blog-post-time'>{postData.post_time}</span>
             </div>
             <div className="blog-post-buttons">

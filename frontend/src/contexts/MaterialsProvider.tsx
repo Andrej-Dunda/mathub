@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import React from 'react';
-import httpClient from '../utils/httpClient';
-import { iSubject, iTopic } from '../interfaces/materials-interface';
+import { iMaterial, iTopic } from '../interfaces/materials-interface';
 import { useSnackbar } from './SnackbarProvider';
+import { useAuth } from './AuthProvider';
 
 type MaterialsContextType = {
   topics: iTopic[];
@@ -10,19 +10,19 @@ type MaterialsContextType = {
   selectedTopic: iTopic | undefined;
   setSelectedTopic: React.Dispatch<React.SetStateAction<iTopic | undefined>>;
 
-  subjects: iSubject[];
-  setSubjects: React.Dispatch<React.SetStateAction<iSubject[]>>;
-  selectedSubject: iSubject | undefined;
-  setSelectedSubject: React.Dispatch<React.SetStateAction<iSubject | undefined>>;
+  materials: iMaterial[];
+  setMaterials: React.Dispatch<React.SetStateAction<iMaterial[]>>;
+  selectedMaterial: iMaterial | undefined;
+  setSelectedMaterial: React.Dispatch<React.SetStateAction<iMaterial | undefined>>;
 
-  getSubjects: () => void;
-  postSubject: (newSubjectName: string) => void;
-  getSubject: (subject_id: string) => void;
-  putSubject: (subject_id: string, subject_name: string) => void;
-  deleteSubject: (subject_id: string) => void;
+  getMaterials: () => void;
+  postMaterial: (newMaterialName: string, material_type: string, material_grade: string) => void;
+  getMaterial: (material_id: string) => void;
+  putMaterial: (material_id: string, material_name: string) => void;
+  deleteMaterial: (material_id: string) => void;
 
-  getSubjectTopics: (subject_id: string) => void;
-  postTopic: (subject_id: string, topic_name: string) => void;
+  getMaterialTopics: (material_id: string) => void;
+  postTopic: (material_id: string, topic_name: string) => void;
   getTopic: (topic_id: string) => void;
   putTopic: (topic_id: string, topic_name: string, topic_content: string, keepTopicSelected?: boolean) => void;
   deleteTopic: (topic_id: string) => void;
@@ -38,60 +38,70 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   const [topics, setTopics] = useState<iTopic[]>([])
   const [selectedTopic, setSelectedTopic] = useState<iTopic | undefined>()
 
-  const [subjects, setSubjects] = useState<iSubject[]>([])
-  const [selectedSubject, setSelectedSubject] = useState<iSubject>()
+  const [materials, setMaterials] = useState<iMaterial[]>([])
+  const [selectedMaterial, setSelectedMaterial] = useState<iMaterial>()
 
   const { openSnackbar } = useSnackbar();
+  const { protectedHttpClientInit } = useAuth();
 
   useEffect(() => {
-    selectedSubject && getSubjectTopics(selectedSubject._id)
-  }, [selectedSubject])
+    selectedMaterial && getMaterialTopics(selectedMaterial._id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMaterial])
 
   useEffect(() => {
     topics && setSelectedTopic(topics[0])
   }, [topics])
 
-  const getSubjects = async () => {
-    httpClient.get('/api/get-subjects')
+  const getMaterials = async () => {
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.get('/api/get-materials')
       .then(res => {
-        setSubjects(res.data)
+        setMaterials(res.data)
       })
       .catch(err => {
         console.error(err)
       })
   }
 
-  const postSubject = async (newSubjectName: string) => {
-    if (newSubjectName) httpClient.post('/api/post-subject', {
-      subject_name: newSubjectName
+  const postMaterial = async (newMaterialName: string, selectedMaterialType: string, selectedMaterialGrade: string) => {
+    if (newMaterialName) {
+      const protectedHttpClient = await protectedHttpClientInit();
+      protectedHttpClient?.post('/api/post-material', {
+        material_name: newMaterialName,
+        material_type: selectedMaterialType,
+        material_grade: selectedMaterialGrade
+      })
+        .then(() => {
+          getMaterials()
+          openSnackbar('Předmět úspěšně vytvořen!')
+        })
+        .catch(err => {
+          console.error(err)
+        })
+    }
+  }
+
+  const getMaterial = async (material_id: string) => {
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.get(`/api/get-material/${material_id}`)
+      .then(res => {
+        setSelectedMaterial(res.data)
+      })
+      .catch(err => {
+        console.error(err)
+      })
+  }
+
+  const putMaterial = async (material_id: string, material_name: string) => {
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.put(`/api/put-material`, {
+      material_id: material_id,
+      material_name: material_name
     })
       .then(() => {
-        getSubjects()
-        openSnackbar('Předmět úspěšně vytvořen!')
-      })
-      .catch(err => {
-        console.error(err)
-      })
-  }
-
-  const getSubject = async (subject_id: string) => {
-    httpClient.get(`/api/get-subject/${subject_id}`)
-      .then(res => {
-        setSelectedSubject(res.data)
-      })
-      .catch(err => {
-        console.error(err)
-      })
-  }
-
-  const putSubject = async (subject_id: string, subject_name: string) => {
-    httpClient.put(`/api/put-subject`, {
-      subject_id,
-      subject_name
-    })
-      .then(() => {
-        getSubjects()
-        setSelectedSubject(undefined)
+        getMaterials()
+        setSelectedMaterial(undefined)
         openSnackbar('Předmět úspěšně upraven!')
       })
       .catch(err => {
@@ -99,11 +109,12 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
       })
   }
 
-  const deleteSubject = async (subject_id: string) => {
-    httpClient.delete(`/api/delete-subject/${subject_id}`)
+  const deleteMaterial = async (material_id: string) => {
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.delete(`/api/delete-material/${material_id}`)
       .then(() => {
-        getSubjects()
-        setSelectedSubject(undefined)
+        getMaterials()
+        setSelectedMaterial(undefined)
         openSnackbar('Předmět úspěšně smazán!')
       })
       .catch(err => {
@@ -111,8 +122,9 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
       })
   }
 
-  const getSubjectTopics = async (subject_id: string) => {
-    httpClient.get(`/api/get-subject-topics/${subject_id}`)
+  const getMaterialTopics = async (material_id: string) => {
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.get(`/api/get-material-topics/${material_id}`)
       .then(res => {
         setTopics(res.data)
       })
@@ -121,14 +133,15 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
       })
   }
 
-  const postTopic = async (subject_id: string, topic_name: string) => {
-    httpClient.post('/api/post-topic', {
-      subject_id,
+  const postTopic = async (material_id: string, topic_name: string) => {
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.post('/api/post-topic', {
+      material_id,
       topic_name
     })
       .then(() => {
-        getSubjectTopics(subject_id)
-        openSnackbar('Materiál úspěšně vytvořen!')
+        getMaterialTopics(material_id)
+        openSnackbar('Téma úspěšně vytvořeno!')
       })
       .catch(err => {
         console.error(err)
@@ -136,7 +149,8 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   }
 
   const getTopic = async (topic_id: string) => {
-    httpClient.get(`/api/get-topic/${topic_id}`)
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.get(`/api/get-topic/${topic_id}`)
       .then(res => {
         setSelectedTopic(res.data)
       })
@@ -146,27 +160,29 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   }
 
   const putTopic = async (topic_id: string, topic_name: string, topic_content: string, keepTopicSelected?: boolean) => {
-    httpClient.put(`/api/put-topic`, {
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.put(`/api/put-topic`, {
       topic_id: topic_id,
       topic_name: topic_name,
       topic_content: topic_content
     })
       .then(() => {
+        openSnackbar('Téma úspěšně uloženo!')
         keepTopicSelected && getTopic(topic_id)
-        openSnackbar('Materiál úspěšně uložen!')
       })
       .catch(err => {
         console.error(err)
-        openSnackbar('Materiál nemohl být uložen :(')
+        openSnackbar('Téma nemohlo být uloženo :(')
       })
   }
 
   const deleteTopic = async (topic_id: string) => {
-    httpClient.delete(`/api/delete-topic/${topic_id}`)
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.delete(`/api/delete-topic/${topic_id}`)
       .then(() => {
-        selectedSubject && getSubjectTopics(selectedSubject._id)
+        selectedMaterial && getMaterialTopics(selectedMaterial._id)
         setSelectedTopic(undefined)
-        openSnackbar('Materiál úspěšně smazán!')
+        openSnackbar('Téma úspěšně smazáno!')
       })
       .catch(err => {
         console.error(err)
@@ -179,18 +195,18 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
     selectedTopic,
     setSelectedTopic,
 
-    subjects,
-    setSubjects,
-    selectedSubject,
-    setSelectedSubject,
+    materials: materials,
+    setMaterials: setMaterials,
+    selectedMaterial: selectedMaterial,
+    setSelectedMaterial: setSelectedMaterial,
 
-    getSubjects,
-    postSubject,
-    getSubject,
-    putSubject,
-    deleteSubject,
+    getMaterials: getMaterials,
+    postMaterial: postMaterial,
+    getMaterial: getMaterial,
+    putMaterial: putMaterial,
+    deleteMaterial: deleteMaterial,
 
-    getSubjectTopics,
+    getMaterialTopics: getMaterialTopics,
     postTopic,
     getTopic,
     putTopic,

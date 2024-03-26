@@ -2,27 +2,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './EditButton.scss'
 import { useModal } from '../../../contexts/ModalProvider';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSnackbar } from '../../../contexts/SnackbarProvider';
 import ErrorMessage from '../../error-message/ErrorMessage';
 import ModalFooter from '../../modal/modal-footer/ModalFooter';
 import FileUploader from '../file-uploader/FileUploader';
-import httpClient from '../../../utils/httpClient';
+import { useAuth } from '../../../contexts/AuthProvider';
 
 const EditPostModalContent = (props: any) => {
-  const [postTitle, setPostTitle] = useState(props.postData.title)
-  const [postDescription, setPostDescription] = useState(props.postData.content)
+  const [postTitle, setPostTitle] = useState<string>(props.postData.post_title || '')
+  const [postDescription, setPostDescription] = useState<string>(props.postData.post_description || '')
   const [postImage, setPostImage] = useState<File | null>(null);
   const { openSnackbar } = useSnackbar();
   const [errorMessage, setErrorMessage] = useState<string>('')
   const { closeModal } = useModal();
-
-  useEffect(() => {
-    setPostDescription(props.postData.content)
-    setPostTitle(props.postData.title)
-    setErrorMessage('')
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const { protectedHttpClientInit } = useAuth();
 
   const handlePostDescChange = (e: any) => {
     setPostDescription(e.target.value)
@@ -39,11 +33,12 @@ const EditPostModalContent = (props: any) => {
     const formData = new FormData()
 
     if (postImage) formData.append('post_image', postImage)
-    formData.append('post_id', props.postData.id.toString())
+    formData.append('post_id', props.postData._id.toString())
     formData.append('post_title', postTitle)
     formData.append('post_description', postDescription)
 
-    httpClient.put('/api/put-blog-post', formData, {
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.put('/api/put-blog-post', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }
@@ -51,10 +46,10 @@ const EditPostModalContent = (props: any) => {
       .then(() => {
         props.getMyPosts()
         openSnackbar("Příspěvek úspěšně uložen!")
-        setErrorMessage('')
-        closeModal();
       })
       .catch(err => console.error(err))
+      setErrorMessage('')
+      closeModal();
   }
 
   return (

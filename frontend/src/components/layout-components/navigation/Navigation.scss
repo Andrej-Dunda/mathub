@@ -41,6 +41,10 @@
         text-decoration: none;
         user-select: none;
         color: var(--grayscale-100);
+
+        @media (max-width: 768px) {
+          display: none;
+        }
       }
     }
   }
@@ -63,6 +67,10 @@
       width: 90px;
       height: 100%;
       padding: 8px;
+
+      @media (max-width: 768px) {
+        width: fit-content;
+      }
 
       color: var(--grayscale-100);
       font-size: 20px;

@@ -15,7 +15,7 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   const { isLoggedIn, logout } = useAuth();
   const [user, setUser] = useState<iUser>({
     _id: '',
-    email: 'NaN',
+    user_email: '',
     first_name: '',
     last_name: '',
     profile_picture: 'profile-picture-default.png',

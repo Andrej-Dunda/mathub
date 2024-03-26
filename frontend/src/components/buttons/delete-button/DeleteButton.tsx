@@ -4,20 +4,22 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useSnackbar } from '../../../contexts/SnackbarProvider';
 import { useModal } from '../../../contexts/ModalProvider';
 import ModalFooter from '../../modal/modal-footer/ModalFooter';
-import httpClient from '../../../utils/httpClient';
+import { useAuth } from '../../../contexts/AuthProvider';
 
 const DeleteBlogPostModalContent = (props: any) => {
   const { openSnackbar } = useSnackbar();
   const { closeModal } = useModal();
+  const { protectedHttpClientInit } = useAuth();
 
-  const deleteBlogPost = () => {
-    httpClient.delete(`/api/delete-blog-post/${props.postId}`)
+  const deleteBlogPost = async () => {
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.delete(`/api/delete-blog-post/${props.postId}`)
     .then(() => {
       props.getMyPosts()
       openSnackbar('Příspěvek úspěšně smazán!')
-      closeModal();
     })
     .catch(err => console.error(err))
+    closeModal();
   }
 
   return (

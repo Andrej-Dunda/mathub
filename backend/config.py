@@ -5,6 +5,7 @@ from werkzeug.datastructures import CallbackDict
 from uuid import uuid4
 import json
 from neo4j import GraphDatabase
+from datetime import timedelta
 
 load_dotenv()
 
@@ -55,7 +56,8 @@ class ApplicationConfig:
     SESSION_COOKIE_SECURE=False
 
     SESSION_TYPE = 'redis'
-    SESSION_PERMANENT = False
+    SESSION_PERMANENT = True
+    PERMANENT_SESSION_LIFETIME = timedelta(hours=1)
     SESSION_USE_SIGNer = True
     SESSION_REDIS = redis.from_url('redis://redis:6379')
 
@@ -71,9 +73,9 @@ class Neo4jService:
     def close(self):
         self.driver.close()
 
-    def run_query(self, query):
+    def run_query(self, query, parameters=None):
         with self.driver.session() as session:
-            result = session.run(query)
+            result = session.run(query, parameters)
             return [record.data() for record in result]
         
     def is_ready(self):
