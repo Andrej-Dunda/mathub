@@ -141,7 +141,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
     })
       .then(() => {
         getMaterialTopics(material_id)
-        openSnackbar('Materiál úspěšně vytvořen!')
+        openSnackbar('Téma úspěšně vytvořeno!')
       })
       .catch(err => {
         console.error(err)
@@ -167,12 +167,12 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
       topic_content: topic_content
     })
       .then(() => {
-        openSnackbar('Materiál úspěšně uložen!')
+        openSnackbar('Téma úspěšně uloženo!')
         keepTopicSelected && getTopic(topic_id)
       })
       .catch(err => {
         console.error(err)
-        openSnackbar('Materiál nemohl být uložen :(')
+        openSnackbar('Téma nemohlo být uloženo :(')
       })
   }
 
@@ -182,7 +182,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
       .then(() => {
         selectedMaterial && getMaterialTopics(selectedMaterial._id)
         setSelectedTopic(undefined)
-        openSnackbar('Materiál úspěšně smazán!')
+        openSnackbar('Téma úspěšně smazáno!')
       })
       .catch(err => {
         console.error(err)

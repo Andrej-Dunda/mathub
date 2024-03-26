@@ -26,8 +26,8 @@ const SaveTopicModalContent: React.FC<SaveTopicModalContentProps> = ({ saveTopic
 
   return (
     <div className="save-topic-modal-content">
-      <h1 className='title'>Uložit materiál</h1>
-      <p className='content'>Přejete si uložit změny v materiálu "{selectedTopic?.topic_name}"?</p>
+      <h1 className='title'>Uložit téma</h1>
+      <p className='content'>Přejete si uložit změny v tématu "{selectedTopic?.topic_name}"?</p>
       <ModalFooter
         onClose={hadnleCancel}
         onSubmit={handleSubmit}

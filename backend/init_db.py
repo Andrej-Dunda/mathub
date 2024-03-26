@@ -139,13 +139,13 @@ init_db_query = f'''
 
     // Topics
     CREATE
-    (topic1:TOPIC {{ _id: '{uuid4()}', topic_name: '1. Základní ekonomické pojmy', topic_content: '<p>DEMO obsah materiálu 1. Základní ekonomické pojmy</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
-    (topic2:TOPIC {{ _id: '{uuid4()}', topic_name: '2. Výroba, výrobní proces', topic_content: '<p>DEMO obsah materiálu 2. Výroba, výrobní proces</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
-    (topic3:TOPIC {{ _id: '{uuid4()}', topic_name: '3. Trh a jeho charakteristika', topic_content: '<p>DEMO obsah materiálu 3. Trh a jeho charakteristika</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
-    (topic4:TOPIC {{ _id: '{uuid4()}', topic_name: '4. Mzda a její formy', topic_content: '<p>DEMO obsah materiálu 4. Mzda a její formy</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
-    (topic5:TOPIC {{ _id: '{uuid4()}', topic_name: '5. Charakteristika podnikání', topic_content: '<p>DEMO obsah materiálu 5. Charakteristika podnikání</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
-    (topic6:TOPIC {{ _id: '{uuid4()}', topic_name: 'Algebra DEMO', topic_content: '<p>DEMO obsah materiálu Algebra DEMO</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material2),
-    (topic7:TOPIC {{ _id: '{uuid4()}', topic_name: 'Neo4j DEMO', topic_content: '<p>DEMO obsah materiálu Neo4j DEMO</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material3)
+    (topic1:TOPIC {{ _id: '{uuid4()}', topic_name: '1. Základní ekonomické pojmy', topic_content: '<p>DEMO obsah tématu 1. Základní ekonomické pojmy</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
+    (topic2:TOPIC {{ _id: '{uuid4()}', topic_name: '2. Výroba, výrobní proces', topic_content: '<p>DEMO obsah tématu 2. Výroba, výrobní proces</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
+    (topic3:TOPIC {{ _id: '{uuid4()}', topic_name: '3. Trh a jeho charakteristika', topic_content: '<p>DEMO obsah tématu 3. Trh a jeho charakteristika</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
+    (topic4:TOPIC {{ _id: '{uuid4()}', topic_name: '4. Mzda a její formy', topic_content: '<p>DEMO obsah tématu 4. Mzda a její formy</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
+    (topic5:TOPIC {{ _id: '{uuid4()}', topic_name: '5. Charakteristika podnikání', topic_content: '<p>DEMO obsah tématu 5. Charakteristika podnikání</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
+    (topic6:TOPIC {{ _id: '{uuid4()}', topic_name: 'Algebra DEMO', topic_content: '<p>DEMO obsah tématu Algebra DEMO</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material2),
+    (topic7:TOPIC {{ _id: '{uuid4()}', topic_name: 'Neo4j DEMO', topic_content: '<p>DEMO obsah tématu Neo4j DEMO</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material3)
     '''
 
 def init_db():

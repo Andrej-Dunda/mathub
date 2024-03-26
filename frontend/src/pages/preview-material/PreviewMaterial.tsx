@@ -150,7 +150,7 @@ const PreviewMaterial = () => {
             ) : (
               <div className="preview-material-not-friend">
                 <div className="not-friend">
-                  <span className='message'>Pro zobrazení těchto materiálů musíte být přáteli s autorem!</span>
+                  <span className='message'>Pro zobrazení tohoto materiálu musíte být přáteli s autorem!</span>
                   {
                     author && <div className="user-wrapper">
                       <ProfilePicture className='large radius-100 box-shadow-dark' userId={author._id} />

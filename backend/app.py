@@ -46,7 +46,7 @@ def get_current_user():
 
     return jsonify({
         '_id': user['_id'],
-        'email': user['user_email'],
+        'user_email': user['user_email'],
         'first_name': user['first_name'],
         'last_name': user['last_name'],
         'profile_picture': user['profile_picture'],
@@ -127,7 +127,7 @@ def register_new_user():
                 registration_date: '{datetime.now(my_timezone).isoformat()}'
             }}),
             (material:MATERIAL {{ _id: '{uuid4()}', material_name: 'DEMO Předmět', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}", material_subject: "Jiné", material_grade: "Jiné" }}) -[:CREATED_BY]-> (new_user),
-            (topic:TOPIC {{ _id: '{uuid4()}', topic_name: 'DEMO Materiál', topic_content: '<p>Obsah DEMO materiálu</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (material)
+            (topic:TOPIC {{ _id: '{uuid4()}', topic_name: 'DEMO Téma', topic_content: '<p>Obsah DEMO tématu</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (material)
             """)
         else:
             return {'message': 'Tento email je již registrován!', 'success': False, 'email_already_registered': True}, 400
@@ -685,7 +685,7 @@ def post_material():
         neo4j.run_query(f'''
             MATCH (user:USER {{_id: "{user_id}"}})
             CREATE (new_material:MATERIAL {{_id: '{uuid4()}', material_name: '{material_name}', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}", material_subject: "{material_subject}", material_grade: "{material_grade}" }}) -[:CREATED_BY]-> (user),
-            (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: 'DEMO materiál', topic_content: '<p>DEMO obsah materiálu</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (new_material)
+            (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: 'DEMO téma', topic_content: '<p>DEMO obsah tématu</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (new_material)
             ''')
         return f'Material "{material_name}" added successfuly', 200
     except Exception as e:
@@ -861,7 +861,7 @@ def post_topic():
 
         neo4j.run_query(f'''
             MATCH (user:USER {{_id: "{user_id}"}}), (material:MATERIAL {{_id: "{material_id}"}})
-            CREATE (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: '{topic_name}', topic_content: '<p>DEMO obsah materiálu {topic_name}</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (material)
+            CREATE (new_topic:TOPIC {{_id: '{uuid4()}', topic_name: '{topic_name}', topic_content: '<p>DEMO obsah tématu {topic_name}</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (material)
             ''')
         return 'Topic added successfuly', 200
     except Exception as e:

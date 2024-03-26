@@ -205,15 +205,15 @@ const ViewTopics: React.FC = () => {
         closeModal()
         return
       }
-      setNewTopicModalError('Vyplňte pole Název nového materiálu!')
+      setNewTopicModalError('Vyplňte pole Název nového tématu!')
       newTopicNameInputRef.current?.focus()
     }
 
     return (
       <div className="new-topic-form">
-        <h1 className='h1'>Nový materiál</h1>
+        <h1 className='h1'>Nové téma</h1>
         <div className='new-topic-wrapper'>
-          <label htmlFor="new-topic-name-input">Název nového materiálu:</label>
+          <label htmlFor="new-topic-name-input">Název nového tématu:</label>
           <input
             type='text'
             id='new-topic-name-input'
@@ -224,7 +224,7 @@ const ViewTopics: React.FC = () => {
           />
         </div>
         <ErrorMessage content={newTopicModalError} />
-        <ModalFooter onSubmit={submitNewTopic} submitButtonLabel='Přidat materiál' cancelButtonLabel='Zrušit' />
+        <ModalFooter onSubmit={submitNewTopic} submitButtonLabel='Přidat téma' cancelButtonLabel='Zrušit' />
       </div>
     )
   }
@@ -269,8 +269,8 @@ const ViewTopics: React.FC = () => {
                             onSubmit={() => deleteTopic(topic._id)}
                             submitButtonLabel='Smazat'
                             cancelButtonLabel='Zrušit'
-                            title={`Smazat materiál "${topic.topic_name}"?`}
-                            content='Opravdu chcete smazat tento materiál? Tato akce je nevratná!'
+                            title={`Smazat téma "${topic.topic_name}"?`}
+                            content='Opravdu chcete smazat toto téma? Tato akce je nevratná!'
                           />
                         )
                       }
