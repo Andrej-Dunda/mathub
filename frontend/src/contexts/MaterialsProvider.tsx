@@ -18,7 +18,7 @@ type MaterialsContextType = {
   getMaterials: () => void;
   postMaterial: (newMaterialName: string, material_type: string, material_grade: string) => void;
   getMaterial: (material_id: string) => void;
-  putMaterial: (material_id: string, material_name: string) => void;
+  putMaterial: (material_id: string, material_name: string, material_grade: string, material_subject: string) => void;
   deleteMaterial: (material_id: string) => void;
 
   getMaterialTopics: (material_id: string) => void;
@@ -74,7 +74,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
       })
         .then(() => {
           getMaterials()
-          openSnackbar('Předmět úspěšně vytvořen!')
+          openSnackbar('Materiál úspěšně vytvořen!')
         })
         .catch(err => {
           console.error(err)
@@ -93,16 +93,18 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
       })
   }
 
-  const putMaterial = async (material_id: string, material_name: string) => {
+  const putMaterial = async (material_id: string, material_name: string, material_subject: string, material_grade: string) => {
     const protectedHttpClient = await protectedHttpClientInit();
     protectedHttpClient?.put(`/api/put-material`, {
       material_id: material_id,
-      material_name: material_name
+      material_name: material_name,
+      material_grade: material_grade,
+      material_subject: material_subject
     })
       .then(() => {
         getMaterials()
         setSelectedMaterial(undefined)
-        openSnackbar('Předmět úspěšně upraven!')
+        openSnackbar('Materiál úspěšně upraven!')
       })
       .catch(err => {
         console.error(err)
@@ -115,7 +117,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
       .then(() => {
         getMaterials()
         setSelectedMaterial(undefined)
-        openSnackbar('Předmět úspěšně smazán!')
+        openSnackbar('Materiál úspěšně smazán!')
       })
       .catch(err => {
         console.error(err)

@@ -1,6 +1,6 @@
 import './MaterialsWindow.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useRef, useEffect, useState } from 'react';
 import { iMaterial } from '../../interfaces/materials-interface';
 import EllipsisMenuButton from '../../components/buttons/ellipsis-menu-button/EllipsisMenuButton';
@@ -11,6 +11,7 @@ import { useMaterials } from '../../contexts/MaterialsProvider';
 import DeleteModalContent from '../../components/modal/modal-contents/DeleteModalContent';
 import httpClient from '../../utils/httpClient';
 import MaterialPost from '../../components/material-post/MaterialPost';
+import EditMaterialModalContent from '../../components/modal/modal-contents/EditMaterialModalContent';
 
 const MaterialsWindow = () => {
   const { materials, getMaterials, setSelectedMaterial, deleteMaterial } = useMaterials();
@@ -43,6 +44,22 @@ const MaterialsWindow = () => {
     showModal(<NewMaterialModalContent />)
   }
 
+  const openDeleteMaterialModal = (material: iMaterial) => {
+    showModal(
+      <DeleteModalContent
+        onSubmit={() => deleteMaterial(material._id)}
+        submitButtonLabel='Smazat'
+        cancelButtonLabel='Zrušit'
+        title={`Smazat materiál "${material.material_name}"?`}
+        content='Opravdu chcete smazat tento materiál? Tato akce je nevratná!'
+      />
+    )
+  }
+
+  const openEditMaterialModal = (material: iMaterial) => {
+    showModal(<EditMaterialModalContent material={material} />)
+  }
+
   const openMaterial = (material: iMaterial) => {
     setSelectedMaterial(material)
     toViewMaterials()
@@ -61,15 +78,12 @@ const MaterialsWindow = () => {
                     {
                       name: 'Smazat',
                       icon: faTrash,
-                      onClick: () => showModal(
-                        <DeleteModalContent
-                          onSubmit={() => deleteMaterial(material._id)}
-                          submitButtonLabel='Smazat'
-                          cancelButtonLabel='Zrušit'
-                          title={`Smazat předmět "${material.material_name}"?`}
-                          content='Opravdu chcete smazat tento předmět? Tato akce je nevratná!'
-                        />
-                      )
+                      onClick: () => openDeleteMaterialModal(material)
+                    },
+                    {
+                      name: 'Upravit',
+                      icon: faEdit,
+                      onClick: () => openEditMaterialModal(material)
                     }
                   ]} />
                 </header>
@@ -98,15 +112,18 @@ const MaterialsWindow = () => {
       </div>
       <hr />
       <h1 className='h1'>Sledované materiály</h1>
-      <div className="followed-materials">
-        {
-          followedMaterials.map((material: iMaterial, index: number) => {
-            return (
-              <MaterialPost key={index} material={material} onStopFollowing={getFollowedMaterials} />
-            )
-          })
-        }
-      </div>
+      {
+        followedMaterials.length ?
+          <div className="followed-materials">
+            {
+              followedMaterials.map((material: iMaterial, index: number) => {
+                return (
+                  <MaterialPost key={index} material={material} onStopFollowing={getFollowedMaterials} />
+                )
+              })
+            }
+          </div> : <span className='no-followed-materials'>Nesledujete žádné materiály.</span>
+      }
     </div>
   )
 }

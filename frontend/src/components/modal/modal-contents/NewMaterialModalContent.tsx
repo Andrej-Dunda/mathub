@@ -32,12 +32,12 @@ const NewMaterialModalContent: React.FC = () => {
 
   const submitNewMaterial = () => {
     if (!newMaterialName.trim()) {
-      setNewMaterialModalError('Vyplňte pole Název nového předmětu!')
+      setNewMaterialModalError('Pole Název nesmí být prázdné!')
       newMaterialNameInputRef.current?.focus()
       return
     }
-    if (!selectedMaterialSubject || selectedMaterialSubject === "-- Neurčeno --") return setNewMaterialModalError('Vyberte typ předmětu!')
-    if (!selectedMaterialGrade || selectedMaterialGrade === "-- Neurčeno --") return setNewMaterialModalError('Vyberte ročník předmětu!')
+    if (!selectedMaterialSubject || selectedMaterialSubject === "-- Neurčeno --") return setNewMaterialModalError('Vyberte předmět!')
+    if (!selectedMaterialGrade || selectedMaterialGrade === "-- Neurčeno --") return setNewMaterialModalError('Vyberte ročník!')
     else {
       closeModal()
       return postMaterial(newMaterialName.trim(), selectedMaterialSubject, selectedMaterialGrade)

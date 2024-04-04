@@ -1,0 +1,30 @@
+.edit-material-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .material-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  
+    padding: 16px 0;
+
+    .name-input-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      label {
+        font-weight: 500;
+      }
+    }
+
+    .material-classification {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+  }
+}

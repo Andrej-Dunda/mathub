@@ -126,7 +126,7 @@ def register_new_user():
                 profile_picture: 'profile-picture-default.png',
                 registration_date: '{datetime.now(my_timezone).isoformat()}'
             }}),
-            (material:MATERIAL {{ _id: '{uuid4()}', material_name: 'DEMO Předmět', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}", material_subject: "Jiné", material_grade: "Jiné" }}) -[:CREATED_BY]-> (new_user),
+            (material:MATERIAL {{ _id: '{uuid4()}', material_name: 'DEMO Materiál', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}", material_subject: "Jiné", material_grade: "Jiné" }}) -[:CREATED_BY]-> (new_user),
             (topic:TOPIC {{ _id: '{uuid4()}', topic_name: 'DEMO Téma', topic_content: '<p>Obsah DEMO tématu</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (material)
             """)
         else:
@@ -672,7 +672,7 @@ def get_materials():
 @app.route('/api/post-material', methods=['POST'])
 def post_material():
     try:
-        material_name = request.json.get('material_name', 'Nepojmenovaný Předmět')
+        material_name = request.json.get('material_name', 'Nepojmenovaný')
         material_subject = request.json.get('material_subject', 'Jiné')
         material_grade = request.json.get('material_grade', 'Jiné')
         user_id = session.get('user_id')
@@ -706,7 +706,9 @@ def get_material(material_id):
 def put_material():
     try:
         material_id = request.json.get('material_id', None)
-        material_name = request.json.get('material_name', None)
+        material_name = request.json.get('material_name', 'Nepojmenováno')
+        material_grade = request.json.get('material_grade', 'Jiné')
+        material_subject = request.json.get('material_subject', 'Jiné')
         neo4j.run_query(f'''
             MATCH (material:MATERIAL {{_id: "{material_id}"}})
             SET material.material_name = "{material_name}",
