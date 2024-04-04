@@ -55,6 +55,7 @@ const EditMaterialModalContent = ({material}: EditMaterialModalContentProps) => 
             value={newMaterialName}
             onChange={onInputChange}
             ref={newMaterialNameInputRef}
+            maxLength={50}
           />
         </div>
         <div className="material-classification">

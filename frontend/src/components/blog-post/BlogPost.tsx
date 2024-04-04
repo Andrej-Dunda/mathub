@@ -161,6 +161,7 @@ const BlogPost = (props: any) => {
             value={newComment}
             onChange={handleCommentChange}
             onKeyDown={handleCommentKeyPress}
+            maxLength={200}
           />
           <button className='submit-comment' onClick={submitComment}>
             <FontAwesomeIcon className='submit-icon' icon={faPaperPlane} color={grayscale100} />

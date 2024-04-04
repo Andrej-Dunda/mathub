@@ -215,6 +215,7 @@ const ViewTopics: React.FC = () => {
             value={newTopicName}
             onChange={(e: any) => setNewTopicName(e.target.value)}
             ref={newTopicNameInputRef}
+            maxLength={50}
           />
         </div>
         <ErrorMessage content={newTopicModalError} />

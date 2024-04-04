@@ -57,6 +57,7 @@ const NewMaterialModalContent: React.FC = () => {
             value={newMaterialName}
             onChange={(e: any) => setNewMaterialName(e.target.value)}
             ref={newMaterialNameInputRef}
+            maxLength={50}
           />
         </div>
         <div className="new-material-classification">

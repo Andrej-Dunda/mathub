@@ -97,6 +97,7 @@ const LoginPage = () => {
                 onChange={handleChange}
                 ref={emailInputRef}
                 autoComplete="email"
+                maxLength={256}
               />
             </div>
             <div className='login-input visibility-toggle'>
@@ -111,6 +112,7 @@ const LoginPage = () => {
                   onChange={handleChange}
                   ref={passwordInputRef}
                   autoComplete="current-password"
+                  maxLength={256}
                 />
                 <FontAwesomeIcon onClick={togglePasswordVisibility} className={`eye-icon ${!showPassword && 'password-hidden'}`} icon={showPassword ? faEye : faEyeSlash} />
               </div>

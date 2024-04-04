@@ -64,6 +64,13 @@ const Registration = () => {
     if (!/[A-Z]/.test(registrationForm.password)) return errorResponse('Heslo musí alespoň 1 velké písmeno!', passwordInputRef)
     if (!/[a-z]/.test(registrationForm.password)) return errorResponse('Heslo musí alespoň 1 malé písmeno!', passwordInputRef)
     if (!/[0-9]/.test(registrationForm.password)) return errorResponse('Heslo musí alespoň 1 číslo!', passwordInputRef)
+    if (registrationForm.password.length > 50) return errorResponse('Heslo může mít maximálně 50 znaků!', passwordInputRef)
+    if (registrationForm.first_name.length > 50) return errorResponse('Jméno může mít maximálně 50 znaků!', firstNameInputRef)
+    if (registrationForm.last_name.length > 50) return errorResponse('Příjmení může mít maximálně 50 znaků!', lastNameInputRef)
+    if (registrationForm.first_name.length < 2) return errorResponse('Jméno musí mít alespoň 2 znaky!', firstNameInputRef)
+    if (registrationForm.last_name.length < 2) return errorResponse('Příjmení musí mít alespoň 2 znaky!', lastNameInputRef)
+    if (registrationForm.email.length < 5) return errorResponse('E-mail musí mít alespoň 5 znaků!', emailInputRef)
+    
 
     httpClient.post("/api/registration", {
         email: registrationForm.email,
@@ -136,6 +143,7 @@ const Registration = () => {
                   onChange={handleChange}
                   ref={firstNameInputRef}
                   autoComplete="given-name"
+                  maxLength={256}
                 />
               </div>
               <div className='name-input'>
@@ -149,6 +157,7 @@ const Registration = () => {
                   onChange={handleChange}
                   ref={lastNameInputRef}
                   autoComplete="family-name"
+                  maxLength={256}
                 />
               </div>
             </div>
@@ -163,6 +172,7 @@ const Registration = () => {
                 onChange={handleChange}
                 ref={emailInputRef}
                 autoComplete="email"
+                maxLength={256}
               />
             </div>
             <div className='registration-input visibility-toggle'>
@@ -178,6 +188,7 @@ const Registration = () => {
                   ref={passwordInputRef}
                   title='Alespoň 8 znaků, 1 velké a malé písmeno, 1 číslo'
                   autoComplete="new-password"
+                  maxLength={256}
                 />
                 <FontAwesomeIcon onClick={togglePasswordVisibility} className={`eye-icon ${!showPassword && 'password-hidden'}`} icon={showPassword ? faEye : faEyeSlash} />
               </div>
@@ -194,6 +205,7 @@ const Registration = () => {
                 ref={passwordAgainInputRef}
                 title='Alespoň 8 znaků, 1 velké a malé písmeno, 1 číslo'
                 autoComplete="new-password"
+                maxLength={256}
               />
             </div>
           </div>

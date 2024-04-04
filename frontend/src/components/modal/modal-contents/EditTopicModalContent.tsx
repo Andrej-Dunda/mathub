@@ -40,7 +40,7 @@ const EditTopicModal = ({ topic, setNewTopicName }: EditTopicModalProps) => {
       <h1 className="title">Upravit téma</h1>
       <div className="topic-name-input-wrapper">
         <label htmlFor="topic-name-input">Název:</label>
-        <input type="text" id='topic-name-input' className='topic-name-input' value={topicName} onChange={handleInputChange}/>
+        <input type="text" id='topic-name-input' className='topic-name-input' value={topicName} onChange={handleInputChange} maxLength={50} />
       </div>
       <ErrorMessage content={errorMessage} />
       <ModalFooter

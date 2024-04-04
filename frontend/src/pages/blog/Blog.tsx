@@ -91,6 +91,7 @@ const Blog = () => {
                 id='post-title'
                 value={postTitle}
                 onChange={handlePostTitleChange}
+                maxLength={100}
               />
             </div>
             <div className="new-post-input">
@@ -102,6 +103,7 @@ const Blog = () => {
                 id="post-description"
                 cols={30}
                 rows={10}
+                maxLength={500}
               />
             </div>
             <div className="new-post-input">

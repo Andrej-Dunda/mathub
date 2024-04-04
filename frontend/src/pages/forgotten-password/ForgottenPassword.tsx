@@ -103,6 +103,7 @@ const ForgottenPassword = () => {
               name='email'
               onChange={handleChange}
               autoComplete='email'
+              maxLength={256}
             />
           </div>
           <div className='forgotten-password-other-options'>
