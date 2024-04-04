@@ -52,35 +52,35 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   }, [selectedMaterial])
 
   useEffect(() => {
-    materials.length ? setSelectedMaterial(materials[0]) : toMaterials()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [materials])
-
-  useEffect(() => {
     topics && setSelectedTopic(topics[0])
   }, [topics])
 
-  const getMaterials = async () => {
+  const getMaterials = async (selectLast: boolean = false) => {
     const protectedHttpClient = await protectedHttpClientInit();
     protectedHttpClient?.get('/api/get-materials')
       .then(res => {
         setMaterials(res.data)
+        res.data.length ?
+          selectLast ?
+            setSelectedMaterial(res.data[res.data.length - 1])
+            : setSelectedMaterial(res.data[0])
+          : toMaterials()
       })
       .catch(err => {
         console.error(err)
       })
   }
 
-  const postMaterial = async (newMaterialName: string, selectedMaterialType: string, selectedMaterialGrade: string) => {
+  const postMaterial = async (newMaterialName: string, selectedMaterialSubject: string, selectedMaterialGrade: string) => {
     if (newMaterialName) {
       const protectedHttpClient = await protectedHttpClientInit();
       protectedHttpClient?.post('/api/post-material', {
         material_name: newMaterialName,
-        material_type: selectedMaterialType,
+        material_subject: selectedMaterialSubject,
         material_grade: selectedMaterialGrade
       })
         .then(() => {
-          getMaterials()
+          getMaterials(true)
           openSnackbar('Materiál úspěšně vytvořen!')
         })
         .catch(err => {

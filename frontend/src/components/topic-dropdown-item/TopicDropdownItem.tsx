@@ -6,7 +6,7 @@ import EllipsisMenuButton from '../buttons/ellipsis-menu-button/EllipsisMenuButt
 import DeleteModalContent from '../modal/modal-contents/DeleteModalContent';
 import EditTopicModalContent from '../modal/modal-contents/EditTopicModalContent';
 import './TopicDropdownItem.scss'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type TopicDropdownItemProps = {
   topic: iTopic;
@@ -17,6 +17,10 @@ const TopicDropdownItem = ({ topic }: TopicDropdownItemProps) => {
   const { deleteTopic, selectedTopic } = useMaterials();
   const [topicName, setTopicName] = useState(topic.topic_name)
 
+  useEffect(() => {
+    setTopicName(topic.topic_name)
+  }, [setTopicName, topic])
+  
   const openDeleteTopicModal = (topic: iTopic) => {
     showModal(
       <DeleteModalContent

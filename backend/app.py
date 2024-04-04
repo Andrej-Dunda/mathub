@@ -712,7 +712,9 @@ def put_material():
         neo4j.run_query(f'''
             MATCH (material:MATERIAL {{_id: "{material_id}"}})
             SET material.material_name = "{material_name}",
-            material.date_modified = "{datetime.now(my_timezone).isoformat()}"
+            material.date_modified = "{datetime.now(my_timezone).isoformat()}",
+            material.material_grade = "{material_grade}",
+            material.material_subject = "{material_subject}"
             ''')
         return 'Material edited successfuly', 200
     except:
