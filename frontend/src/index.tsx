@@ -9,24 +9,28 @@ import { NavigationProvider } from './contexts/NavigationProvider';
 import AppRouter from './AppRouter';
 import { AuthProvider } from './contexts/AuthProvider';
 import { MaterialsProvider } from './contexts/MaterialsProvider';
+import ErrorBoundary from './contexts/ErrorBoundary';
+import ErrorFallback from './pages/error-fallback/ErrorFallback';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <Router>
-    <SnackbarProvider>
-      <NavigationProvider>
-        <AuthProvider>
-          <UserDataProvider>
-            <MaterialsProvider>
-              <ModalProvider>
-                <AppRouter />
-              </ModalProvider>
-            </MaterialsProvider>
-          </UserDataProvider>
-        </AuthProvider>
-      </NavigationProvider>
-    </SnackbarProvider>
-  </Router>
+  <ErrorBoundary fallback={<ErrorFallback/>} >
+    <Router>
+      <SnackbarProvider>
+        <NavigationProvider>
+          <AuthProvider>
+            <UserDataProvider>
+              <MaterialsProvider>
+                <ModalProvider>
+                  <AppRouter />
+                </ModalProvider>
+              </MaterialsProvider>
+            </UserDataProvider>
+          </AuthProvider>
+        </NavigationProvider>
+      </SnackbarProvider>
+    </Router>
+  </ErrorBoundary>
 );

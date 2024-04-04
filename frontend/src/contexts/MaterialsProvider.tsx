@@ -3,6 +3,7 @@ import React from 'react';
 import { iMaterial, iTopic } from '../interfaces/materials-interface';
 import { useSnackbar } from './SnackbarProvider';
 import { useAuth } from './AuthProvider';
+import { useNav } from './NavigationProvider';
 
 type MaterialsContextType = {
   topics: iTopic[];
@@ -43,6 +44,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
 
   const { openSnackbar } = useSnackbar();
   const { protectedHttpClientInit } = useAuth();
+  const { toMaterials } = useNav();
 
   useEffect(() => {
     selectedMaterial && getTopics(selectedMaterial._id)
@@ -50,7 +52,8 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   }, [selectedMaterial])
 
   useEffect(() => {
-    materials && setSelectedMaterial(materials[0])
+    materials.length ? setSelectedMaterial(materials[0]) : toMaterials()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [materials])
 
   useEffect(() => {
@@ -120,7 +123,6 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
     protectedHttpClient?.delete(`/api/delete-material/${material_id}`)
       .then(() => {
         getMaterials()
-        setSelectedMaterial(undefined)
         openSnackbar('Materiál úspěšně smazán!')
       })
       .catch(err => {

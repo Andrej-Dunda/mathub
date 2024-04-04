@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (!response.data.isLoggedIn) {
         toLogin()
         if (response.data.reason === 'User self logged out') openSnackbar('Odhlášení proběhlo úspěšně!');
-        else if (response.data.reason === 'Session expired') openSnackbar('Byli jste odhlášeni z důvodu neaktivity!');
+        // else if (response.data.reason === 'Session expired') openSnackbar('Byli jste odhlášeni z důvodu neaktivity!');
         return false;
       } else {
         return true;
