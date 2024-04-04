@@ -3,15 +3,13 @@ import './ViewTopics.scss'
 import AsideMenu from '../../components/layout-components/aside-menu/AsideMenu';
 import MainContent from '../../components/layout-components/main-content/MainContent';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTrash, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSave } from '@fortawesome/free-solid-svg-icons';
 import ErrorMessage from '../../components/error-message/ErrorMessage';
 import MaterialDropdown from '../../components/material-dropdown/MaterialDropdown';
 import { iTopic } from '../../interfaces/materials-interface';
 import { useModal } from '../../contexts/ModalProvider';
 import ModalFooter from '../../components/modal/modal-footer/ModalFooter';
 import { useMaterials } from '../../contexts/MaterialsProvider';
-import EllipsisMenuButton from '../../components/buttons/ellipsis-menu-button/EllipsisMenuButton';
-import DeleteModalContent from '../../components/modal/modal-contents/DeleteModalContent';
 import SaveTopicModalContent from '../../components/modal/modal-contents/SaveTopicModalContent';
 // Wysiwyg editor
 import "./react-draft-wysiwyg.css";
@@ -19,6 +17,7 @@ import { Editor as WysiwygEditor } from "react-draft-wysiwyg";
 import { ContentState, EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
+import TopicDropdownItem from '../../components/topic-dropdown-item/TopicDropdownItem';
 
 const ViewTopics: React.FC = () => {
   const {
@@ -29,7 +28,6 @@ const ViewTopics: React.FC = () => {
     getTopic,
     postTopic,
     putTopic,
-    deleteTopic
   } = useMaterials();
   const [oldTopicsLength, setOldTopicsLength] = useState<number>(topics.length)
   const topicsRefs = useRef<Array<HTMLElement | null>>([]);
@@ -185,10 +183,6 @@ const ViewTopics: React.FC = () => {
     showModal(<NewTopicModalContent />)
   }
 
-  const handleTopicChange = (topic_id: string) => {
-    topic_id !== selectedTopic?._id && onEditorTopicSwitch(() => getTopic(topic_id))
-  }
-
   const NewTopicModalContent: React.FC = () => {
     const [newTopicName, setNewTopicName] = useState<string>('')
     const [newTopicModalError, setNewTopicModalError] = useState<string>('')
@@ -234,6 +228,10 @@ const ViewTopics: React.FC = () => {
     setActiveTopicContent(draftToHtml(convertToRaw(newState.getCurrentContent())));
   }
 
+  const handleTopicChange = (topic_id: string) => {
+    topic_id !== selectedTopic?._id && onEditorTopicSwitch(() => getTopic(topic_id))
+  }
+
   return (
     <div className={`view-topics ${isAsideMenuOpen ? 'aside-menu-open' : ''}`}>
       <AsideMenu isAsideMenuOpen={isAsideMenuOpen} setIsAsideMenuOpen={setIsAsideMenuOpen} >
@@ -255,26 +253,9 @@ const ViewTopics: React.FC = () => {
                   onClick={() => handleTopicChange(topic._id)}
                   ref={el => (topicsRefs.current[index] = el)}
                 >
-                  <span>{topic.topic_name}</span>
-                  <EllipsisMenuButton
-                    className='topic-button-ellipsis'
-                    onClick={(e) => e.stopPropagation()}
-                    light={topic._id === selectedTopic?._id ? false : true}
-                    menuOptions={[
-                      {
-                        name: 'Smazat',
-                        icon: faTrash,
-                        onClick: () => showModal(
-                          <DeleteModalContent
-                            onSubmit={() => deleteTopic(topic._id)}
-                            submitButtonLabel='Smazat'
-                            cancelButtonLabel='Zrušit'
-                            title={`Smazat téma "${topic.topic_name}"?`}
-                            content='Opravdu chcete smazat toto téma? Tato akce je nevratná!'
-                          />
-                        )
-                      }
-                    ]} />
+                  <TopicDropdownItem
+                    topic={topic}
+                  />
                 </div>
               )
             })

@@ -21,7 +21,7 @@ type MaterialsContextType = {
   putMaterial: (material_id: string, material_name: string, material_grade: string, material_subject: string) => void;
   deleteMaterial: (material_id: string) => void;
 
-  getMaterialTopics: (material_id: string) => void;
+  getTopics: (material_id: string) => void;
   postTopic: (material_id: string, topic_name: string) => void;
   getTopic: (topic_id: string) => void;
   putTopic: (topic_id: string, topic_name: string, topic_content: string, keepTopicSelected?: boolean) => void;
@@ -45,9 +45,13 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   const { protectedHttpClientInit } = useAuth();
 
   useEffect(() => {
-    selectedMaterial && getMaterialTopics(selectedMaterial._id)
+    selectedMaterial && getTopics(selectedMaterial._id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedMaterial])
+
+  useEffect(() => {
+    materials && setSelectedMaterial(materials[0])
+  }, [materials])
 
   useEffect(() => {
     topics && setSelectedTopic(topics[0])
@@ -124,7 +128,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
       })
   }
 
-  const getMaterialTopics = async (material_id: string) => {
+  const getTopics = async (material_id: string) => {
     const protectedHttpClient = await protectedHttpClientInit();
     protectedHttpClient?.get(`/api/get-material-topics/${material_id}`)
       .then(res => {
@@ -142,7 +146,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
       topic_name
     })
       .then(() => {
-        getMaterialTopics(material_id)
+        getTopics(material_id)
         openSnackbar('Téma úspěšně vytvořeno!')
       })
       .catch(err => {
@@ -182,7 +186,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
     const protectedHttpClient = await protectedHttpClientInit();
     protectedHttpClient?.delete(`/api/delete-topic/${topic_id}`)
       .then(() => {
-        selectedMaterial && getMaterialTopics(selectedMaterial._id)
+        selectedMaterial && getTopics(selectedMaterial._id)
         setSelectedTopic(undefined)
         openSnackbar('Téma úspěšně smazáno!')
       })
@@ -197,18 +201,18 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
     selectedTopic,
     setSelectedTopic,
 
-    materials: materials,
-    setMaterials: setMaterials,
-    selectedMaterial: selectedMaterial,
-    setSelectedMaterial: setSelectedMaterial,
+    materials,
+    setMaterials,
+    selectedMaterial,
+    setSelectedMaterial,
 
-    getMaterials: getMaterials,
-    postMaterial: postMaterial,
-    getMaterial: getMaterial,
-    putMaterial: putMaterial,
-    deleteMaterial: deleteMaterial,
+    getMaterials,
+    postMaterial,
+    getMaterial,
+    putMaterial,
+    deleteMaterial,
 
-    getMaterialTopics: getMaterialTopics,
+    getTopics,
     postTopic,
     getTopic,
     putTopic,
