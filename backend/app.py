@@ -356,7 +356,7 @@ def update_blog_post():
         post_id = request.form.get('post_id', None)
         post_title = request.form.get('post_title', None)
         post_description = request.form.get('post_description', None)
-        post_image_name = None
+        post_image_name = neo4j.run_query(f'MATCH (post:BLOG_POST {{_id: "{post_id}"}}) RETURN post.post_image AS post_image_name')[0]['post_image_name']
 
         if 'post_image' in request.files:
             post_image = request.files['post_image']
@@ -595,15 +595,19 @@ def crop_image_to_square(image_path):
 @app.route('/api/upload-profile-picture/<id>', methods=['POST'])
 def upload_profile_picture(id):
     try:
-        old_profile_picture = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user.profile_picture AS profile_picture_name')[0]['profile_picture_name']
-        if old_profile_picture != 'profile-picture-default.png':
-            os.remove(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], old_profile_picture))
-
         if 'profile_picture' in request.files:
             file = request.files['profile_picture']
             filename = secure_filename(file.filename)
             if filename == '':
                 return 'No selected file', 400
+            
+            old_profile_picture = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user.profile_picture AS profile_picture_name')[0]['profile_picture_name']
+            if old_profile_picture != 'profile-picture-default.png' and old_profile_picture:
+                os.remove(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], old_profile_picture))
+            
+            # append a random string to the filename to prevent overwriting
+            filename = f'{uuid4()}_{filename}'
+
             file.save(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], filename))
             neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) SET user.profile_picture = "{filename}"')
             crop_image_to_square(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], filename))
