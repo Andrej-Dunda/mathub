@@ -48,7 +48,7 @@ const BlogPost = (props: any) => {
   }, [showComments]);
 
   useEffect(() => {
-    httpClient.get(`/api/user/${postData.author_id}`)
+    httpClient.get(`/api/users/${postData.author_id}`)
       .then(res => {
         setUserName(res.data.first_name + ' ' + res.data.last_name)
       })
@@ -57,7 +57,7 @@ const BlogPost = (props: any) => {
   }, [postData.author_id])
 
   const getComments = () => {
-    httpClient.get(`/api/comments/${postData._id}`)
+    httpClient.get(`/api/blog-posts/${postData._id}/comments`)
       .then(res => {
         setComments(res.data)
       })
@@ -73,8 +73,7 @@ const BlogPost = (props: any) => {
   }
 
   const submitComment = async () => {
-    newComment.trim() && httpClient.post('/api/add-comment', {
-      post_id: postData._id,
+    newComment.trim() && httpClient.post(`/api/blog-posts/${postData._id}/comments`, {
       commenter_id: user._id,
       comment: newComment
     })
@@ -129,7 +128,7 @@ const BlogPost = (props: any) => {
               <div className="post-image-wrapper">
                 <img
                   className='post-image'
-                  src={`/post-image/${postData.post_image}`}
+                  src={`api/images/${postData.post_image}`}
                   alt=""
                 />
               </div>
@@ -161,6 +160,7 @@ const BlogPost = (props: any) => {
             value={newComment}
             onChange={handleCommentChange}
             onKeyDown={handleCommentKeyPress}
+            maxLength={200}
           />
           <button className='submit-comment' onClick={submitComment}>
             <FontAwesomeIcon className='submit-icon' icon={faPaperPlane} color={grayscale100} />

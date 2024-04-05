@@ -34,11 +34,15 @@ const ChangePasswordModalContent: React.FC = () => {
   const changePassword = async () => {
     setErrorMessage('')
     if (!newPasswordForm.newPassword || !newPasswordForm.newPasswordAgain || !newPasswordForm.oldPassword) return setErrorMessage('Vyplňte všechna pole!')
-    if (newPasswordForm.newPassword !== newPasswordForm.newPasswordAgain) return setErrorMessage('Nová hesla se musí shodovat!')
+    if (newPasswordForm.newPassword !== newPasswordForm.newPasswordAgain) return setErrorMessage('Hesla se neshodují!')
+    if (newPasswordForm.newPassword.length < 8) return setErrorMessage('Heslo musí být alespoň 8 znaků dlouhé!')
+    if (!/[A-Z]/.test(newPasswordForm.newPassword)) return setErrorMessage('Heslo musí alespoň 1 velké písmeno!')
+    if (!/[a-z]/.test(newPasswordForm.newPassword)) return setErrorMessage('Heslo musí alespoň 1 malé písmeno!')
+    if (!/[0-9]/.test(newPasswordForm.newPassword)) return setErrorMessage('Heslo musí alespoň 1 číslo!')
+    if (newPasswordForm.newPassword.length > 50) return setErrorMessage('Heslo může mít maximálně 50 znaků!')
     
     const protectedHttpClient = await protectedHttpClientInit();
-    if (protectedHttpClient) protectedHttpClient.post('/api/change-password', {
-        user_id: user._id,
+    if (protectedHttpClient) protectedHttpClient.post(`/api/users/${user._id}/password`, {
         old_password: newPasswordForm.oldPassword,
         new_password: newPasswordForm.newPassword
       })

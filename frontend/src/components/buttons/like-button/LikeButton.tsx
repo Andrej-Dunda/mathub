@@ -18,7 +18,7 @@ const LikeButton = (props: any) => {
 
   const getLikes = async () => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.get(`/api/post-likes/${props.postId}`)
+    protectedHttpClient?.get(`/api/blog-posts/${props.postId}/likes`)
       .then(res => {
         const isLiked = res.data.some((liker: any) => liker.user_id === user._id);
         setLiked(isLiked)
@@ -29,10 +29,7 @@ const LikeButton = (props: any) => {
 
   const onLikeButtonClick = async () => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.post('/api/toggle-post-like', {
-      post_id: props.postId,
-      user_id: user._id
-    })
+    protectedHttpClient?.post(`api/blog-posts/${props.postId}/likes`)
       .then(res => {
         getLikes()
       })

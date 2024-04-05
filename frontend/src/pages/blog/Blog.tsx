@@ -28,7 +28,7 @@ const Blog = () => {
 
   const getMyPosts = async () => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.get(`/api/get-my-posts/`)
+    protectedHttpClient?.get(`/api/blog-posts/my-posts`)
       .then(res => {
         setPosts(res.data)
       })
@@ -53,7 +53,7 @@ const Blog = () => {
     formData.append('post_description', postDescription)
 
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.post('/api/post-blog-post', formData, {
+    protectedHttpClient?.post('/api/users/blog-posts', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }
@@ -91,6 +91,7 @@ const Blog = () => {
                 id='post-title'
                 value={postTitle}
                 onChange={handlePostTitleChange}
+                maxLength={100}
               />
             </div>
             <div className="new-post-input">
@@ -102,6 +103,7 @@ const Blog = () => {
                 id="post-description"
                 cols={30}
                 rows={10}
+                maxLength={500}
               />
             </div>
             <div className="new-post-input">

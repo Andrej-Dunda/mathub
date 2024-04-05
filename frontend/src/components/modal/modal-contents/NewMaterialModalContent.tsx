@@ -14,7 +14,7 @@ const NewMaterialModalContent: React.FC = () => {
   const newMaterialNameInputRef = useRef<HTMLInputElement>(null)
   const materialSubjects = ['Jiné', 'Angličtina', 'Biologie', 'Český jazyk', 'Chemie', 'Dějepis', 'Ekonomie', 'Etická výchova', 'Francouzský jazyk', 'Fyzika', 'Hudební výchova', 'Informatika', 'Matematika', 'Náboženství', 'Německý jazyk', 'Pracovní výchova', 'Psychologie', 'Ruský jazyk', 'Španělský jazyk', 'Tělesná výchova', 'Výtvarná výchova', 'Základy společenských věd', 'Zeměpis']
   const [selectedMaterialSubject, setSelectedMaterialSubject] = useState<string>("-- Neurčeno --")
-  const materialGrades = ["Jiné", "1. ročník", "2. ročník", "3. ročník", "4. ročník", "5. ročník", "6. ročník", "7. ročník", "8. ročník", "9. ročník", "10. ročník", "11. ročník", "12. ročník", "13. ročník"]
+  const materialGrades = ["Jiné", "1. třída ZŠ", "2. třída ZŠ", "3. třída ZŠ", "4. třída ZŠ", "5. třída ZŠ", "6. třída ZŠ", "7. třída ZŠ", "8. třída ZŠ", "9. třída ZŠ", "1. ročník SŠ", "2. ročník SŠ", "3. ročník SŠ", "4. ročník SŠ"]
   const [selectedMaterialGrade, setSelectedMaterialGrade] = useState<string>("-- Neurčeno --")
   
   useEffect(() => {
@@ -32,12 +32,12 @@ const NewMaterialModalContent: React.FC = () => {
 
   const submitNewMaterial = () => {
     if (!newMaterialName.trim()) {
-      setNewMaterialModalError('Vyplňte pole Název nového předmětu!')
+      setNewMaterialModalError('Pole Název nesmí být prázdné!')
       newMaterialNameInputRef.current?.focus()
       return
     }
-    if (!selectedMaterialSubject || selectedMaterialSubject === "-- Neurčeno --") return setNewMaterialModalError('Vyberte typ předmětu!')
-    if (!selectedMaterialGrade || selectedMaterialGrade === "-- Neurčeno --") return setNewMaterialModalError('Vyberte ročník předmětu!')
+    if (!selectedMaterialSubject || selectedMaterialSubject === "-- Neurčeno --") return setNewMaterialModalError('Vyberte předmět!')
+    if (!selectedMaterialGrade || selectedMaterialGrade === "-- Neurčeno --") return setNewMaterialModalError('Vyberte ročník!')
     else {
       closeModal()
       return postMaterial(newMaterialName.trim(), selectedMaterialSubject, selectedMaterialGrade)
@@ -57,6 +57,7 @@ const NewMaterialModalContent: React.FC = () => {
             value={newMaterialName}
             onChange={(e: any) => setNewMaterialName(e.target.value)}
             ref={newMaterialNameInputRef}
+            maxLength={50}
           />
         </div>
         <div className="new-material-classification">

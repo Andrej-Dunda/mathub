@@ -1,0 +1,15 @@
+.edit-topic-modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .topic-name-input-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      label {
+        font-weight: 500;
+      }
+    }
+}

@@ -40,7 +40,7 @@ const UserProfile = () => {
 
   const updateViewedUser = () => {
     if (userId && user._id && userId === user._id) toMyProfile();
-    else userId && httpClient.get(`/api/user-profile/${userId}`)
+    else userId && httpClient.get(`/api/users/${userId}/profile`)
       .then(res => {
         setViewedUser({
           _id: res.data.user._id,

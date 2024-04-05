@@ -39,7 +39,7 @@ const LoginPage = () => {
 
   const submitLogin = (event: any) => {
     if (!loginForm.email || !loginForm.password) return setResponseMessage('Vyplňte všechna pole!')
-    httpClient.post("/api/login", loginForm)
+    httpClient.post("api/authentication/login", loginForm)
       .then((response: any) => {
         if (response.status === 200) {
           setResponseMessage(response.data.message)
@@ -97,6 +97,7 @@ const LoginPage = () => {
                 onChange={handleChange}
                 ref={emailInputRef}
                 autoComplete="email"
+                maxLength={256}
               />
             </div>
             <div className='login-input visibility-toggle'>
@@ -111,6 +112,7 @@ const LoginPage = () => {
                   onChange={handleChange}
                   ref={passwordInputRef}
                   autoComplete="current-password"
+                  maxLength={256}
                 />
                 <FontAwesomeIcon onClick={togglePasswordVisibility} className={`eye-icon ${!showPassword && 'password-hidden'}`} icon={showPassword ? faEye : faEyeSlash} />
               </div>
