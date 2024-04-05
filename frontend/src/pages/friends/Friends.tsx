@@ -79,7 +79,7 @@ const Friends = () => {
 
   const getFriendSuggestions = async () => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.get(`api/users/${user._id}/friends/suggestions/`)
+    protectedHttpClient?.get(`api/users/${user._id}/friends/suggestions`)
       .then((response: any) => {
         setFriendSuggestions(response.data)
       }).catch((error: any) => {

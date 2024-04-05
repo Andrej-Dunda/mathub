@@ -55,12 +55,13 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
     topics && setSelectedTopic(topics[0])
   }, [topics])
 
-  const getMaterials = async (selectLast?: boolean) => {
+  const getMaterials = async (select?: string) => {
     const protectedHttpClient = await protectedHttpClientInit();
     protectedHttpClient?.get('/api/materials')
       .then(res => {
         setMaterials(res.data)
-        if (res.data.length && selectLast) return setSelectedMaterial(res.data[res.data.length - 1])
+        if (res.data.length && select === 'last') return setSelectedMaterial(res.data[res.data.length - 1])
+        if (res.data.length && select === 'first') return setSelectedMaterial(res.data[0])
         if (!res.data.length) toMaterials()
       })
       .catch(err => {
@@ -77,7 +78,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
         material_grade: selectedMaterialGrade
       })
         .then(() => {
-          getMaterials(true)
+          getMaterials('last')
           openSnackbar('Materiál úspěšně vytvořen!')
         })
         .catch(err => {
@@ -119,7 +120,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
     const protectedHttpClient = await protectedHttpClientInit();
     protectedHttpClient?.delete(`/api/materials/${material_id}`)
       .then(() => {
-        getMaterials()
+        getMaterials('first')
         openSnackbar('Materiál úspěšně smazán!')
       })
       .catch(err => {
@@ -129,7 +130,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
 
   const getTopics = async (material_id: string) => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.get(`/api/get-material-topics/${material_id}`)
+    protectedHttpClient?.get(`/api/materials/${material_id}/topics`)
       .then(res => {
         setTopics(res.data)
       })

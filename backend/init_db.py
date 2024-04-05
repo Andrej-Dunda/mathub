@@ -61,11 +61,11 @@ init_db_query = f'''
     (boris:USER {{_id: '{uuid4()}', user_email: 'boris@admin.com', user_password: '{hash_password('admin')}', first_name: 'Boris', last_name: 'Spaskij', profile_picture: '', registration_date: '{random_time()}'}}),
     (emma:USER {{_id: '{uuid4()}', user_email: 'emily.jones@example.com', user_password: '{hash_password('emilyj')}', first_name: 'Emma', last_name: 'Zahálková', profile_picture: 'pp9.png', registration_date: '{random_time()}'}}),
     (john:USER {{_id: '{uuid4()}', user_email: 'john.doe@example.com', user_password: '{hash_password('johndoe1')}', first_name: 'Jan', last_name: 'Lucemburský', profile_picture: 'pp8.png', registration_date: '{random_time()}'}}),
-    (michael:USER {{_id: '{uuid4()}', user_email: 'michael.lewis@example.com', user_password: '{hash_password('michaelL123')}', first_name: 'Michael', last_name: 'Broadhead', profile_picture: '', registration_date: '{random_time()}'}}),
-    (susan:USER {{_id: '{uuid4()}', user_email: 'susan.green@example.com', user_password: '{hash_password('susanG2023')}', first_name: 'Zuzana', last_name: 'Čaputová', profile_picture: 'pp10.png', registration_date: '{random_time()}'}}),
+    (michael:USER {{_id: '{uuid4()}', user_email: 'michael.lewis@example.com', user_password: '{hash_password('michaelL123')}', first_name: 'Michal', last_name: 'Mareček', profile_picture: '', registration_date: '{random_time()}'}}),
+    (susan:USER {{_id: '{uuid4()}', user_email: 'susan.green@example.com', user_password: '{hash_password('susanG2023')}', first_name: 'Zuzana', last_name: 'Borovičková', profile_picture: 'pp10.png', registration_date: '{random_time()}'}}),
     (petr:USER {{_id: '{uuid4()}', user_email: 'prezidentpavel@gmail.com', user_password: '{hash_password('petrpavel')}', first_name: 'Petr', last_name: 'Pavel', profile_picture: 'pp12.jpg', registration_date: '{random_time()}'}}),
     (jane:USER {{_id: '{uuid4()}', user_email: 'jane.wilson@example.com', user_password: '{hash_password('janew2023')}', first_name: 'Jana', last_name: 'Kamenická', profile_picture: 'pp7.png', registration_date: '{random_time()}'}}),
-    (robert:USER {{_id: '{uuid4()}', user_email: 'robert.miller@example.com', user_password: '{hash_password('robertm')}', first_name: 'Robert', last_name: 'Green', profile_picture: 'pp11.png', registration_date: '{random_time()}'}}),
+    (robert:USER {{_id: '{uuid4()}', user_email: 'robert.miller@example.com', user_password: '{hash_password('robertm')}', first_name: 'Robert', last_name: 'Věrný', profile_picture: 'pp11.png', registration_date: '{random_time()}'}}),
     (karla:USER {{_id: '{uuid4()}', user_email: 'karla.hall@example.com', user_password: '{hash_password('karlaH2023')}', first_name: 'Karla', last_name: 'Krásnolásková', profile_picture: '', registration_date: '{random_time()}'}}),
     (laura:USER {{_id: '{uuid4()}', user_email: 'laura.davis@example.com', user_password: '{hash_password('laurad2023')}', first_name: 'Laura', last_name: 'Habenichtová', profile_picture: 'pp5.png', registration_date: '{random_time()}'}}),
     (james:USER {{_id: '{uuid4()}', user_email: 'james.harris@example.com', user_password: '{hash_password('jamesh')}', first_name: 'Stanislav', last_name: 'Špaček', profile_picture: '', registration_date: '{random_time()}'}}),
@@ -96,56 +96,138 @@ init_db_query = f'''
     
     // Posts
     CREATE
-    (post1:BLOG_POST {{ _id: '{uuid4()}', post_time: "{random_time()}", post_title: 'Základy fitness posiloven: budování síly a komunity', post_description: 'Tento příspěvek se zabývá úlohou posiloven při podpoře fyzické kondice a sociálních vazeb. Nabízí postřehy o výběru správné posilovny, maximalizaci tréninku a výhodách skupinových lekcí. Součástí jsou osobní anekdoty a tipy pro začátečníky v posilovně, které kladou důraz na holistický přístup ke zdraví.', post_image: 'gym.png' }}) -[:POSTED_BY]-> (sarah),
-    (post2:BLOG_POST {{ _id: '{uuid4()}', post_time: "{random_time()}", post_title: 'Běh pro zdraví: Osobní průvodce', post_description: 'Tento příspěvek na blogu upozorňuje na výhody běhání a poskytuje tipy pro začátečníky ohledně výběru vybavení, tréninkových plánů a motivace. Mísí osobní příběhy s praktickými radami, zdůrazňuje přínos běhání pro duševní i fyzické zdraví a obsahuje inspirativní citáty sportovců.', post_image: 'joggers.png' }}) -[:POSTED_BY]-> (mike),
-    (post3:BLOG_POST {{ _id: '{uuid4()}', post_time: "{random_time()}", post_title: 'Znovuobjevení radosti ze čtení: Jednoduchý průvodce', post_description: 'Tento blogový příspěvek se zabývá potěšením a přínosy čtení a nabízí tipy, jak najít ty správné knihy, vytvořit si čtenářský návyk a najít si čas na literaturu. Obsahuje osobní anekdoty, seznamy doporučené četby a postřehy o tom, jak čtení rozšiřuje znalosti a představivost.', post_image: 'books.png' }}) -[:POSTED_BY]-> (admin)
+    (post1:BLOG_POST {{ _id: '{uuid4()}', post_time: "{random_time()}", post_title: 'Jak Zvládat Stres Před Důležitými Testy: Tipy a Triky', post_description: 'Ahoj všichni! Vzhledem k tomu, že se blíží termíny důležitých testů a zkoušek, chtěl bych se s vámi podělit o několik tipů, jak zvládat stres a zůstat klidný při jejich přípravě. První věc, kterou dělám, je vytvořit si plán učení s dostatkem času na opakování materiálu. Dále se snažím udržovat zdravý životní styl s pravidelným cvičením a dostatkem spánku. A nakonec si vždycky najdu čas na odpočinek a relaxaci, abych udržel svou mentální pohodu. Jaké jsou vaše tipy na zvládání stresu před důležitými testy? Podělte se o ně v komentářích! 😊📚💪', post_image: 'student.jpeg' }}) -[:POSTED_BY]-> (mike),
+    (post2:BLOG_POST {{ _id: '{uuid4()}', post_time: "{random_time()}", post_title: 'Nový trend ve studiu: Metoda pomalého čtení', post_description: 'Dobrý den! Nedávno jsem objevil metodu pomalého čtení a musím říct, že je to úžasný způsob, jak lépe porozumět textu a zapamatovat si ho. Místo rychlého listování se zaměřte na každé slovo a dejte si na čas. Zkuste to taky a uvidíte, jaké to má účinky! 📖✨', post_image: '' }}) -[:POSTED_BY]-> (sarah),
+    (post3:BLOG_POST {{ _id: '{uuid4()}', post_time: "{random_time()}", post_title: 'Znovuobjevení radosti ze čtení: Jednoduchý průvodce', post_description: 'Tento blogový příspěvek se zabývá potěšením a přínosy čtení a nabízí tipy, jak najít ty správné knihy, vytvořit si čtenářský návyk a najít si čas na literaturu. Obsahuje osobní anekdoty, seznamy doporučené četby a postřehy o tom, jak čtení rozšiřuje znalosti a představivost.', post_image: 'books.png' }}) -[:POSTED_BY]-> (admin),
+    (post4:BLOG_POST {{ _id: '{uuid4()}', post_time: "{random_time()}", post_title: 'Nová mobilní aplikace pro efektivní učení', post_description: 'Ahoj kamarádi! Nedávno jsem objevil novou mobilní aplikaci, která mi pomáhá s učením a organizací mého času. Má funkce jako interaktivní učební materiály, plánovač úkolů a dokonce i techniky pro zvládání stresu před zkouškami. Je to opravdu super nástroj pro každého studenta! 📱📚', post_image: 'app.png' }}) -[:POSTED_BY]-> (admin),
+    (post5:BLOG_POST {{ _id: '{uuid4()}', post_time: "{random_time()}", post_title: 'Technologické novinky ve výuce: Virtuální realita ve školách', post_description: 'Ahoj všichni! Dnes jsem se dočetl o novém trendu ve vzdělávání - použití virtuální reality ve školách. Myslím si, že je to skvělá příležitost pro interaktivní a poutavou výuku. Když si představím, že bych mohl prozkoumávat historické události nebo matematické koncepty v 3D prostoru, jsem nadšený! Co si myslíte vy? 🌐📚', post_image: 'vr.jpeg' }}) -[:POSTED_BY]-> (robert)
 
     // Comments
     CREATE
-    (post1) <-[:COMMENT_OF]- (comment1:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Skvělá inspirace, díky!' }}) -[:COMMENTED_BY]-> (sarah),
-    (post1) <-[:COMMENT_OF]- (comment2:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Myslím si, že každá slušná posilovna by nikdy nic takového neudělala! Za minulého režimu to bylo jednoduché, žádné rádoby fit boostery ani jiné steroidy jsme nebrali! To se věci ještě dělaly pořádně, ale to vy nemůžete pochopit. Dávám palec dolů!' }}) -[:COMMENTED_BY]-> (admin),
-    (post1) <-[:COMMENT_OF]- (comment3:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Tento článek přišel v pravou chvíli! Právě jsem se rozhodl/a začít chodit do posilovny a hledám všechny možné informace. Máte nějaké konkrétní rady, které by mohly pomoci úplnému nováčkovi?' }}) -[:COMMENTED_BY]-> (jane),
-    (post1) <-[:COMMENT_OF]- (comment4:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Skvělé postřehy! Souhlasím, že výběr správné posilovny je klíčový. Chodím cvičit už léta a změna posilovny mě naprosto nabila novou energií. Jaké funkční cviky byste doporučili pro maximalizaci tréninku?' }}) -[:COMMENTED_BY]-> (david),
-    (post1) <-[:COMMENT_OF]- (comment5:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Jako instruktor fitness tříd musím říct, že skupinové lekce skutečně mohou zázraky nejen pro fyzickou kondici, ale i pro sociální vazby mezi účastníky. Je úžasné vidět, jak společné cvičení posiluje týmového ducha!' }}) -[:COMMENTED_BY]-> (emma),
-    (post1) <-[:COMMENT_OF]- (comment6:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Miluji váš holistický přístup ke zdraví! Je důležité si uvědomit, že posilování těla není jen o svalové síle, ale také o duševním a emocionálním blahobytu. Máte nějaké tipy na relaxační techniky po náročném tréninku?' }}) -[:COMMENTED_BY]-> (john),
-    (post2) <-[:COMMENT_OF]- (comment7:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Nevíte někdo, kde sehnat levné ale kvalitní běžecké boty?' }}) -[:COMMENTED_BY]-> (emma),
-    (post3) <-[:COMMENT_OF]- (comment8:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'V pubertě jsem skoro nečetla a teď toho lituju, jsem ráda, že jsem se konečně vrátila ke čtení.' }}) -[:COMMENTED_BY]-> (john)
+    (post1) <-[:COMMENT_OF]- (comment11:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Skvělá inspirace, díky!' }}) -[:COMMENTED_BY]-> (sarah),
+    (post1) <-[:COMMENT_OF]- (comment12:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Skvělý příspěvek! Já osobně si rád udělám malou procházku nebo si poslechnu uklidňující hudbu, když se cítím před testem nervózně. Každý máme své triky, co nám pomáhají udržet klid. Díky za sdílení!' }}) -[:COMMENTED_BY]-> (admin),
+    (post1) <-[:COMMENT_OF]- (comment13:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Tohle je právě to, co potřebuju! Mám před zkouškami vždycky hrozný stres a občas i panické ataky. Doufám, že mi tyhle tipy pomůžou to zvládnout lépe tentokrát. Díky!' }}) -[:COMMENTED_BY]-> (jane),
+    (post1) <-[:COMMENT_OF]- (comment14:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Nevím, proč jsem se nepoučil z minulých zkoušek a pořád odkládám učení na poslední chvíli... Ale tyhle tipy zní opravdu užitečně! Budu se je snažit tentokrát dodržet. Díky za inspiraci!' }}) -[:COMMENTED_BY]-> (david),
+    (post1) <-[:COMMENT_OF]- (comment15:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Taky si myslím, že plánování je klíčové. Mám vždycky seznam věcí, které musím prozkoumat, a rozdělím si je do menších úkolů na každý den. To mi pomáhá udržet se v obraze a neztrácet se v množství materiálu. Díky za sdílení tipů!' }}) -[:COMMENTED_BY]-> (emma),
+    (post1) <-[:COMMENT_OF]- (comment16:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Moc hezký příspěvek! Já si vždycky připravím nějaké motivující odměny pro sebe, které mi pomáhají udržet se v pozitivním stavu mysli během učení. Třeba si slibuju, že si po zkoušce dopřeju svůj oblíbený zákusek, a to mi dává tu potřebnou motivaci. Ale určitě vyzkoušám i tvé tipy! 😊🍰' }}) -[:COMMENTED_BY]-> (john),
+    
+    (post2) <-[:COMMENT_OF]- (comment21:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Tuhle metodu jsem taky nedávno objevil a musím říct, že mi to hodně pomáhá! Je to trochu zvláštní pocit zpomalit, ale ten hloubkový porozumění za to stojí. Určitě doporučuji vyzkoušet! 📚👍' }}) -[:COMMENTED_BY]-> (emma),
+    (post2) <-[:COMMENT_OF]- (comment22:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Zní to zajímavě, ale nevím, jestli bych měl na to trpělivost. Možná by mi to ale pomohlo s tou koncentrací... Budu muset vyzkoušet a uvidíme! 😅' }}) -[:COMMENTED_BY]-> (admin),
+    (post2) <-[:COMMENT_OF]- (comment23:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Nikdy jsem o této metodě neslyšel, ale zní to jako dobrý tip! Určitě to zkusím při příštím učení. Díky za sdílení!' }}) -[:COMMENTED_BY]-> (john),
+    
+    (post3) <-[:COMMENT_OF]- (comment31:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'V pubertě jsem skoro nečetla a teď toho lituju, jsem ráda, že jsem se konečně vrátila ke čtení.' }}) -[:COMMENTED_BY]-> (lisa),
+
+    (post4) <-[:COMMENT_OF]- (comment41:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'To zní jako užitečná aplikace! Mám problém se ztrácením času a neorganizovaností, takže si to určitě vyzkouším. Díky za tip! 😊👍' }}) -[:COMMENTED_BY]-> (david),
+    (post4) <-[:COMMENT_OF]- (comment42:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Mám taky tuto aplikaci a musím říct, že mi hodně pomohla s učením. Je skvělé mít všechno na jednom místě a mít přehled o tom, co musím udělat. Doporučuji!' }}) -[:COMMENTED_BY]-> (emma),
+    (post4) <-[:COMMENT_OF]- (comment43:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Jsem tak rád, že jsi to sdílel! Hledám něco, co mi pomůže s organizací mého učení. Stáhnu si to hned! 🤓' }}) -[:COMMENTED_BY]-> (michael),
+    (post4) <-[:COMMENT_OF]- (comment44:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Bohužel nemám žádný dostupný telefon, ale zní to jako skvělá aplikace pro ty, kdo mají. Možná budu muset požádat rodiče o upgrade! 😅' }}) -[:COMMENTED_BY]-> (james),
+    
+    (post5) <-[:COMMENT_OF]- (comment51:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'To zní úžasně! Opravdu by mě zajímalo, jak by se toto technologické řešení integrovalo do běžné výuky. Určitě by to mohlo udělat hodiny zajímavějšími a interaktivnějšími! 🤩' }}) -[:COMMENTED_BY]-> (patricia),
+    (post5) <-[:COMMENT_OF]- (comment52:POST_COMMENT {{ _id: '{uuid4()}', comment_time: "{random_time()}", comment: 'Myslím si, že by to mohlo být super pro vizualizaci složitých konceptů. Některé věci jsou těžké pochopit jenom ze slov, ale když si to můžu vidět přímo před sebou, je to úplně jiný zážitek! 👀' }}) -[:COMMENTED_BY]-> (laura)
     
     // Likes
     CREATE
     (admin) -[:LIKES]-> (post1),
+    (admin) -[:LIKES]-> (post3),
+    (admin) -[:LIKES]-> (post4),
+
     (sarah) -[:LIKES]-> (post2),
+    (sarah) -[:LIKES]-> (post5),
+
     (mike) -[:LIKES]-> (post1),
     (mike) -[:LIKES]-> (post2),
     (mike) -[:LIKES]-> (post3),
+
     (lisa) -[:LIKES]-> (post1),
     (lisa) -[:LIKES]-> (post2),
+    (lisa) -[:LIKES]-> (post4),
+
     (david) -[:LIKES]-> (post2),
     (david) -[:LIKES]-> (post3),
+    (david) -[:LIKES]-> (post5),
+
+    (boris) -[:LIKES]-> (post3),
+
     (emma) -[:LIKES]-> (post1),
     (emma) -[:LIKES]-> (post2),
+
     (john) -[:LIKES]-> (post1),
     (john) -[:LIKES]-> (post2),
+
+    (michael) -[:LIKES]-> (post2),
+
+    (susan) -[:LIKES]-> (post2),
+
+    (petr) -[:LIKES]-> (post2),
+    (petr) -[:LIKES]-> (post4),
+    (petr) -[:LIKES]-> (post5),
+
+    (jane) -[:LIKES]-> (post2),
+
     (robert) -[:LIKES]-> (post2),
     (robert) -[:LIKES]-> (post3),
+
     (karla) -[:LIKES]-> (post1),
-    (karla) -[:LIKES]-> (post3)
+    (karla) -[:LIKES]-> (post3),
+
+    (laura) -[:LIKES]-> (post2),
+    (laura) -[:LIKES]-> (post4),
+
+    (james) -[:LIKES]-> (post1),
+    (james) -[:LIKES]-> (post3),
+
+    (patricia) -[:LIKES]-> (post3),
+    (patricia) -[:LIKES]-> (post4),
+    (patricia) -[:LIKES]-> (post5)
 
     // Materials
     CREATE
     (material1:MATERIAL {{ _id: '{uuid4()}', material_name: 'DEMO Ekonomie', date_created: "{random_time()}", date_modified: "{random_time()}", material_subject: "Ekonomie", material_grade: "4. ročník SŠ" }}) -[:CREATED_BY]-> (admin),
     (material2:MATERIAL {{ _id: '{uuid4()}', material_name: 'DEMO Matematika', date_created: "{random_time()}", date_modified: "{random_time()}", material_subject: "Matematika", material_grade: "3. ročník SŠ" }}) -[:CREATED_BY]-> (admin),
-    (material3:MATERIAL {{ _id: '{uuid4()}', material_name: 'DEMO Informatika', date_created: "{random_time()}", date_modified: "{random_time()}", material_subject: "Informatika", material_grade: "9. ročník ZŠ" }}) -[:CREATED_BY]-> (admin)
+    (material3:MATERIAL {{ _id: '{uuid4()}', material_name: 'DEMO Informatika', date_created: "{random_time()}", date_modified: "{random_time()}", material_subject: "Informatika", material_grade: "9. ročník ZŠ" }}) -[:CREATED_BY]-> (admin),
+    (material4:MATERIAL {{ _id: '{uuid4()}', material_name: 'Chemie k maturitě', date_created: "{random_time()}", date_modified: "{random_time()}", material_subject: "Chemie", material_grade: "4. ročník SŠ" }}) -[:CREATED_BY]-> (sarah),
+    (material5:MATERIAL {{ _id: '{uuid4()}', material_name: 'Světová literatura 19. století', date_created: "{random_time()}", date_modified: "{random_time()}", material_subject: "Český jazyk", material_grade: "3. ročník SŠ" }}) -[:CREATED_BY]-> (sarah),
+    (material6:MATERIAL {{ _id: '{uuid4()}', material_name: 'Maturita Questions', date_created: "{random_time()}", date_modified: "{random_time()}", material_subject: "Anglický jazyk", material_grade: "4. ročník SŠ" }}) -[:CREATED_BY]-> (mike),
+    (material7:MATERIAL {{ _id: '{uuid4()}', material_name: 'Příprava na sloh z NJ', date_created: "{random_time()}", date_modified: "{random_time()}", material_subject: "Německý jazyk", material_grade: "4. ročník SŠ" }}) -[:CREATED_BY]-> (mike),
+    (material8:MATERIAL {{ _id: '{uuid4()}', material_name: 'Cvičné testy k přijímačkám', date_created: "{random_time()}", date_modified: "{random_time()}", material_subject: "Matematika", material_grade: "4. ročník SŠ" }}) -[:CREATED_BY]-> (petr)
 
     // Topics
     CREATE
-    (topic1:TOPIC {{ _id: '{uuid4()}', topic_name: '1. Základní ekonomické pojmy', topic_content: '<p>DEMO obsah tématu 1. Základní ekonomické pojmy</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
-    (topic2:TOPIC {{ _id: '{uuid4()}', topic_name: '2. Výroba, výrobní proces', topic_content: '<p>DEMO obsah tématu 2. Výroba, výrobní proces</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
-    (topic3:TOPIC {{ _id: '{uuid4()}', topic_name: '3. Trh a jeho charakteristika', topic_content: '<p>DEMO obsah tématu 3. Trh a jeho charakteristika</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
-    (topic4:TOPIC {{ _id: '{uuid4()}', topic_name: '4. Mzda a její formy', topic_content: '<p>DEMO obsah tématu 4. Mzda a její formy</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
-    (topic5:TOPIC {{ _id: '{uuid4()}', topic_name: '5. Charakteristika podnikání', topic_content: '<p>DEMO obsah tématu 5. Charakteristika podnikání</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
-    (topic6:TOPIC {{ _id: '{uuid4()}', topic_name: 'Algebra DEMO', topic_content: '<p>DEMO obsah tématu Algebra DEMO</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material2),
-    (topic7:TOPIC {{ _id: '{uuid4()}', topic_name: 'Neo4j DEMO', topic_content: '<p>DEMO obsah tématu Neo4j DEMO</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material3)
+    (topic11:TOPIC {{ _id: '{uuid4()}', topic_name: '1. Základní ekonomické pojmy', topic_content: '<p>DEMO obsah tématu 1. Základní ekonomické pojmy</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
+    (topic12:TOPIC {{ _id: '{uuid4()}', topic_name: '2. Výroba, výrobní proces', topic_content: '<p>DEMO obsah tématu 2. Výroba, výrobní proces</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
+    (topic13:TOPIC {{ _id: '{uuid4()}', topic_name: '3. Trh a jeho charakteristika', topic_content: '<p>DEMO obsah tématu 3. Trh a jeho charakteristika</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
+    (topic14:TOPIC {{ _id: '{uuid4()}', topic_name: '4. Mzda a její formy', topic_content: '<p>DEMO obsah tématu 4. Mzda a její formy</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
+    (topic15:TOPIC {{ _id: '{uuid4()}', topic_name: '5. Charakteristika podnikání', topic_content: '<p>DEMO obsah tématu 5. Charakteristika podnikání</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material1),
+
+    (topic21:TOPIC {{ _id: '{uuid4()}', topic_name: 'Algebra DEMO', topic_content: '<p>DEMO obsah tématu Algebra DEMO</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material2),
+
+    (topic31:TOPIC {{ _id: '{uuid4()}', topic_name: 'Neo4j DEMO', topic_content: '<p>DEMO obsah tématu Neo4j DEMO</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material3),
+
+    (topic41:TOPIC {{ _id: '{uuid4()}', topic_name: '1. Stavba atomu, atomové jádro, stavba elektronového obalu', topic_content: '<p>DEMO obsah tématu</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material4),
+    (topic42:TOPIC {{ _id: '{uuid4()}', topic_name: '2. Periodická soustava prvků', topic_content: '<p>DEMO obsah tématu</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material4),
+    (topic44:TOPIC {{ _id: '{uuid4()}', topic_name: '3. Chemická vazba', topic_content: '<p>DEMO obsah tématu</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material4),
+    (topic45:TOPIC {{ _id: '{uuid4()}', topic_name: '4. Chemický děj a jeho zákonitosti (chemické reakce)', topic_content: '<p>DEMO obsah tématu</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material4),
+    (topic46:TOPIC {{ _id: '{uuid4()}', topic_name: '5. Termochemie a chemická kinetika', topic_content: '<p>DEMO obsah tématu</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material4),
+
+    (topic51:TOPIC {{ _id: '{uuid4()}', topic_name: 'Charles Dickens', topic_content: '<p>DEMO obsah tématu</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material5),
+    (topic52:TOPIC {{ _id: '{uuid4()}', topic_name: 'Charlotte Brönteová', topic_content: '<p>DEMO obsah tématu</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material5),
+
+    (topic61:TOPIC {{ _id: '{uuid4()}', topic_name: '1. The United Kingdom', topic_content: '<p>DEMO obsah tématu</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material6),
+    (topic62:TOPIC {{ _id: '{uuid4()}', topic_name: '2. The United States of America', topic_content: '<p>DEMO obsah tématu</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material6),
+    (topic63:TOPIC {{ _id: '{uuid4()}', topic_name: '3. Holidays and celebrations', topic_content: '<p>DEMO obsah tématu</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material6),
+    (topic64:TOPIC {{ _id: '{uuid4()}', topic_name: '4. Clothes and fashion', topic_content: '<p>DEMO obsah tématu</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material6),
+    (topic65:TOPIC {{ _id: '{uuid4()}', topic_name: '5. Food', topic_content: '<p>DEMO obsah tématu</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material6),
+
+    (topic71:TOPIC {{ _id: '{uuid4()}', topic_name: 'Zásady psaní slohu z NJ', topic_content: '<p>DEMO obsah tématu</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material7),
+
+    (topic81:TOPIC {{ _id: '{uuid4()}', topic_name: 'Cvičný test ČVUT', topic_content: '<p>DEMO obsah tématu</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material8),
+    (topic82:TOPIC {{ _id: '{uuid4()}', topic_name: 'Odpovědi na cvičný test ČVUT', topic_content: '<p>DEMO obsah tématu</p>', date_created: "{random_time()}", date_modified: "{random_time()}" }}) -[:TOPIC_OF]-> (material8)
+
+    // Materials Following
+    CREATE
+    (admin) -[:FOLLOWS]-> (material4),
+    (admin) -[:FOLLOWS]-> (material5),
+    (admin) -[:FOLLOWS]-> (material6)
     '''
 
 def init_db():

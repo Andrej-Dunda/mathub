@@ -128,7 +128,7 @@ const BlogPost = (props: any) => {
               <div className="post-image-wrapper">
                 <img
                   className='post-image'
-                  src={`api/blog-posts/${postData._id}/image/`}
+                  src={`api/images/${postData.post_image}`}
                   alt=""
                 />
               </div>

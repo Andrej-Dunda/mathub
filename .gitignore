@@ -1,7 +1,7 @@
 # backend
 backend/venv/
 backend/habits.db
-backend/media/post-images/
+# backend/media/post-images/
 backend/media/profile-pictures/*
 backend/!media/profile-pictures/profile-picture-default.png
 backend/.DS_Store

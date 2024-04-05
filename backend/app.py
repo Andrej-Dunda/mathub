@@ -33,7 +33,7 @@ my_timezone = pytz.timezone('Europe/Prague')
 # LOGIN PAGES ENDPOINTS
 # ---------------------
 
-@app.route('api/authentication/me', methods=['GET'])
+@app.route('/api/authentication/me', methods=['GET'])
 def get_current_user():
     user_id = session.get('user_id')
 
@@ -53,7 +53,7 @@ def get_current_user():
         'registration_date': user['registration_date']
     })
 
-@app.route('api/authentication/status', methods=['GET'])
+@app.route('/api/authentication/status', methods=['GET'])
 def auth_status():
     try:
         if 'user_id' in session:
@@ -67,7 +67,7 @@ def auth_status():
     except Exception as e:
         return {'error': str(e)}, 400
 
-@app.route('api/authentication/login', methods=['POST'])
+@app.route('/api/authentication/login', methods=['POST'])
 def login():
     try:
         email = request.json['email']
@@ -97,7 +97,7 @@ def login():
     except Exception as e:
         return jsonify({'error': str(e)}), 404
 
-@app.route('api/authentication/logout', methods=['POST'])
+@app.route('/api/authentication/logout', methods=['POST'])
 def logout():
     self_logout = request.json.get('self_logout', False)
 
@@ -164,7 +164,7 @@ def generate_new_password(user_email):
 # FRIENDS ENDPOINTS
 # -----------------
 
-@app.route('api/users/<user_id>/friends/suggestions', methods=['GET'])
+@app.route('/api/users/<user_id>/friends/suggestions', methods=['GET'])
 def get_friend_suggestions(user_id):
     try:
         primary_friend_suggestions_data = neo4j.run_query(f'''
@@ -418,7 +418,7 @@ def get_posts():
     except Exception as e:
         return str(e), 400
 
-@app.route('/api/posts/my-posts', methods=['GET'])
+@app.route('/api/blog-posts/my-posts', methods=['GET'])
 def get_my_posts():
     try:
         user_id = session.get('user_id')
@@ -467,12 +467,10 @@ def toggle_post_like(post_id):
     except:
         return 'Like could not be toggled', 400
 
-@app.route('api/blog-posts/<post_id>/image', methods=['GET'])
-def get_post_image(post_id):
+@app.route('/api/images/<image_name>', methods=['GET'])
+def get_post_image(image_name):
     try:
-        post_image_name = neo4j.run_query(f'MATCH (post:BLOG_POST {{_id: "{post_id}"}}) RETURN post.post_image AS post_image_name')[0]['post_image_name']
-
-        return send_from_directory(app.config['POST_IMAGES_FOLDER'], post_image_name)
+        return send_from_directory(app.config['POST_IMAGES_FOLDER'], image_name)
     except:
         return
 

@@ -166,7 +166,6 @@ const ViewTopics: React.FC = () => {
   }, [topicEditorState])
 
   useEffect(() => {
-    console.log(`\n${activeTopicContent}\n${selectedTopic?.topic_content}\n${activeTopicContent === selectedTopic?.topic_content}`)
   }, [activeTopicContent, selectedTopic?.topic_content])
 
   const onEditorTopicSwitch = (onFinish?: any) => {

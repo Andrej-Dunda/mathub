@@ -31,6 +31,10 @@ const PreviewMaterial = () => {
   const [isAsideMenuOpen, setIsAsideMenuOpen] = useState<boolean>(true)
 
   useEffect(() => {
+    setTimeout(() => setIsAsideMenuOpen(false), 200);
+  }, [])
+
+  useEffect(() => {
     let paramMaterialId = searchParams.get("material_id");
     setMaterialId(paramMaterialId ?? '')
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -40,7 +44,6 @@ const PreviewMaterial = () => {
     // Fetch data from the API
     httpClient.get(`/api/materials/${materialId}/preview`)
       .then(res => {
-        console.log(res.data)
         setValidMaterialId(res.data.validMaterialId)
         if (res.data.validMaterialId) {
           setIsFriend(res.data.isFriend)
