@@ -33,14 +33,14 @@ const MaterialPost = ({ material, onStopFollowing }: MaterialPostProps) => {
   const [topics, setTopics] = useState<iTopic[]>([]);
 
   useEffect(() => {
-    httpClient.get(`/api/get-material-topics/${material._id}`)
+    httpClient.get(`/api/materials/${material._id}/topics`)
       .then(res => setTopics(res.data))
       .catch(err => console.error(err))
   }, [material])
 
   useEffect(() => {
     if (material.author_id) {
-      httpClient.get(`/api/user/${material.author_id}`)
+      httpClient.get(`/api/users/${material.author_id}`)
         .then(res => setAuthor(res.data))
         .catch(err => console.error(err))
     }

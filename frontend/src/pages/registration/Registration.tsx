@@ -72,7 +72,7 @@ const Registration = () => {
     if (registrationForm.email.length < 5) return errorResponse('E-mail musí mít alespoň 5 znaků!', emailInputRef)
     
 
-    httpClient.post("/api/registration", {
+    httpClient.post("/api/users", {
         email: registrationForm.email,
         password: registrationForm.password,
         first_name: registrationForm.first_name,

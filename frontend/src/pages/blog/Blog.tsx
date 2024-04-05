@@ -28,7 +28,7 @@ const Blog = () => {
 
   const getMyPosts = async () => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.get(`/api/get-my-posts/`)
+    protectedHttpClient?.get(`/api/blog-posts/my-posts`)
       .then(res => {
         setPosts(res.data)
       })
@@ -53,7 +53,7 @@ const Blog = () => {
     formData.append('post_description', postDescription)
 
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.post('/api/post-blog-post', formData, {
+    protectedHttpClient?.post('/api/users/blog-posts', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }

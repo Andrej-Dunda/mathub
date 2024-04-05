@@ -19,7 +19,7 @@ const ProfilePicture: React.FC<iProfilePicture> = ({ className, userId, onClick,
   const { user } = useUserData();
 
   useEffect(() => {
-    setProfilePictureUrl(userId ? `/api/profile-picture/${userId}?${Math.random()}` : '')
+    setProfilePictureUrl(userId ? `/api/users/${userId}/profile-picture?${Math.random()}` : '')
   }, [userId, user.profile_picture])
 
   return (

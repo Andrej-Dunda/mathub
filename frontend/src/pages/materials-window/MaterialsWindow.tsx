@@ -33,7 +33,7 @@ const MaterialsWindow = () => {
   }, [modalOpen])
 
   const getFollowedMaterials = () => {
-    httpClient.get('/api/get-followed-materials')
+    httpClient.get('/api/materials/followed')
       .then(res => {
         setFollowedMaterials(res.data)
       })

@@ -53,9 +53,7 @@ const ForgottenPassword = () => {
 
   const submitForgottenPassword = (event: any) => {
     if (!forgottenPasswordEmail) return setErrorResponseMessage('Vyplňte pole e-mail!')
-    httpClient.post("/api/forgotten-password", {
-      email: forgottenPasswordEmail
-    })
+    httpClient.get(`/api/users/${forgottenPasswordEmail}/forgotten-password`)
       .then((response: any) => {
         setNewPassword(response.data.new_password)
         setErrorResponseMessage('')

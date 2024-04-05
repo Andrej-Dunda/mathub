@@ -30,7 +30,7 @@ const MaterialFollowButton = ({ material, className, onStopFollowing }: Material
 
   const updateMaterialFollowing = async () => {
     const httpClient = await protectedHttpClientInit();
-    httpClient?.get(`/api/follows-material/${material._id}`)
+    httpClient?.get(`/api/materials/${material._id}/follow`)
       .then(res => {
         setFollowsMaterial(res.data.followsMaterial);
       })
@@ -41,7 +41,7 @@ const MaterialFollowButton = ({ material, className, onStopFollowing }: Material
     if (followsMaterial) showModal(<StopFollowingMaterialModalContent />)
     else {
       const httpClient = await protectedHttpClientInit();
-      httpClient?.post(`/api/toggle-follow-material/${material._id}`)
+      httpClient?.post(`/api/materials/${material._id}/follow`)
         .then(res => {
           setFollowsMaterial(res.data.followsMaterial);
           openSnackbar(res.data.followsMaterial ? 'Přidáno do sledovaných materiálů' : 'Odebráno ze sledovaných materiálů')
@@ -57,7 +57,7 @@ const MaterialFollowButton = ({ material, className, onStopFollowing }: Material
 
     const stopFollowingMaterial = async () => {
       const httpClient = await protectedHttpClientInit();
-      httpClient?.post(`/api/toggle-follow-material/${material._id}`)
+      httpClient?.post(`/api/materials/${material._id}/follow`)
         .then(res => {
           openSnackbar('Odebráno ze sledovaných materiálů')
           updateMaterialFollowing();

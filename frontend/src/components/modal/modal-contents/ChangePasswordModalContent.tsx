@@ -42,8 +42,7 @@ const ChangePasswordModalContent: React.FC = () => {
     if (newPasswordForm.newPassword.length > 50) return setErrorMessage('Heslo může mít maximálně 50 znaků!')
     
     const protectedHttpClient = await protectedHttpClientInit();
-    if (protectedHttpClient) protectedHttpClient.post('/api/change-password', {
-        user_id: user._id,
+    if (protectedHttpClient) protectedHttpClient.post(`/api/users/${user._id}/password`, {
         old_password: newPasswordForm.oldPassword,
         new_password: newPasswordForm.newPassword
       })

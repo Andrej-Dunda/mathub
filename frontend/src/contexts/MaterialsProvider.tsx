@@ -55,16 +55,13 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
     topics && setSelectedTopic(topics[0])
   }, [topics])
 
-  const getMaterials = async (selectLast: boolean = false) => {
+  const getMaterials = async (selectLast?: boolean) => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.get('/api/get-materials')
+    protectedHttpClient?.get('/api/materials')
       .then(res => {
         setMaterials(res.data)
-        res.data.length ?
-          selectLast ?
-            setSelectedMaterial(res.data[res.data.length - 1])
-            : setSelectedMaterial(res.data[0])
-          : toMaterials()
+        if (res.data.length && selectLast) return setSelectedMaterial(res.data[res.data.length - 1])
+        if (!res.data.length) toMaterials()
       })
       .catch(err => {
         console.error(err)
@@ -74,7 +71,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
   const postMaterial = async (newMaterialName: string, selectedMaterialSubject: string, selectedMaterialGrade: string) => {
     if (newMaterialName) {
       const protectedHttpClient = await protectedHttpClientInit();
-      protectedHttpClient?.post('/api/post-material', {
+      protectedHttpClient?.post('/api/materials', {
         material_name: newMaterialName,
         material_subject: selectedMaterialSubject,
         material_grade: selectedMaterialGrade
@@ -91,7 +88,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
 
   const getMaterial = async (material_id: string) => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.get(`/api/get-material/${material_id}`)
+    protectedHttpClient?.get(`/api/materials/${material_id}`)
       .then(res => {
         setSelectedMaterial(res.data)
       })
@@ -102,7 +99,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
 
   const putMaterial = async (material_id: string, material_name: string, material_subject: string, material_grade: string) => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.put(`/api/put-material`, {
+    protectedHttpClient?.put(`/api/materials`, {
       material_id: material_id,
       material_name: material_name,
       material_grade: material_grade,
@@ -110,7 +107,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
     })
       .then(() => {
         getMaterials()
-        setSelectedMaterial(undefined)
+        getMaterial(material_id)
         openSnackbar('Materiál úspěšně upraven!')
       })
       .catch(err => {
@@ -120,7 +117,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
 
   const deleteMaterial = async (material_id: string) => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.delete(`/api/delete-material/${material_id}`)
+    protectedHttpClient?.delete(`/api/materials/${material_id}`)
       .then(() => {
         getMaterials()
         openSnackbar('Materiál úspěšně smazán!')
@@ -143,9 +140,8 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
 
   const postTopic = async (material_id: string, topic_name: string) => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.post('/api/post-topic', {
-      material_id,
-      topic_name
+    protectedHttpClient?.post(`api/materials/${material_id}/topics`, {
+      topic_name: topic_name
     })
       .then(() => {
         getTopics(material_id)
@@ -158,7 +154,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
 
   const getTopic = async (topic_id: string) => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.get(`/api/get-topic/${topic_id}`)
+    protectedHttpClient?.get(`/api/topics/${topic_id}`)
       .then(res => {
         setSelectedTopic(res.data)
       })
@@ -169,8 +165,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
 
   const putTopic = async (topic_id: string, topic_name: string, topic_content: string, keepTopicSelected?: boolean) => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.put(`/api/put-topic`, {
-      topic_id: topic_id,
+    protectedHttpClient?.put(`/api/topics/${topic_id}`, {
       topic_name: topic_name,
       topic_content: topic_content
     })
@@ -186,7 +181,7 @@ export const MaterialsProvider = ({ children }: MaterialsProviderProps) => {
 
   const deleteTopic = async (topic_id: string) => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.delete(`/api/delete-topic/${topic_id}`)
+    protectedHttpClient?.delete(`/api/topics/${topic_id}`)
       .then(() => {
         selectedMaterial && getTopics(selectedMaterial._id)
         setSelectedTopic(undefined)

@@ -38,7 +38,7 @@ const PreviewMaterial = () => {
 
   useEffect(() => {
     // Fetch data from the API
-    httpClient.get(`/api/preview-material/${materialId}`)
+    httpClient.get(`/api/materials/${materialId}/preview`)
       .then(res => {
         console.log(res.data)
         setValidMaterialId(res.data.validMaterialId)
@@ -69,7 +69,7 @@ const PreviewMaterial = () => {
   }, [selectedTopic])
 
   const getTopic = async (topic_id: string) => {
-    httpClient.get(`/api/get-topic/${topic_id}`)
+    httpClient.get(`/api/topics/${topic_id}`)
       .then(res => {
         setSelectedTopic(res.data)
       })

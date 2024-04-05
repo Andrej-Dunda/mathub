@@ -161,6 +161,14 @@ const ViewTopics: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTopic?._id])
 
+  useEffect(() => {
+    setActiveTopicContent(draftToHtml(convertToRaw(topicEditorState.getCurrentContent())));
+  }, [topicEditorState])
+
+  useEffect(() => {
+    console.log(`\n${activeTopicContent}\n${selectedTopic?.topic_content}\n${activeTopicContent === selectedTopic?.topic_content}`)
+  }, [activeTopicContent, selectedTopic?.topic_content])
+
   const onEditorTopicSwitch = (onFinish?: any) => {
     if (selectedTopic?.topic_content !== activeTopicContent) {
       return showModal(<SaveTopicModalContent saveTopic={saveTopic} onFinish={onFinish} />);
@@ -226,7 +234,6 @@ const ViewTopics: React.FC = () => {
 
   const onEditorStateChange = (newState: any) => {
     setTopicEditorState(newState);
-    setActiveTopicContent(draftToHtml(convertToRaw(newState.getCurrentContent())));
   }
 
   const handleTopicChange = (topic_id: string) => {
