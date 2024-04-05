@@ -33,12 +33,11 @@ const EditPostModalContent = (props: any) => {
     const formData = new FormData()
 
     if (postImage) formData.append('post_image', postImage)
-    formData.append('post_id', props.postData._id.toString())
     formData.append('post_title', postTitle)
     formData.append('post_description', postDescription)
 
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.put('/api/put-blog-post', formData, {
+    protectedHttpClient?.put(`api/blog-posts/${props.postData._id}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }
@@ -61,6 +60,7 @@ const EditPostModalContent = (props: any) => {
         id='post-title'
         value={postTitle}
         onChange={handlePostTitleChange}
+        maxLength={100}
       />
     </div>
     <div className="edit-post-input">
@@ -72,6 +72,7 @@ const EditPostModalContent = (props: any) => {
         id="post-description"
         cols={30}
         rows={10}
+        maxLength={500}
       />
     </div>
     <FileUploader label='Nahrát obrázek' file={postImage} setFile={setPostImage} acceptAttributeValue='image/*' />

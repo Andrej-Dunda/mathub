@@ -13,7 +13,7 @@ const DeleteBlogPostModalContent = (props: any) => {
 
   const deleteBlogPost = async () => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.delete(`/api/delete-blog-post/${props.postId}`)
+    protectedHttpClient?.delete(`/api/blog-posts/${props.postId}`)
     .then(() => {
       props.getMyPosts()
       openSnackbar('Příspěvek úspěšně smazán!')

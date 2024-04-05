@@ -1,13 +1,14 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './MaterialDropdown.scss'
 import React, { FC, useEffect, useState } from 'react';
-import { faChevronDown, faChevronUp, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronUp, faEdit, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { iMaterial } from '../../interfaces/materials-interface';
 import { useModal } from '../../contexts/ModalProvider';
 import NewMaterialModalContent from '../modal/modal-contents/NewMaterialModalContent';
 import { useMaterials } from '../../contexts/MaterialsProvider';
 import EllipsisMenuButton from '../buttons/ellipsis-menu-button/EllipsisMenuButton';
 import DeleteModalContent from '../modal/modal-contents/DeleteModalContent';
+import EditMaterialModalContent from '../modal/modal-contents/EditMaterialModalContent';
 
 type MaterialDropdownProps = {
   onChange?: (material: iMaterial) => void;
@@ -58,6 +59,22 @@ const MaterialDropdown: FC<MaterialDropdownProps> = ({ isAsideMenuOpen, onEditor
     showModal(<NewMaterialModalContent />)
   }
 
+  const openDeleteMaterialModal = (material: iMaterial) => {
+    showModal(
+      <DeleteModalContent
+        onSubmit={() => deleteMaterial(material._id)}
+        submitButtonLabel='Smazat'
+        cancelButtonLabel='Zrušit'
+        title={`Smazat materiál "${material.material_name}"?`}
+        content='Opravdu chcete smazat tento materiál? Tato akce je nevratná!'
+      />
+    )
+  }
+
+  const openEditMaterialModal = (material: iMaterial) => {
+    showModal(<EditMaterialModalContent material={material} />)
+  }
+
   return (
     <div className={`material-dropdown${isMaterialDropdownOpen ? ' dropdown-open' : ''}`}>
       <div className="dropdown-button" onClick={toggleDropdown}>
@@ -86,15 +103,12 @@ const MaterialDropdown: FC<MaterialDropdownProps> = ({ isAsideMenuOpen, onEditor
                     {
                       name: 'Smazat',
                       icon: faTrash,
-                      onClick: () => showModal(
-                        <DeleteModalContent
-                          onSubmit={() => deleteMaterial(material._id)}
-                          submitButtonLabel='Smazat'
-                          cancelButtonLabel='Zrušit'
-                          title={`Smazat předmět "${material.material_name}"?`}
-                          content='Opravdu chcete smazat tento předmět? Tato akce je nevratná!'
-                        />
-                      )
+                      onClick: () => openDeleteMaterialModal(material)
+                    },
+                    {
+                      name: 'Upravit',
+                      icon: faEdit,
+                      onClick: () => openEditMaterialModal(material)
                     }
                   ]} />
               </div>

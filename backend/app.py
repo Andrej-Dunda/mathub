@@ -33,7 +33,7 @@ my_timezone = pytz.timezone('Europe/Prague')
 # LOGIN PAGES ENDPOINTS
 # ---------------------
 
-@app.route('/api/@me', methods=['GET'])
+@app.route('/api/authentication/me', methods=['GET'])
 def get_current_user():
     user_id = session.get('user_id')
 
@@ -53,7 +53,7 @@ def get_current_user():
         'registration_date': user['registration_date']
     })
 
-@app.route('/api/auth-status', methods=['GET'])
+@app.route('/api/authentication/status', methods=['GET'])
 def auth_status():
     try:
         if 'user_id' in session:
@@ -67,7 +67,7 @@ def auth_status():
     except Exception as e:
         return {'error': str(e)}, 400
 
-@app.route('/api/login', methods=['POST'])
+@app.route('/api/authentication/login', methods=['POST'])
 def login():
     try:
         email = request.json['email']
@@ -97,7 +97,7 @@ def login():
     except Exception as e:
         return jsonify({'error': str(e)}), 404
 
-@app.route('/api/logout', methods=['POST'])
+@app.route('/api/authentication/logout', methods=['POST'])
 def logout():
     self_logout = request.json.get('self_logout', False)
 
@@ -105,7 +105,7 @@ def logout():
     session.pop('user_id', None)
     return jsonify({'message': 'Logged out'}), 200
 
-@app.route('/api/registration', methods=['POST'])
+@app.route('/api/users', methods=['POST'])
 def register_new_user():
     try:
         email = request.json.get("email", None)
@@ -126,7 +126,7 @@ def register_new_user():
                 profile_picture: 'profile-picture-default.png',
                 registration_date: '{datetime.now(my_timezone).isoformat()}'
             }}),
-            (material:MATERIAL {{ _id: '{uuid4()}', material_name: 'DEMO Předmět', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}", material_subject: "Jiné", material_grade: "Jiné" }}) -[:CREATED_BY]-> (new_user),
+            (material:MATERIAL {{ _id: '{uuid4()}', material_name: 'DEMO Materiál', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}", material_subject: "Jiné", material_grade: "Jiné" }}) -[:CREATED_BY]-> (new_user),
             (topic:TOPIC {{ _id: '{uuid4()}', topic_name: 'DEMO Téma', topic_content: '<p>Obsah DEMO tématu</p>', date_created: "{datetime.now(my_timezone).isoformat()}", date_modified: "{datetime.now(my_timezone).isoformat()}" }}) -[:TOPIC_OF]-> (material)
             """)
         else:
@@ -136,21 +136,19 @@ def register_new_user():
     else:
         return {'message': 'Registrace proběhla úspěšně!', 'success': True, 'email_already_registered': False}, 200
     
-@app.route('/api/forgotten-password', methods=['POST'])
-def generate_new_password():
+@app.route('/api/users/<user_email>/forgotten-password', methods=['GET'])
+def generate_new_password(user_email):
     try:
-      email = request.json.get("email", None)
-
       characters = string.ascii_letters + string.digits
       new_password = ''.join(random.choice(characters) for _ in range(12))
 
-      existing_user = neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) RETURN user')
+      existing_user = neo4j.run_query(f'MATCH (user:USER {{user_email: "{user_email}"}}) RETURN user')
 
       if not len(existing_user):
         return jsonify({'console_message': 'User profile does not exist', 'response_message': 'Tento email není registrován!', 'result': False}), 400
       
       password_hash = Bcrypt().generate_password_hash(new_password).decode('utf-8')  # Hash the password
-      neo4j.run_query(f'MATCH (user:USER {{user_email: "{email}"}}) SET user.user_password = "{password_hash}"')
+      neo4j.run_query(f'MATCH (user:USER {{user_email: "{user_email}"}}) SET user.user_password = "{password_hash}"')
     except:
       return jsonify({'console_message': 'Failed to reset password', 'response_message': 'Heslo nemohlo být resetováno :(', 'result': False}), 500
     else:
@@ -166,10 +164,9 @@ def generate_new_password():
 # FRIENDS ENDPOINTS
 # -----------------
 
-@app.route('/api/get-friend-suggestions', methods=['POST'])
-def get_friend_suggestions():
+@app.route('/api/users/<user_id>/friends/suggestions', methods=['GET'])
+def get_friend_suggestions(user_id):
     try:
-        user_id = request.json.get('user_id', None)
         primary_friend_suggestions_data = neo4j.run_query(f'''
             MATCH (subject:USER {{_id: '{user_id}'}}) -[:FRIEND_WITH]- (common_friends:USER) -[:FRIEND_WITH]- (recommended_to_subject:USER)
             WHERE NOT (recommended_to_subject) -[:FRIEND_WITH]- (subject)
@@ -212,10 +209,9 @@ def get_friend_suggestions():
     except Exception as e:
         return str(e), 400
    
-@app.route('/api/get-friends', methods=['POST'])
-def get_friends():
+@app.route('/api/users/<user_id>/friends', methods=['GET'])
+def get_friends(user_id):
     try:
-        user_id = request.json.get('user_id', None)
         friends_data = neo4j.run_query(f'''
             MATCH (user:USER {{_id: '{user_id}'}}) -[:FRIEND_WITH]-> (friend:USER)
             RETURN friend._id AS _id, friend.first_name AS first_name, friend.last_name AS last_name
@@ -232,10 +228,9 @@ def get_friends():
     except:
         return []
 
-@app.route('/api/get-friend-requests', methods=['POST'])
-def get_friend_requests():
+@app.route('/api/users/<user_id>/friends/requests', methods=['GET'])
+def get_friend_requests(user_id):
     try:
-        user_id = request.json.get('user_id', None)
         requestors_data = neo4j.run_query(f'''
             MATCH (requestor:USER) -[:FRIEND_REQUEST]-> (acceptor:USER {{_id: '{user_id}'}})
             RETURN requestor._id AS _id, requestor.first_name AS first_name, requestor.last_name AS last_name
@@ -252,10 +247,9 @@ def get_friend_requests():
     except:
         return []
 
-@app.route('/api/get-my-friend-requests', methods=['POST'])
-def get_my_friend_requests():
+@app.route('/api/users/<user_id>/friends/my-requests', methods=['GET'])
+def get_my_friend_requests(user_id):
     try:
-        user_id = request.json.get('user_id', None)
         acceptors_data = neo4j.run_query(f'''
             MATCH (requestor:USER {{_id: '{user_id}'}}) -[:FRIEND_REQUEST]-> (acceptor:USER)
             RETURN acceptor._id AS _id, acceptor.first_name AS first_name, acceptor.last_name AS last_name
@@ -328,10 +322,9 @@ def remove_friend():
 # BLOG POSTS ENDPOINTS
 # --------------------
 
-@app.route('/api/post-blog-post', methods=['POST'])
-def new_blog_post():
+@app.route('/api/blog-posts', methods=['POST'])
+def new_blog_post(user_id):
     try:
-        user_id = request.form.get('user_id', None)
         post_time = datetime.now(my_timezone).isoformat()
         post_title = request.form.get('post_title', None)
         post_description = request.form.get('post_description', None)
@@ -339,7 +332,7 @@ def new_blog_post():
 
         if 'post_image' in request.files:
             post_image = request.files['post_image']
-            post_image_name = secure_filename(post_image.filename)
+            post_image_name = f'{uuid4()}_{secure_filename(post_image.filename)}'
             post_image.save(os.path.join(app.config['POST_IMAGES_FOLDER'], post_image_name))
 
         neo4j.run_query(f'''
@@ -350,13 +343,12 @@ def new_blog_post():
     except:
         return 'Post could not be added', 400
 
-@app.route('/api/put-blog-post', methods=['PUT'])
-def update_blog_post():
+@app.route('/api/blog-posts/<post_id>', methods=['PUT'])
+def update_blog_post(post_id):
     try:
-        post_id = request.form.get('post_id', None)
         post_title = request.form.get('post_title', None)
         post_description = request.form.get('post_description', None)
-        post_image_name = None
+        post_image_name = neo4j.run_query(f'MATCH (post:BLOG_POST {{_id: "{post_id}"}}) RETURN post.post_image AS post_image_name')[0]['post_image_name']
 
         if 'post_image' in request.files:
             post_image = request.files['post_image']
@@ -372,7 +364,7 @@ def update_blog_post():
     except:
         return 'Post could not be edited', 400
 
-@app.route('/api/delete-blog-post/<post_id>', methods=['DELETE'])
+@app.route('/api/blog-posts/<post_id>', methods=['DELETE'])
 def delete_blog_post(post_id):
     try:
         post_image_name = neo4j.run_query(f'MATCH (post:BLOG_POST {{_id: "{post_id}"}}) RETURN post.post_image AS post_image_name')[0]['post_image_name']
@@ -384,15 +376,7 @@ def delete_blog_post(post_id):
     except:
         return 'Post could not be deleted'
 
-@app.route('/api/post/<id>', methods=['GET'])
-def get_post(id):
-    try:
-        post_data = neo4j.run_query(f'MATCH (post:BLOG_POST {{_id: "{id}"}}) RETURN post LIMIT 1')[0]['post']
-        return post_data
-    except:
-        return 400
-
-@app.route('/api/posts', methods=['GET'])
+@app.route('/api/feed', methods=['GET'])
 def get_posts():
     try:
         user_id = session.get('user_id')
@@ -434,7 +418,7 @@ def get_posts():
     except Exception as e:
         return str(e), 400
 
-@app.route('/api/get-my-posts/', methods=['GET'])
+@app.route('/api/blog-posts/my-posts', methods=['GET'])
 def get_my_posts():
     try:
         user_id = session.get('user_id')
@@ -454,7 +438,7 @@ def get_my_posts():
     except:
         return []
 
-@app.route('/api/post-likes/<post_id>', methods=['GET'])
+@app.route('/api/blog-posts/<post_id>/likes', methods=['GET'])
 def get_post_likes(post_id):
     try:
         post_liker_ids = neo4j.run_query(f'MATCH (post:BLOG_POST {{_id: "{post_id}"}}) <-[:LIKES]- (user:USER) RETURN user._id AS user_id')
@@ -462,11 +446,16 @@ def get_post_likes(post_id):
     except:
         return []
 
-@app.route('/api/toggle-post-like', methods=['POST'])
-def toggle_post_like():
+@app.route('/api/blog-posts/<post_id>/likes', methods=['POST'])
+def toggle_post_like(post_id):
     try:
-        post_id = request.json.get('post_id', None)
-        user_id = request.json.get('user_id', None)
+        user_id = session.get('user_id')
+
+        if user_id is None:
+            return jsonify({
+                'error': 'Not logged in'
+                }), 401
+        
         like_data = neo4j.run_query(f'MATCH (post:BLOG_POST {{_id: "{post_id}"}}) <-[:LIKES]- (user:USER {{_id: "{user_id}"}}) RETURN user._id AS user_id')
 
         if len(like_data):
@@ -478,10 +467,10 @@ def toggle_post_like():
     except:
         return 'Like could not be toggled', 400
 
-@app.route('/post-image/<filename>', methods=['GET'])
-def get_post_image(filename):
+@app.route('/api/images/<image_name>', methods=['GET'])
+def get_post_image(image_name):
     try:
-        return send_from_directory(app.config['POST_IMAGES_FOLDER'], filename)
+        return send_from_directory(app.config['POST_IMAGES_FOLDER'], image_name)
     except:
         return
 
@@ -490,7 +479,7 @@ def get_post_image(filename):
 # COMMENTS ENDPOINTS
 # ------------------
 
-@app.route('/api/comments/<post_id>', methods=['GET'])
+@app.route('/api/blog-posts/<post_id>/comments', methods=['GET'])
 def get_comments(post_id):
     try:
         comments_data = neo4j.run_query(f'MATCH (comment_author:USER) <-[:COMMENTED_BY]- (comment:POST_COMMENT) -[:COMMENT_OF]-> (:BLOG_POST {{_id: "{post_id}"}}) RETURN comment, comment_author._id AS author_id ORDER BY comment.comment_time DESC')
@@ -503,10 +492,9 @@ def get_comments(post_id):
     except:
         return []
 
-@app.route('/api/add-comment', methods=['POST'])
-def add_comment():
+@app.route('/api/blog-posts/<post_id>/comments', methods=['POST'])
+def add_comment(post_id):
     try:
-        post_id = request.json.get('post_id', None)
         commenter_id = request.json.get('commenter_id', None)
         comment = request.json.get('comment', None)
         comment_time = datetime.now(my_timezone).isoformat()
@@ -523,15 +511,15 @@ def add_comment():
 # USER ACCOUNT ENDPOINTS
 # ----------------------
 
-@app.route('/api/user/<id>', methods=['GET'])
-def get_user(id):
+@app.route('/api/users/<user_id>', methods=['GET'])
+def get_user(user_id):
     try:
-        user = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user')[0]['user']
+        user = neo4j.run_query(f'MATCH (user:USER {{_id: "{user_id}"}}) RETURN user')[0]['user']
         return user
     except:
         return 400
     
-@app.route('/api/user-profile/<id>', methods=['GET'])
+@app.route('/api/users/<id>/profile', methods=['GET'])
 def get_user_profile(id):
     try:
         user_id = session.get('user_id')
@@ -592,18 +580,22 @@ def crop_image_to_square(image_path):
         img = img.crop((left, top, right, bottom))
         img.save(image_path)  # Overwrite the original image or save as a new file
 
-@app.route('/api/upload-profile-picture/<id>', methods=['POST'])
+@app.route('/api/users/<id>/profile-picture', methods=['POST'])
 def upload_profile_picture(id):
     try:
-        old_profile_picture = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user.profile_picture AS profile_picture_name')[0]['profile_picture_name']
-        if old_profile_picture != 'profile-picture-default.png':
-            os.remove(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], old_profile_picture))
-
         if 'profile_picture' in request.files:
             file = request.files['profile_picture']
             filename = secure_filename(file.filename)
             if filename == '':
                 return 'No selected file', 400
+            
+            old_profile_picture = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user.profile_picture AS profile_picture_name')[0]['profile_picture_name']
+            if old_profile_picture != 'profile-picture-default.png' and old_profile_picture:
+                os.remove(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], old_profile_picture))
+            
+            # append a random string to the filename to prevent overwriting
+            filename = f'{uuid4()}_{filename}'
+
             file.save(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], filename))
             neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) SET user.profile_picture = "{filename}"')
             crop_image_to_square(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], filename))
@@ -613,7 +605,7 @@ def upload_profile_picture(id):
     except Exception as e:
         return str(e), 400
 
-@app.route('/api/profile-picture/<id>', methods=['GET'])
+@app.route('/api/users/<id>/profile-picture', methods=['GET'])
 def get_user_profile_picture(id):
     try:
         profile_picture = neo4j.run_query(f'MATCH (user:USER {{_id: "{id}"}}) RETURN user.profile_picture AS profile_picture_name')[0]['profile_picture_name']
@@ -624,10 +616,9 @@ def get_user_profile_picture(id):
     except:
         return send_from_directory(app.config['PROFILE_PICTURES_FOLDER'], 'profile-picture-default.png')
 
-@app.route('/api/change-password', methods=['POST'])
-def change_password():
+@app.route('/api/users/<user_id>/password', methods=['POST'])
+def change_password(user_id):
     try:
-        user_id = request.json.get('user_id', None)
         old_password = request.json.get('old_password', None)
         hashed_old_password = Bcrypt().generate_password_hash(old_password).decode('utf-8')
         new_password = request.json.get('new_password', None)
@@ -647,7 +638,7 @@ def change_password():
 # MATERIALS ENDPOINTS
 # ------------------
 
-@app.route('/api/get-materials', methods=['GET'])
+@app.route('/api/materials', methods=['GET'])
 def get_materials():
     try:
         user_id = session.get('user_id')
@@ -669,10 +660,10 @@ def get_materials():
     except:
         return []
 
-@app.route('/api/post-material', methods=['POST'])
+@app.route('/api/materials', methods=['POST'])
 def post_material():
     try:
-        material_name = request.json.get('material_name', 'Nepojmenovaný Předmět')
+        material_name = request.json.get('material_name', 'Nepojmenovaný')
         material_subject = request.json.get('material_subject', 'Jiné')
         material_grade = request.json.get('material_grade', 'Jiné')
         user_id = session.get('user_id')
@@ -691,7 +682,7 @@ def post_material():
     except Exception as e:
         return 'Material could not be added:\n' + str(e), 400
     
-@app.route('/api/get-material/<material_id>', methods=['GET'])
+@app.route('/api/materials/<material_id>', methods=['GET'])
 def get_material(material_id):
     try:
         material = neo4j.run_query(f'''
@@ -702,21 +693,25 @@ def get_material(material_id):
     except:
         return 400
     
-@app.route('/api/put-material', methods=['PUT'])
+@app.route('/api/materials', methods=['PUT'])
 def put_material():
     try:
         material_id = request.json.get('material_id', None)
-        material_name = request.json.get('material_name', None)
+        material_name = request.json.get('material_name', 'Nepojmenováno')
+        material_grade = request.json.get('material_grade', 'Jiné')
+        material_subject = request.json.get('material_subject', 'Jiné')
         neo4j.run_query(f'''
             MATCH (material:MATERIAL {{_id: "{material_id}"}})
             SET material.material_name = "{material_name}",
-            material.date_modified = "{datetime.now(my_timezone).isoformat()}"
+            material.date_modified = "{datetime.now(my_timezone).isoformat()}",
+            material.material_grade = "{material_grade}",
+            material.material_subject = "{material_subject}"
             ''')
         return 'Material edited successfuly', 200
     except:
         return 'Material could not be edited', 400
 
-@app.route('/api/delete-material/<material_id>', methods=['DELETE'])
+@app.route('/api/materials/<material_id>', methods=['DELETE'])
 def delete_material(material_id):
     try:
         neo4j.run_query(f'''
@@ -727,7 +722,7 @@ def delete_material(material_id):
     except:
         return 'Material could not be deleted', 400
     
-@app.route('/api/preview-material/<material_id>', methods=['GET'])
+@app.route('/api/materials/<material_id>/preview', methods=['GET'])
 def preview_material(material_id):
     user_id = session.get('user_id')
 
@@ -762,7 +757,7 @@ def preview_material(material_id):
     except:
         return {"validMaterialId": False}, 400
     
-@app.route('/api/toggle-follow-material/<material_id>', methods=['POST'])
+@app.route('/api/materials/<material_id>/follow', methods=['POST'])
 def toggle_follow_material(material_id):
     try:
         user_id = session.get('user_id')
@@ -783,7 +778,7 @@ def toggle_follow_material(material_id):
     except:
         return 'Follow could not be toggled', 400
     
-@app.route('/api/follows-material/<material_id>', methods=['GET'])
+@app.route('/api/materials/<material_id>/follow', methods=['GET'])
 def get_if_follows_material(material_id):
     try:
         user_id = session.get('user_id')
@@ -802,7 +797,7 @@ def get_if_follows_material(material_id):
     except:
         return 'Could not get follow status', 400
 
-@app.route('/api/get-followed-materials', methods=['GET'])
+@app.route('/api/materials/followed', methods=['GET'])
 def get_followed_materials():
     try:
         user_id = session.get('user_id')
@@ -831,7 +826,7 @@ def get_followed_materials():
 # TOPICS ENDPOINTS
 # ----------------
 
-@app.route('/api/get-material-topics/<material_id>', methods=['GET'])
+@app.route('/api/materials/<material_id>/topics', methods=['GET'])
 def get_material_topics(material_id):
     try:
         topics_data = neo4j.run_query(f'''
@@ -847,11 +842,10 @@ def get_material_topics(material_id):
     except:
         return []
     
-@app.route('/api/post-topic', methods=['POST'])
-def post_topic():
+@app.route('/api/materials/<material_id>/topics', methods=['POST'])
+def post_topic(material_id):
     try:
         topic_name = request.json.get('topic_name', None)
-        material_id = request.json.get('material_id', None)
         user_id = session.get('user_id')
 
         if user_id is None:
@@ -867,7 +861,7 @@ def post_topic():
     except Exception as e:
         return f'Topic could not be added:\n{e}', 400
     
-@app.route('/api/get-topic/<topic_id>', methods=['GET'])
+@app.route('/api/topics/<topic_id>', methods=['GET'])
 def get_topic(topic_id):
     try:
         topic_data = neo4j.run_query(f'''
@@ -878,10 +872,9 @@ def get_topic(topic_id):
     except:
         return {}
     
-@app.route('/api/put-topic', methods=['PUT'])
-def put_topic():
+@app.route('/api/topics/<topic_id>', methods=['PUT'])
+def put_topic(topic_id):
     try:
-        topic_id = request.json.get('topic_id', None)
         topic_name = request.json.get('topic_name', None)
         topic_content = request.json.get('topic_content', None)
 
@@ -900,7 +893,7 @@ def put_topic():
     except Exception as e:
         return str(e), 400
     
-@app.route('/api/delete-topic/<topic_id>', methods=['DELETE'])
+@app.route('/api/topics/<topic_id>', methods=['DELETE'])
 def delete_topic(topic_id):
     try:
         neo4j.run_query(f'''

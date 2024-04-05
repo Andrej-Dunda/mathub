@@ -37,9 +37,7 @@ const Friends = () => {
 
   const getFriends = async () => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.post("/api/get-friends", {
-      user_id: user._id
-    })
+    protectedHttpClient?.get(`/api/users/${user._id}/friends`)
       .then((response: any) => {
         setFriends(response.data)
       }).catch((error: any) => {
@@ -53,9 +51,7 @@ const Friends = () => {
 
   const getFriendRequests = async () => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.post("/api/get-friend-requests", {
-      user_id: user._id
-    })
+    protectedHttpClient?.get(`/api/users/${user._id}/friends/requests`)
       .then((response: any) => {
         setFriendRequests(response.data)
       }).catch((error: any) => {
@@ -69,9 +65,7 @@ const Friends = () => {
 
   const getMyFriendRequests = async () => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.post("/api/get-my-friend-requests", {
-      user_id: user._id
-    })
+    protectedHttpClient?.get(`/api/users/${user._id}/friends/my-requests`)
       .then((response: any) => {
         setMyFriendRequests(response.data)
       }).catch((error: any) => {
@@ -85,9 +79,7 @@ const Friends = () => {
 
   const getFriendSuggestions = async () => {
     const protectedHttpClient = await protectedHttpClientInit();
-    protectedHttpClient?.post("/api/get-friend-suggestions", {
-      user_id: user._id
-    })
+    protectedHttpClient?.get(`api/users/${user._id}/friends/suggestions`)
       .then((response: any) => {
         setFriendSuggestions(response.data)
       }).catch((error: any) => {

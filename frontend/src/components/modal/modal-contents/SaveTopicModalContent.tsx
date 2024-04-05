@@ -18,7 +18,7 @@ const SaveTopicModalContent: React.FC<SaveTopicModalContentProps> = ({ saveTopic
     closeModal()
   }
 
-  const hadnleCancel = () => {
+  const handleCancel = () => {
     dontSaveTopic && dontSaveTopic()
     onFinish()
     closeModal()
@@ -29,7 +29,7 @@ const SaveTopicModalContent: React.FC<SaveTopicModalContentProps> = ({ saveTopic
       <h1 className='title'>Uložit téma</h1>
       <p className='content'>Přejete si uložit změny v tématu "{selectedTopic?.topic_name}"?</p>
       <ModalFooter
-        onClose={hadnleCancel}
+        onClose={handleCancel}
         onSubmit={handleSubmit}
         submitButtonLabel='Uložit'
         cancelButtonLabel='Zahodit změny'

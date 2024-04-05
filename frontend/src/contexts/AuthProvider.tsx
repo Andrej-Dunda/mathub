@@ -38,12 +38,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const updateIsLoggedIn: () => Promise<boolean> = async () => {
     try {
-      const response = await httpClient.get('/api/auth-status');
+      const response = await httpClient.get('/api/authentication/status');
       setIsLoggedIn(response.data.isLoggedIn)
       if (!response.data.isLoggedIn) {
         toLogin()
         if (response.data.reason === 'User self logged out') openSnackbar('Odhlášení proběhlo úspěšně!');
-        else if (response.data.reason === 'Session expired') openSnackbar('Byli jste odhlášeni z důvodu neaktivity!');
+        // else if (response.data.reason === 'Session expired') openSnackbar('Byli jste odhlášeni z důvodu neaktivity!');
         return false;
       } else {
         return true;
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   const logout = (selfLogout?: boolean) => {
-    httpClient.post('/api/logout', { self_logout: selfLogout ? selfLogout : false })
+    httpClient.post('/api/authentication/logout', { self_logout: selfLogout ? selfLogout : false })
       .then((response: any) => {
         if (response.status === 200) {
           updateIsLoggedIn()

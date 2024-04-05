@@ -33,26 +33,20 @@ const ChangeProfilePictureModalContent: React.FC = () => {
     const formData = new FormData();
     formData.append('profile_picture', newProfilePicture);
 
-    try {
-      const protectedHttpClient = await protectedHttpClientInit();
-      if (protectedHttpClient) {
-        protectedHttpClient.post(`/api/upload-profile-picture/${user._id}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          }
-        })
-        .then(() => {
-          updateUser()
-          openSnackbar('Obrázek úspěšně nahrán!');
-          closeModal()
-          setErrorMessage('')
-        })
-        .catch(err => console.error(err))
-      } else closeModal();
-    } catch (error) {
-      setErrorMessage('Chyba při nahrávání obrázku :(');
-    }
-  };
+    const protectedHttpClient = await protectedHttpClientInit();
+    protectedHttpClient?.post(`/api/users/${user._id}/profile-picture`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    })
+    .then(() => {
+      updateUser()
+      openSnackbar('Obrázek úspěšně nahrán!');
+      closeModal()
+      setErrorMessage('')
+    })
+    .catch(err => console.error(err))
+  }
 
   return (
     <div className="change-profile-picture">

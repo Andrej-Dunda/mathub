@@ -19,7 +19,7 @@ const Homepage = () => {
 
   useEffect(() => {
     setActiveLink('/')
-    httpClient.get('/api/posts')
+    httpClient.get('/api/feed')
     .then(res => {
       setPosts(res.data)
     })
