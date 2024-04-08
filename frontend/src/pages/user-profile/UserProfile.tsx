@@ -157,10 +157,10 @@ const UserProfile = () => {
                           return (
                             <div className="material-button" key={index}>
                               <div className="material-button-header">
-                                <span className='material-type'>
+                                <span className='material-type' title={material.material_subject}>
                                   {material.material_subject}
                                 </span>
-                                <span className='material-grade'>
+                                <span className='material-grade' title={material.material_grade}>
                                   {material.material_grade}
                                 </span>
                               </div>
